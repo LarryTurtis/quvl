@@ -1,0 +1,26 @@
+<% include ../head %>
+<% include ../nav %>
+
+<div class="row">
+    <% if (user && user.docs && user.docs.length) { %>
+        <h1>My Saved Documents</h1>
+        <ul>
+            <% for(var i=0; i<user.docs.length; i++) {%>
+               <li><a href="/doc/<%= user.userId %>/<%= user.docs[i].docId %>"><%= user.docs[i].name %></a></li>
+            <% } %>
+        </ul>
+    <% } %>
+</div>
+
+<div class="row">
+    <% if (user && user.docsSharedWithUser && user.docsSharedWithUser.length) { %>
+        <h1>My Shared Documents</h1>
+        <ul>
+            <% for(var i=0; i<user.docsSharedWithUser.length; i++) {%>
+               <li><a href="/doc/<%= user.docsSharedWithUser[i].authorId %>/<%= user.docsSharedWithUser[i].docId %>"><%= user.docsSharedWithUser[i].name %></a></li>
+            <% } %>
+        </ul>
+    <% } %>
+</div>
+
+<% include ../foot %>

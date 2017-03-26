@@ -1,0 +1,114 @@
+@font-face {
+    font-family: "ACaslonPro-Regular";
+    src: url('./fonts/ACaslonPro-Regular.otf') format('opentype');
+}
+
+html,
+body {
+    height: 100%;
+}
+
+::selection {
+  background: #00c496; 
+}
+
+li {
+    list-style-type: none;
+}
+
+ul {
+    padding: 0px;
+}
+
+h1, h2, h3, h4, h5, h6 #content, #content p {
+    font-family: 'ACaslonPro-Regular', sans-serif!important;
+}
+
+#content, #title {
+    background: white;
+    font-size: 20px;
+}
+
+.nav {
+    font-family: 'Lato', sans-serif;
+}
+
+.date {
+    font-size: 10px;
+}
+
+#wrap {
+    min-height: 100%;
+}
+
+#main {
+    overflow: auto;
+    padding-bottom: 150px;
+    /* this needs to be bigger than footer height*/
+}
+
+.footer {
+    position: relative;
+    margin-top: -150px;
+    /* negative value of footer height */
+    height: 150px;
+    clear: both;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.select {
+    cursor: pointer;
+    background-color: #00c496;
+}
+
+quvl-tag.highlight {
+    cursor: pointer;
+    background-color: rgba(223, 52, 48, 1)!important;
+}
+
+.highlight {
+    transform: translate(-5%, 0px);
+}
+
+quvl-tag {
+    cursor: pointer;
+    color: rgba(223, 52, 48, 0.3);
+}
+
+.comments {
+    font-family: 'Lato', sans-serif;
+}
+
+.addComment {
+    display: none;
+    margin-bottom: 15px;
+}
+
+#addCommentButton {
+    display: none;
+    margin-bottom: 15px;
+}
+
+#docContent {
+    display: none;
+}
+
+.comment {
+    transition: transform 100ms;
+    border: 1px solid gray;
+    margin: 10px;
+    padding: 3px;
+}
+
+.comment-heading {
+    margin-bottom: 3px;
+}
+
+.comment img {
+    width: 32px;
+}
+
+#content {
+    visibility: hidden;
+}

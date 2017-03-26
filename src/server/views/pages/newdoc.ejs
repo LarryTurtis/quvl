@@ -1,0 +1,22 @@
+<% include ../head %>
+<% include ../nav %>
+
+            <div class="row">
+                <h3>Create A New Document</h3>
+                <form action="/save" method="POST" id="myForm">
+                    <div class="form-group">
+                        <h3><input name="docname" class="form-control" type="text" placeholder="Untitled" /></h3>
+                        <br />
+                        <textarea form="myForm" name="doc" id="tinymce"></textarea>
+                        <br />
+                        <div class="form-group">
+                            <label for="sharedWith">Share With (email addresses):</label>
+                            <input name="sharedWith" data-role="tagsinput" class="form-control" type="text" placeholder="name@email.com" />
+                        </div>
+                    </div>
+                <button type="submit" class="btn btn-primary" id="saveButton">Save</button>
+                </form>
+            </div>
+
+
+<% include ../foot %>
