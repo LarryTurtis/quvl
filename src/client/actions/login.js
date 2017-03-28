@@ -1,5 +1,5 @@
 import { createAction } from 'redux-actions';
-import { buildPost } from '../util/requestFactory';
+import { buildPost, buildGet } from '../util/requestFactory';
 
 export const send = createAction('LOGIN_STARTED');
 export const complete = createAction('LOGIN_COMPLETED');
@@ -12,7 +12,29 @@ export function doLogin(email, password) {
     const inviteRequest = buildPost(url, body);
 
     dispatch(send());
-    return fetch(inviteRequest)
+    return fetch(inviteRequest, {
+      credentials: 'same-origin'
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw Error(response.statusText);
+      })
+      .then(json => dispatch(complete(json)))
+      .catch(error => dispatch(failure(error)));
+  };
+}
+
+export function checkLogin() {
+  return (dispatch) => {
+    const url = '/api/login';
+    const inviteRequest = buildGet(url);
+
+    dispatch(send());
+    return fetch(inviteRequest, {
+      credentials: 'same-origin'
+    })
       .then(response => {
         if (response.ok) {
           return response.json();

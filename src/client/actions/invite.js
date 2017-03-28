@@ -7,13 +7,15 @@ export const failure = createAction('INVITE_FAILED');
 
 export function sendInvite(email, channelId) {
   return (dispatch, getState) => {
-    const token = getState().auth.user.token;
+    const token = getState().login.user && getState().login.user.token;
     const url = '/api/admin/invite';
     const body = JSON.stringify({ email, channelId });
     const inviteRequest = buildPost(url, body, token);
 
     dispatch(send());
-    return fetch(inviteRequest)
+    return fetch(inviteRequest, {
+      credentials: 'same-origin'
+    })
       .then(response => {
         if (response.ok) {
           return response.json();

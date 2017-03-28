@@ -7,12 +7,14 @@ export const failure = createAction('CHANNELS_FAILED');
 
 export function fetchChannels() {
   return (dispatch, getState) => {
-    const token = getState().auth.user.token;
+    const token = getState().login.user && getState().login.user.token;
     const url = '/api/admin/channels';
     const channelRequest = buildGet(url, token);
 
     dispatch(request());
-    return fetch(channelRequest)
+    return fetch(channelRequest, {
+      credentials: 'same-origin'
+    })
       .then(response => {
         if (response.ok) {
           return response.json();

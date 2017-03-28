@@ -7,12 +7,14 @@ export const failure = createAction('REPORT_FAILED');
 
 export function fetchReport(options) {
   return (dispatch, getState) => {
-    const token = getState().auth.user.token;
+    const token = getState().login.user && getState().login.user.token;
     const url = '/api/publisher/report';
     const reportRequest = buildGet(url, token, options);
 
     dispatch(request());
-    return fetch(reportRequest)
+    return fetch(reportRequest, {
+      credentials: 'same-origin'
+    })
       .then(response => {
         if (response.ok) {
           return response.json();

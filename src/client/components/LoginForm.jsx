@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { replace } from 'react-router-redux';
 import connect from '../util/connect';
 import Spinner from '../components/Spinner';
 import Callout from '../components/Callout';
@@ -11,11 +12,13 @@ class LoginForm extends Component {
 
   static propTypes = {
     doLogin: PropTypes.func,
-    login: PropTypes.object
+    login: PropTypes.object,
+    replace: PropTypes.func
   };
 
   static actionsToProps = {
-    doLogin
+    doLogin,
+    replace
   };
 
   static stateToProps = state => ({
@@ -25,6 +28,7 @@ class LoginForm extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    console.log(this.props)
   }
 
   handleLogin = (e) => {
@@ -32,10 +36,10 @@ class LoginForm extends Component {
     this.setState({ callout: false });
     this.props.doLogin(this.state.email, this.state.password)
       .then(user => {
-        console.log(user)
         const type = user.error ? Callout.failure : Callout.success;
         const message = user.error ? FAIL : SUCCESS;
         this.setState({ callout: { type, message } });
+        this.props.replace('/');
       });
   }
 

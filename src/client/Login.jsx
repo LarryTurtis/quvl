@@ -1,39 +1,35 @@
 import React, { Component, PropTypes } from 'react';
-import qs from 'querystring';
-import { replace } from 'react-router-redux';
-import { Button, Spinner } from '@blueprintjs/core';
+import { Spinner } from '@blueprintjs/core';
+import { push } from 'react-router-redux';
 import connect from './util/connect';
-import { getUserFromProfile } from './util/user';
-import { buildGet } from './util/requestFactory';
 import LockForm from './components/LoginForm';
+import { checkLogin } from './actions/login';
 
 class Login extends Component {
 
   static propTypes = {
-    replace: PropTypes.func
+    checkLogin: PropTypes.func,
+    push: PropTypes.func
+  };
+
+  static actionsToProps = {
+    checkLogin,
+    push
   };
 
   static stateToProps = state => ({
     user: state.user
   });
 
-  static actionsToProps = {
-    replace
-  };
-
   constructor(props) {
     super(props);
     this.state = {};
-    const url = '/api/login';
-    const loginRequest = buildGet(url);
-
-    fetch(loginRequest)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw Error(response.statusText);
-      });
+    this.props.checkLogin()
+    .then((response) => {
+      if (!response.error) {
+        this.props.push('/');
+      }
+    });
   }
 
   render() {

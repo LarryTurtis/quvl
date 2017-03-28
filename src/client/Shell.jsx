@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { replace } from 'react-router-redux';
-import { isTokenExpired } from './util/user';
 import connect from './util/connect';
 
 class Shell extends Component {
@@ -8,7 +7,6 @@ class Shell extends Component {
   static propTypes = {
     replace: PropTypes.func,
     user: PropTypes.object,
-    location: PropTypes.object,
     children: PropTypes.node
   };
 
@@ -21,22 +19,20 @@ class Shell extends Component {
   };
 
   componentWillMount() {
-    const { user, location } = this.props;
-    this.redirectIfNotAuthenticated(user, location);
+    const { user } = this.props;
+    this.redirectIfNotAuthenticated(user);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { user, location } = nextProps;
-    this.redirectIfNotAuthenticated(user, location);
+    const { user } = nextProps;
+    this.redirectIfNotAuthenticated(user);
   }
 
-  redirectIfNotAuthenticated(user, location) {
-    // If the user is not logged in, or if their token has expired, redirect to login.
-
-    console.log("redirect not authed", user, location)
-
-    if (!user || !user.token || isTokenExpired(user.token)) {
-      this.props.replace(`/login?r=${location.pathname}`);
+  redirectIfNotAuthenticated(user) {
+    // If the user is not logged in, if their token has expired, redirect to login.
+    console.log(user)
+    if (!user) {
+      this.props.replace('/login');
     }
   }
 

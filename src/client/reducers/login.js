@@ -7,9 +7,10 @@ const loginReducer = handleActions({
     ...state,
     isSending: true
   }),
-  LOGIN_COMPLETED: (state) => ({
+  LOGIN_COMPLETED: (state, action) => ({
     ...state,
-    isSending: false
+    isSending: false,
+    user: action.payload.user
   }),
   LOGIN_FAILED: (state, action) => ({
     ...state,

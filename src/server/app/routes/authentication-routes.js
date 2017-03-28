@@ -48,10 +48,11 @@ module.exports = (app, passport) => {
 
   app.get('/api/login', isLoggedIn, function (req, res) {
     if (req.authenticated) {
-      res.json({ loggedIn: true });
+      const { user } = req;
+      res.status(200).json({ user });
     }
     else {
-      res.json({ loggedIn: false });
+      res.status(401).json({});
     }
   });
 

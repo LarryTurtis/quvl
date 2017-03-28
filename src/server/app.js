@@ -27,13 +27,13 @@ if (nconf.get('NODE_ENV') === 'development') {
     noInfo: true,
     publicPath: config.output.publicPath
   }));
-  app.use(webpackHotMiddleware(compiler));
-  configureWatcher(compiler);
+  // app.use(webpackHotMiddleware(compiler));
+  // configureWatcher(compiler);
 }
 
 app.enable('trust proxy');
 app.use(morgan('dev')); // log every request to the console
-app.use(cookieParser()); // read cookies (needed for auth)
+app.use(cookieParser('m00k13bL@yLoc')); // read cookies (needed for auth)
 app.use(bodyParser({ limit: '50mb' }));
 app.use(bodyParser.json());
 
@@ -51,7 +51,7 @@ app.use((req, res, next) => {
   }
 });
 
-app.use(express.static('public'));
+app.use(express.static(config.output.publicPath));
 
 // required for passport
 app.use(session({ secret: 'm00k13bL@yLoc' })); // session secret

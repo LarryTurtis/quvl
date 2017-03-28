@@ -7,12 +7,14 @@ export const failure = createAction('SITES_FAILED');
 
 export function fetchSites() {
   return (dispatch, getState) => {
-    const token = getState().auth.user.token;
+    const token = getState().login.user && getState().login.user.token;
     const url = '/api/publisher/sites';
     const siteRequest = buildGet(url, token);
 
     dispatch(request());
-    return fetch(siteRequest)
+    return fetch(siteRequest, {
+      credentials: 'same-origin'
+    })
       .then(response => {
         if (response.ok) {
           return response.json();
