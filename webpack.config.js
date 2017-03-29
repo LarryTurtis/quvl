@@ -35,7 +35,7 @@ const config = {
         loader: ExtractTextPlugin.extract('style', 'css!stylus')
       },
       {
-        test: /\.(ttf|eot|svg|woff|woff2)$/,
+        test: /\.(ttf|otf|eot|svg|woff|woff2)$/,
         loader: 'url?limit:5000&name=fonts/[hash].[ext]'
       },
       {

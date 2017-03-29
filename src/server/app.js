@@ -27,8 +27,8 @@ if (nconf.get('NODE_ENV') === 'development') {
     noInfo: true,
     publicPath: config.output.publicPath
   }));
-  // app.use(webpackHotMiddleware(compiler));
-  // configureWatcher(compiler);
+  app.use(webpackHotMiddleware(compiler));
+  configureWatcher(compiler);
 }
 
 app.enable('trust proxy');

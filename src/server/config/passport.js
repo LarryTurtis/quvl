@@ -1,6 +1,5 @@
 // load all the things we need
 var LocalStrategy = require('passport-local').Strategy;
-var BearerStrategy = require('passport-http-bearer').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var md5 = require("md5");
@@ -167,7 +166,7 @@ module.exports = function(passport) {
                             newUser.facebook.id = profile.id; // set the users facebook id                   
                             newUser.facebook.token = token; // we will save the token that facebook provides to the user                    
                             newUser.facebook.name = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
-                            newUser.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+                            newUser.facebook.email = profile.emails && profile.emails[0].value; // facebook can return multiple emails so we'll take the first
                             newUser.facebook.picture = "https://graph.facebook.com/" + profile.id + "/picture?type=square";
                             console.log(profile);
 
