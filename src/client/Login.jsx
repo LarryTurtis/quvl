@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import { Spinner } from '@blueprintjs/core';
 import { push } from 'react-router-redux';
 import connect from './util/connect';
 import LockForm from './components/LoginForm';
@@ -33,9 +32,6 @@ class Login extends Component {
   }
 
   render() {
-    if (this.state.redirecting) {
-      return <Spinner />;
-    }
     return (
       <LockForm />
     );

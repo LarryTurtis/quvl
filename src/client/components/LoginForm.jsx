@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { replace } from 'react-router-redux';
 import connect from '../util/connect';
-import Spinner from '../components/Spinner';
 import Callout from '../components/Callout';
 import { doLogin } from '../actions/login';
 
@@ -55,7 +54,7 @@ class LoginForm extends Component {
     const { login } = this.props;
 
     if (login.isSending) {
-      return <div className="sb-invite-form"><Spinner /></div>;
+      return <div className="sb-invite-form">Spinner</div>;
     }
 
     if (this.state.callout) {

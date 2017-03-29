@@ -4,8 +4,6 @@
   "description": "the first transparent server-to-server header bidding system",
   "repository": "https://github.com/serverbid/serverbid",
   "dependencies": {
-    "@blueprintjs/core": "^1.10.0",
-    "@blueprintjs/datetime": "^1.9.1",
     "auth0-js": "^8.2.0",
     "auth0-lock": "^10.2.1",
     "aws-sdk": "^2.23.0",

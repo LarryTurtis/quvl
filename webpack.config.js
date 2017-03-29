@@ -13,9 +13,6 @@ const config = {
     serverbid: [
       'webpack-hot-middleware/client', // TODO: Remove this from prod bundle
       resolve('src/client')
-    ],
-    blueprint: [
-      '@blueprintjs/core/dist/blueprint.css'
     ]
   },
   output: {

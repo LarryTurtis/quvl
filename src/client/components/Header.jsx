@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { push } from 'react-router-redux';
-import { Button } from '@blueprintjs/core';
 import connect from '../util/connect';
 
 class Header extends Component {
