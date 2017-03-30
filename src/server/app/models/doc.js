@@ -2,6 +2,7 @@
 // load the things we need
 import mongoose from 'mongoose';
 import autoIncrement from 'mongoose-auto-increment';
+import Comment from './comment';
 
 const docSchema = mongoose.Schema({
   name: String,
@@ -16,15 +17,7 @@ const docSchema = mongoose.Schema({
   docId: Number,
   authorId: Number,
   sharedWith: [String],
-  comments: [{
-    commentId: Number,
-    author: String,
-    content: String,
-    created_at: { type: Date, default: Date.now },
-    authorId: Number,
-    picture: String,
-    index: Number
-  }]
+  comments: [Comment]
 });
 
 docSchema.plugin(autoIncrement.plugin, {
@@ -33,6 +26,7 @@ docSchema.plugin(autoIncrement.plugin, {
   startAt: 0,
   incrementBy: 1
 });
+
 
 // create the model for users and expose it to our app
 const docModel = mongoose.model('Doc', docSchema);

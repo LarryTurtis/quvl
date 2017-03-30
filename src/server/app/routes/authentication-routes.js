@@ -28,11 +28,10 @@ module.exports = (app, passport) => {
     }));
 
   // process the signup form
-  app.post('/api/signup', passport.authenticate('local-signup', {
-    successRedirect: '/', // redirect to the secure profile section
-    failureRedirect: '/signup', // redirect back to the signup page if there is an error
-    failureFlash: true // allow flash messages
-  }));
+  app.post('/api/signup', passport.authenticate('local-signup'), (req, res) => {
+    const { user } = req;
+    res.json({ user });
+  });
 
   // process the login form
   app.post('/api/login', passport.authenticate('local-login'), (req, res) => {
@@ -41,9 +40,9 @@ module.exports = (app, passport) => {
   });
 
   // route for logging out
-  app.get('/api/logout', function (req, res) {
+  app.get('/api/logout', (req, res) => {
     req.logout();
-    res.redirect('/');
+    res.status(200).json({});
   });
 
   app.get('/api/login', isLoggedIn, function (req, res) {

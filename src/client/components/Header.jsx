@@ -1,22 +1,59 @@
 import React, { Component, PropTypes } from 'react';
-import { push } from 'react-router-redux';
+import { Link } from 'react-router';
 import connect from '../util/connect';
+import { push } from 'react-router-redux';
+import { doLogout } from '../actions/login';
 
 class Header extends Component {
 
   static propTypes = {
-    push: PropTypes.func
+    user: PropTypes.object,
+    doLogout: PropTypes.func
   }
 
   static actionsToProps = {
-    push
-  }
-
-  handleLogOut = () => {
-    this.props.push('/login');
+    doLogout
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  handleLogout = () => {
+    this.props.doLogout()
+      .then(() => {
+        push('/');
+      });
+  }
+
   render() {
+
+    let leftLinks = (
+      <ul className="nav navbar-nav">
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/newdoc">New Document</Link></li>
+        <li><Link to="/mydocs">My Documents</Link></li>
+      </ul>);
+
+    if (!this.props.user) {
+      leftLinks = null;
+    }
+
+    let rightLinks = (
+      <ul className="nav navbar-nav navbar-right">
+        <li><button className="btn btn-default navbar-btn" onClick={this.handleLogout}>Log out</button></li>
+      </ul>);
+
+    if (!this.props.user) {
+      rightLinks = (
+        <ul className="nav navbar-nav navbar-right">
+          <li><Link to="/signup">Sign up</Link></li>
+          <li><Link to="/login">Log in</Link></li>
+        </ul>
+      );
+    }
+
     return (
       <nav className="navbar navbar-default">
         <div className="container">
@@ -28,21 +65,8 @@ class Header extends Component {
             <a className="navbar-brand" href="#quvl">QUVL</a>
           </div>
           <div className="navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul className="nav navbar-nav">
-              <li><a href="/">Home</a></li>
-              <li><a href="/newdoc">New Document</a></li>
-              <li><a href="/profile">Profile</a></li>
-              <li><a href="/contact">Contact Us</a></li>
-            </ul>
-            <form className="navbar-form navbar-left" />
-            <ul className="nav navbar-nav navbar-right">
-              {/* <% if (loggedIn) { %>
-                        <li><a href="/logout">Log out</a></li>
-                    <% } else { %>
-                        <li><a href="/signup">Sign up</a></li>
-                        <li><a href="/login">Log in</a></li>
-                    <% } %> */}
-            </ul>
+            {leftLinks}
+            {rightLinks}
           </div>
         </div>
       </nav>

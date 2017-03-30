@@ -9,6 +9,7 @@ const userSchema = mongoose.Schema({
   created_at: { type: Date, default: Date.now },
   last_login: { type: Date, default: Date.now },
   access_token: String,
+  email: String,
   local: {
     email: String,
     password: String,

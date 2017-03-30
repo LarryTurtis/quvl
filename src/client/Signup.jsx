@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import { push } from 'react-router-redux';
 import connect from './util/connect';
-import LoginForm from './components/LoginForm';
+import SignupForm from './components/SignupForm';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { checkLogin } from './actions/login';
 
-class Login extends Component {
+class Signup extends Component {
 
   static propTypes = {
     checkLogin: PropTypes.func,
@@ -37,7 +37,7 @@ class Login extends Component {
     return (
       <div className="shell">
         <Header user={this.props.user} />
-        <LoginForm />
+        <SignupForm />
         <Footer />
       </div>
     );
@@ -45,4 +45,4 @@ class Login extends Component {
 
 }
 
-export default connect(Login);
+export default connect(Signup);

@@ -16,8 +16,17 @@ module.exports = (app) => {
       .catch(next);
   });
 
-  app.get('/docs/:userId/:docId', isLoggedIn, getDocForCommenting);
-  app.post('/docs/:userId/:docId', isLoggedIn, updateDoc);
+  app.get('/docs/:authorId/:docId', isLoggedIn, (req, res, next) => {
+    getDocForCommenting(req.user, req.params.authorId, req.params.docId)
+      .then(doc => res.json(doc))
+      .catch(next);
+  });
+  app.post('/docs/:authorId/:docId', isLoggedIn, (req, res, next) => {
+    console.log(req.body);
+    updateDoc(req.params.authorId, req.params.docId, req.user, req.body.nodes, req.body.comment)
+      .then(doc => res.json(doc))
+      .catch(next);
+  });
 };
 
 

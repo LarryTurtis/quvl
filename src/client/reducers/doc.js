@@ -29,6 +29,20 @@ const docReducer = handleActions({
     ...state,
     isSending: false,
     error: action.payload.message
+  }),
+  GET_DOC_STARTED: (state) => ({
+    ...state,
+    isSending: true
+  }),
+  GET_DOC_COMPLETED: (state, action) => ({
+    ...state,
+    isSending: false,
+    current: action.payload
+  }),
+  GET_DOC_FAILED: (state, action) => ({
+    ...state,
+    isSending: false,
+    error: action.payload.message
   })
 },
   defaultState);

@@ -1,5 +1,6 @@
 var parse5 = require('parse5');
 var parse5Utils = require('parse5-utils');
+var startNodes, endNodes;
 
 String.prototype.splice = function(start, newSubStr) {
   return this.slice(0, start) + newSubStr + this.slice(start);
@@ -148,9 +149,9 @@ var closestEndWithoutGoingOver = (index, nodes) => {
   return bestNode;
 }
 
-var wrap = function(doc, ops) {
-  doc = doc.replace(/\\"/g, '"');
-  var myHtmlDoc = parse5.parseFragment(doc);
+const wrapTags = (requested, ops) => {
+  const doc = requested.replace(/\\"/g, '"');
+  const myHtmlDoc = parse5.parseFragment(doc);
 
   ops.forEach(operation => {
 
@@ -159,20 +160,20 @@ var wrap = function(doc, ops) {
 
     walkTheDOM(myHtmlDoc, populateNodes);
 
-    var startNodeToWrap = closestStartWithoutGoingOver(operation.start, startNodes);
-    var endNodeToWrap = closestEndWithoutGoingOver(operation.end, endNodes);
+    const startNodeToWrap = closestStartWithoutGoingOver(operation.start, startNodes);
+    const endNodeToWrap = closestEndWithoutGoingOver(operation.end, endNodes);
 
     if (startNodeToWrap === endNodeToWrap) {
       wrapBoth(startNodeToWrap, operation);
-    } else {
+    } 
+    else {
       wrapStart(startNodeToWrap, operation);
       wrapEnd(endNodeToWrap, operation);
     }
   });
 
-  var results = parse5.serialize(myHtmlDoc);
+  const results = parse5.serialize(myHtmlDoc);
   return results;
 }
 
-
-exports.wrap = wrap;
+export default wrapTags;

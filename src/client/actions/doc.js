@@ -9,6 +9,10 @@ export const listStart = createAction('LIST_DOCS_STARTED');
 export const listComplete = createAction('LIST_DOCS_COMPLETED');
 export const listFailure = createAction('LIST_DOCS_FAILED');
 
+export const getStart = createAction('GET_DOC_STARTED');
+export const getComplete = createAction('GET_DOC_COMPLETED');
+export const getFailure = createAction('GET_DOC_FAILED');
+
 export function createDoc(name, doc) {
   return (dispatch) => {
     const url = '/save';
@@ -49,5 +53,25 @@ export function listDocs() {
       })
       .then(json => dispatch(listComplete(json)))
       .catch(error => dispatch(listFailure(error)));
+  };
+}
+
+export function getDoc(userId, docId) {
+  return (dispatch) => {
+    const url = `/docs/${userId}/${docId}`;
+    const inviteRequest = buildGet(url);
+
+    dispatch(getStart());
+    return fetch(inviteRequest, {
+      credentials: 'same-origin'
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw Error(response.statusText);
+      })
+      .then(json => dispatch(getComplete(json)))
+      .catch(error => dispatch(getFailure(error)));
   };
 }

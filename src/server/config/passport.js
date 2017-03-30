@@ -67,6 +67,7 @@ module.exports = function(passport) {
                         var newUser = new User();
 
                         // set the user's local credentials
+                        newUser.email = email;
                         newUser.local.email = email;
                         newUser.local.password = newUser.generateHash(password);
                         newUser.local.picture = "https://www.gravatar.com/avatar/" + md5(email);
@@ -166,6 +167,7 @@ module.exports = function(passport) {
                             newUser.facebook.token = token; // we will save the token that facebook provides to the user                    
                             newUser.facebook.name = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
                             newUser.facebook.email = profile.emails && profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+                            newUser.email = profile.emails && profile.emails[0].value;
                             newUser.facebook.picture = "https://graph.facebook.com/" + profile.id + "/picture?type=square";
                             console.log(profile);
 
@@ -190,6 +192,7 @@ module.exports = function(passport) {
                     user.facebook.token = token;
                     user.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
                     user.facebook.email = profile.emails[0].value;
+                    user.email = profile.emails[0].value;
 
                     // save the user
                     user.save(function(err) {
@@ -237,6 +240,7 @@ module.exports = function(passport) {
                             newUser.google.token = token;
                             newUser.google.name = profile.displayName;
                             newUser.google.email = profile.emails[0].value; // pull the first email
+                            newUser.email = profile.emails[0].value; // pull the first email
                             newUser.google.picture = profile._json.picture;
 
                             // save the user
@@ -257,6 +261,7 @@ module.exports = function(passport) {
                     user.google.token = token;
                     user.google.name = profile.displayName;
                     user.google.email = profile.emails[0].value;
+                    user.email = profile.emails[0].value;
 
                     // save the user
                     user.save(function(err) {

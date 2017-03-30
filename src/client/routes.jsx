@@ -2,13 +2,18 @@ import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 import Shell from './Shell';
 import Login from './Login';
-import Main from './Main';
-import authorize, { requireRole } from './util/authorize';
+import Signup from './Signup';
+import DocList from './components/DocList';
+import Doc from './components/Doc';
+import NewDoc from './components/NewDoc';
 
 const routes = [
-  <Route path="login" component={Login} />,
+  <Route path="/login" component={Login} />,
+  <Route path="/signup" component={Signup} />,
   <Route path="/" component={Shell}>
-    <IndexRoute component={Main} />
+    <Route path="/newdoc" component={NewDoc} />
+    <Route path="/mydocs" component={DocList} />
+    <Route path="/doc/:authorId/:docId" component={Doc} />
   </Route>
 ];
 
