@@ -5,6 +5,7 @@ class AddComment extends Component {
 
   static propTypes = {
     addCallback: PropTypes.func,
+    saveCallback: PropTypes.func,
     cancelCallback: PropTypes.func
   }
 
@@ -18,10 +19,11 @@ class AddComment extends Component {
   }
 
   handleCommentSubmit = () => {
-    this.props.addCallback(this.state.comment);
+    this.props.saveCallback(this.state.comment);
   }
 
   showCommentForm = () => {
+    this.props.addCallback();
     this.setState({ visible: true });
   }
 

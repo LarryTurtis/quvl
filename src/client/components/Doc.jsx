@@ -35,7 +35,7 @@ class Doc extends Component {
 
 
   componentDidMount = () => {
-    this.selector = new Selector(document.getElementById('content'), this.handleSelect);
+    this.selector = new Selector(document.getElementById('content'), this.handleSelect, this.handleDeselect);
   }
 
   getMarkup(doc) {
@@ -46,19 +46,28 @@ class Doc extends Component {
     const docId = this.props.params.docId;
     const authorId = this.props.params.authorId;
     this.props.getDoc(authorId, docId);
+    this.setState({ selectedText: false, nodes: [] });
   }
 
   handleSelect = (nodes) => {
     this.setState({ selectedText: true, nodes });
+  }
+
+  handleDeselect = () => {
+    this.setState({ selectedText: false, nodes: [] });
+  }
+
+  addComment = () => {
     this.selector.off();
   }
 
-  addComment = (comment) => {
+  saveComment = (comment) => {
     const docId = this.props.params.docId;
     const authorId = this.props.params.authorId;
     this.props.saveComment(authorId, docId, this.state.nodes, comment)
       .then(() => {
         this.loadDoc();
+        this.selector.on();
       });
   }
 
@@ -74,16 +83,19 @@ class Doc extends Component {
     if (this.state.selectedText) {
       addCommentButton = (<AddComment
         addCallback={this.addComment}
+        saveCallback={this.saveComment}
         cancelCallback={this.cancelComment}
       />);
     }
 
     return (
-      <div>
+      <div className="row">
         <h1>{doc && doc.name}</h1>
-        <div id="content" dangerouslySetInnerHTML={this.getMarkup(doc && doc.revisions[doc.revisions.length - 1].doc)} />
-        {addCommentButton}
-        <Comments>{doc && doc.comments}</Comments>
+        <div id="content" className="col-sm-8" dangerouslySetInnerHTML={this.getMarkup(doc && doc.revisions[doc.revisions.length - 1].doc)} />
+        <div className="col-sm-4 comments">
+          {addCommentButton}
+          <Comments>{doc && doc.comments}</Comments>
+        </div>
       </div>
     );
   }

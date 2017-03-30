@@ -135,24 +135,27 @@ function addComment(element) {
 }
 
 class Selector {
-  constructor(element, callback) {
+  constructor(element, select, deselect) {
     this.element = element;
     this.listener = () => {
       wrappedNodes = [];
       range = null;
       text = window.getSelection();
-      if (text.isCollapsed && previousBody) {
-        this.element.innerHTML = previousBody;
+      if (text.isCollapsed) {
+        if (previousBody) {
+          this.element.innerHTML = previousBody;
+          previousBody = null;
+        }
+        deselect();
       }
       else {
         addComment(element);
-        callback(wrappedNodes);
+        select(wrappedNodes);
       }
     };
     this.element.addEventListener('mouseup', this.listener);
   }
   on = () => {
-    previousBody = null;
     this.element.addEventListener('mouseup', this.listener);
   }
   off = () => {
