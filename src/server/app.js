@@ -60,6 +60,7 @@ app.use(passport.session()); // persistent login sessions
 
 require('./config/passport')(passport); // pass passport for configuration
 require('./app/routes/authentication-routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
+require('./app/routes/api-routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 // If no other routes match, launch the client instead.
 app.use(bootstrap);
 

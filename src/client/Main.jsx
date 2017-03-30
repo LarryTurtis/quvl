@@ -1,6 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import NewDoc from './components/NewDoc';
+import DocList from './components/DocList';
+
 import './Main.styl';
 
 
@@ -25,9 +28,10 @@ class Main extends Component {
       <div id="wrap">
         <div id="main">
           <Header user={user} />
-          <section>
-            <h1>You are logged in.</h1>
-          </section>
+          <div className="container">
+            <NewDoc />
+            <DocList />
+          </div>
           <Footer />
         </div>
       </div>

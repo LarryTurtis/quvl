@@ -3196,6 +3196,10 @@ lodash.words@^3.0.0:
   dependencies:
     lodash._root "^3.0.0"
 
+lodash@^3.9.3:
+  version "3.10.1"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
+
 lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.2, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
@@ -4266,6 +4270,12 @@ react-router@^2.7.0:
     invariant "^2.2.1"
     loose-envify "^1.2.0"
     warning "^3.0.0"
+
+react-tinymce@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/react-tinymce/-/react-tinymce-0.5.1.tgz#8f56b7f81cefed06f4aca6b66c903e2db165c2c4"
+  dependencies:
+    lodash "^3.9.3"
 
 "react@^15.0.0 || ^16.0.0", react@^15.3.1:
   version "15.4.2"

@@ -1,75 +1,127 @@
-var User = require('../models/user');
-var Doc = require('../models/doc');
-var ObjectId = require("mongoose").Types.ObjectId
-var crypto = require('crypto');
-var validator = require('validator');
-var setRanges = require('./setRanges');
-var wrapTags = require('./wrapTags');
-var counter = 0;
-var moment = require('moment');
-var sanitizeHtml = require('sanitize-html');
+import validator from 'validator';
+import moment from 'moment';
+import sanitizeHtml from 'sanitize-html';
+import User from '../models/user';
+import Doc from '../models/doc';
+import setRanges from './setRanges';
+import wrapTags from './wrapTags';
 
 function handleError(err, res) {
   if (err) {
     console.log(err);
-    if (res) return res.status(500).send({ "message": "Error!" });
+    if (res) return res.status(500).send({ 'message': 'Error' });
     return true;
   }
   return false;
 }
 
-
-exports.getUser = function(req, res) {
+export function getUser(req, res) {
   if (req.user && req.user._id) {
     User.findById(req.user._id)
-      .populate({ path: "docs", model: Doc })
-      .populate({ path: "docsSharedWithUser", model: Doc })
-      .exec(function(err, user) {
-        console.log(user);
+      .populate({ path: 'docs', model: Doc })
+      .populate({ path: 'docsSharedWithUser', model: Doc })
+      .exec((err, user) => {
         if (err) return handleError(err, res);
-        res.json({ loggedIn: req.authenticated, user: user })
+        res.json({ loggedIn: req.authenticated, user })
       });
-  } else {
-    res.json({ loggedIn: req.authenticated, user: null, message: "" })
   }
-}
+  else {
+    res.json({ loggedIn: req.authenticated, user: null, message: '' })
+  }
+};
 
-exports.saveDoc = function(req, res) {
-  User.findById(req.user._id, function(err, user) {
-    if (err) return handleError(err, res);
-    var docId = user.docs.length;
-    var doc = new Doc();
-    var cleanContent = sanitizeHtml(req.body.doc, {
-      allowedAttributes: {
-        'a': ['href'],
-        '*': ['data-*']
+const findUser = (id) =>
+  new Promise((resolve, reject) => {
+    User.findById(id, (err, user) => {
+      if (err) {
+        reject(err);
+      }
+      else {
+        resolve(user);
       }
     });
-    cleanContent = setRanges(cleanContent);
-    var email = req.user.local.email || req.user.google.email || req.user.facebook.email;
-    var emails = req.body.sharedWith && req.body.sharedWith.split(",") || [];
-    doc.name = req.body.docname || "Untitled_" + Date.now();
-    doc.revisions.push({ id: 0, doc: cleanContent });
-    doc.docId = docId;
-    doc.sharedWith = emails;
-    doc.authorId = req.user.userId;
-    doc.save(function(err, savedDoc) {
-      if (err) return handleError(err, res);
-      user.docs.push(savedDoc._id.toString());
-      user.save(function(err, savedUser) {
-        if (err) return handleError(err, res);
-        User.update({ $or: [{ 'local.email': { $in: emails } }, { 'facebook.email': { $in: emails } }, { 'google.email': { $in: emails } }] }, { $push: { docsSharedWithUser: savedDoc._id } }, { multi: true },
-          function(err, docs) {
-            if (err) return handleError(err, res);
-            return res.redirect('/doc/' + req.user.userId + '/' + docId);
-          });
-      });
+  });
+
+export function listDocs(authorId) {
+  return new Promise((resolve, reject) => {
+    Doc.find({ authorId }, (err, docs) => {
+      if (err) {
+        reject(err);
+      }
+      else {
+        resolve(docs);
+      }
     });
   });
 }
 
 
-exports.getOriginalDoc = function(req, res) {
+const saveNewDoc = (user, name, content, sharedWith) =>
+  new Promise((resolve, reject) => {
+    const cleanContent = sanitizeHtml(content, {
+      allowedAttributes: {
+        'a': ['href'],
+        '*': ['data-*']
+      }
+    });
+    const rangedContent = setRanges(cleanContent);
+    const doc = new Doc({
+      revisions: [{ id: 0, doc: rangedContent }],
+      sharedWith,
+      name,
+      authorId: user.userId
+    });
+    doc.save((err, saved) => {
+      if (err) {
+        reject(err);
+      }
+      else {
+        resolve(saved);
+      }
+    });
+  });
+
+const shareDocWithUsers = (emails, docId) =>
+  new Promise((resolve, reject) => {
+    User.update({
+      $or: [
+        { 'local.email': { $in: emails } },
+        { 'facebook.email': { $in: emails } },
+        { 'google.email': { $in: emails } }
+      ]
+    },
+      { $push: { docsSharedWithUser: docId } },
+      { multi: true },
+      (err, docs) => {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(docs);
+        }
+      });
+  });
+
+
+export function saveDoc(req, res) {
+  let id;
+  findUser(req.user._id)
+    .then(user => {
+      const name = req.body.name || `Untitled_${Date.now()}`;
+      const content = req.body.doc;
+      const shared = (req.body.sharedWith && req.body.sharedWith.split(',')) || [];
+      return saveNewDoc(user, name, content, shared);
+    })
+    .then(saved => {
+      id = saved.docId;
+      return shareDocWithUsers(id);
+    })
+    .then(() => {
+      res.json({ id });
+    });
+};
+
+export function getOriginalDoc(req, res) {
 
   getDoc(req.params.userId, req.params.docId, doc => {
 
@@ -86,7 +138,7 @@ exports.getOriginalDoc = function(req, res) {
   });
 }
 
-exports.getDocForCommenting = function(req, res) {
+export function getDocForCommenting(req, res) {
 
   getDoc(req.params.userId, req.params.docId, doc => {
 
@@ -110,7 +162,7 @@ exports.getDocForCommenting = function(req, res) {
   });
 }
 
-exports.getAggregatedComments = function(req, res) {
+export function getAggregatedComments(req, res) {
   getDoc(req.params.userId, req.params.docId, doc => {
     /*
     strategy: add special comments before and after wrapper tags to make it easy to identify spans
@@ -126,7 +178,7 @@ exports.getAggregatedComments = function(req, res) {
 }
 
 function getDoc(userId, docId, callback) {
-  Doc.findOne({ "authorId": userId, "docId": docId }, function(err, found) {
+  Doc.findOne({ "authorId": userId, "docId": docId }, function (err, found) {
     if (err) return handleError(err, res);
     if (!found) return handleError(!found, res);
     callback(found);
@@ -157,7 +209,7 @@ function sortComments(content) {
   return seen;
 }
 
-exports.updateDoc = function(req, res) {
+export function updateDoc(req, res) {
 
   //the only doc that a user should be able to directly update is his or her local version.
 
@@ -181,7 +233,7 @@ exports.updateDoc = function(req, res) {
 
       doc.revisions.push(newRevision);
 
-      doc.save(function(err) {
+      doc.save(function (err) {
         if (err) return handleError(err, res);
         res.status(200).json(doc);
       });
@@ -208,9 +260,9 @@ function createNewRevision(doc, workingRevisionId, operations, commentId, author
 
 }
 
-exports.findToken = function(token, done) {
+export function findToken(token, done) {
   User.findOne({ access_token: token },
-    function(err, user) {
+    function (err, user) {
       if (err) return done(err);
       if (!user) return done(null, false)
       return done(null, user, { scope: 'all' })
@@ -218,14 +270,14 @@ exports.findToken = function(token, done) {
   );
 }
 
-exports.saveUserEmail = function(req, res) {
+export function saveUserEmail(req, res) {
   if (validator.isEmail(req.body.email)) {
-    Email.findOne({ address: req.body.email }, function(err, result) {
+    Email.findOne({ address: req.body.email }, function (err, result) {
       if (handleError(err, res)) return;
       if (handleError(result, res)) return;
       var email = new Email();
       email.address = req.body.email;
-      return email.save(function(err) {
+      return email.save(function (err) {
         if (handleError(err, res)) return;
         res.status(200).json({ "message": "success" });
       });

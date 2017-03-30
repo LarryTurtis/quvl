@@ -1,21 +1,23 @@
-//return driver matches for the user
-var permissions = require("./permissions.js");
-var db = require("../dao/db.js");
-var fs = require("fs");
-var multer = require('multer')
-var upload = multer({ storage: multer.memoryStorage({}) })
-var path = require('path');
-var appDir = path.dirname(require.main.filename);
+import { saveDoc, listDocs, getDocForCommenting, updateDoc } from '../dao/db';
 
-module.exports = function(app, passport) {
-    app.post('/save', isLoggedIn, db.saveDoc);
-    app.get('/doc/:userId/:docId', isLoggedIn, db.getDocForCommenting);
-    app.post('/doc/:userId/:docId', isLoggedIn, db.updateDoc);
+const isLoggedIn = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  return res.redirect('/login');
 };
 
-function isLoggedIn(req, res, next) {
-    // if user is authenticated in the session, carry on
-    if (req.isAuthenticated())
-        return next();
-    res.redirect("/login");
-}
+module.exports = (app) => {
+  app.post('/save', isLoggedIn, saveDoc);
+
+  app.get('/docs/:userId', isLoggedIn, (req, res, next) => {
+    listDocs(req.user.userId)
+      .then(docs => res.json(docs))
+      .catch(next);
+  });
+
+  app.get('/docs/:userId/:docId', isLoggedIn, getDocForCommenting);
+  app.post('/docs/:userId/:docId', isLoggedIn, updateDoc);
+};
+
+

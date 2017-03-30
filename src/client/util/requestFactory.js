@@ -26,11 +26,8 @@ export const buildGet = (url, token, query) => {
   return request;
 };
 
-export const buildPost = (url, body, token) => {
+export const buildPost = (url, body) => {
   const headers = new Headers();
-  if (token) {
-    headers.append('authorization', `Bearer ${token}`);
-  }
   headers.append('Content-Type', 'application/json');
   const request = new Request(
     url,

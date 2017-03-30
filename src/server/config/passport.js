@@ -3,9 +3,8 @@ var LocalStrategy = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var md5 = require("md5");
-var db = require('../app/dao/db.js');
 // load up the user model
-var User = require('../app/models/user');
+import User from '../app/models/user';
 var configAuth = require('../config/auth.js');
 
 // var credentials = require('./credentials');
