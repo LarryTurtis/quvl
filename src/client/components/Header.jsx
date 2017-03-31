@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
-import connect from '../util/connect';
 import { push } from 'react-router-redux';
+import connect from '../util/connect';
 import { doLogout } from '../actions/login';
 
 class Header extends Component {
@@ -33,6 +33,7 @@ class Header extends Component {
       <ul className="nav navbar-nav">
         <li><Link to="/">Home</Link></li>
         <li><Link to="/newdoc">New Document</Link></li>
+        <li><Link to="/newgroup">New Writing Group</Link></li>
         <li><Link to="/mydocs">My Documents</Link></li>
       </ul>);
 

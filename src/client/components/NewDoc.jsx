@@ -44,7 +44,8 @@ class NewDoc extends Component {
             className="form-control"
             type="text"
             placeholder="Untitled"
-            onChange={this.handleNameChange} />
+            onChange={this.handleNameChange}
+          />
         </h3>
         <TinyMCE
           config={{
@@ -52,7 +53,7 @@ class NewDoc extends Component {
           }}
           onChange={this.handleEditorChange}
         />
-        <button className="btn btn-default" onClick={this.handleSubmit} >Save</button>
+        <button className="btn btn-primary" onClick={this.handleSubmit}>Save</button>
       </div>
     );
   }

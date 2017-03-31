@@ -1,4 +1,4 @@
-import { saveDoc, listDocs, getDocForCommenting, updateDoc } from '../dao/db';
+import { saveDoc, listDocs, getDocForCommenting, updateDoc, createGroup } from '../dao/db';
 
 const isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -21,9 +21,18 @@ module.exports = (app) => {
       .then(doc => res.json(doc))
       .catch(next);
   });
+
   app.post('/docs/:authorId/:docId', isLoggedIn, (req, res, next) => {
-    console.log(req.body);
     updateDoc(req.params.authorId, req.params.docId, req.user, req.body.nodes, req.body.comment)
+      .then(doc => res.json(doc))
+      .catch(next);
+  });
+
+  app.post('/groups', isLoggedIn, (req, res, next) => {
+    const name = req.body.name;
+    const userId = req.user.userId;
+    const emails = req.body.emails.split(',').map(email => email.trim());
+    createGroup(userId, name, emails)
       .then(doc => res.json(doc))
       .catch(next);
   });

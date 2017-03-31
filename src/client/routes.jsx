@@ -6,6 +6,7 @@ import Signup from './Signup';
 import DocList from './components/DocList';
 import Doc from './components/Doc';
 import NewDoc from './components/NewDoc';
+import NewGroup from './components/NewGroup';
 
 const routes = [
   <Route path="/login" component={Login} />,
@@ -13,6 +14,7 @@ const routes = [
   <Route path="/" component={Shell}>
     <Route path="/newdoc" component={NewDoc} />
     <Route path="/mydocs" component={DocList} />
+    <Route path="/newgroup" component={NewGroup} />
     <Route path="/doc/:authorId/:docId" component={Doc} />
   </Route>
 ];

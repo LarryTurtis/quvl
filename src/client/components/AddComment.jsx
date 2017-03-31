@@ -33,7 +33,7 @@ class AddComment extends Component {
   }
 
   render() {
-    let commentForm;
+    let commentForm = <button id="addCommentButton" className="btn btn-primary" onClick={this.showCommentForm}>Add Comment</button>;
     if (this.state.visible) {
       commentForm = (
         <div className="addComment">
@@ -49,7 +49,6 @@ class AddComment extends Component {
     }
     return (
       <div>
-        <button id="addCommentButton" className="btn btn-primary" onClick={this.showCommentForm}>Add Comment</button>
         {commentForm}
       </div>
     );

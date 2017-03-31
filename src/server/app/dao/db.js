@@ -1,34 +1,9 @@
-import validator from 'validator';
-import moment from 'moment';
 import sanitizeHtml from 'sanitize-html';
 import User from '../models/user';
 import Doc from '../models/doc';
+import Group from '../models/group';
 import setRanges from './setRanges';
 import wrapTags from './wrapTags';
-
-function handleError(err, res) {
-  if (err) {
-    console.log(err);
-    if (res) return res.status(500).send({ 'message': 'Error' });
-    return true;
-  }
-  return false;
-}
-
-export function getUser(req, res) {
-  if (req.user && req.user._id) {
-    User.findById(req.user._id)
-      .populate({ path: 'docs', model: Doc })
-      .populate({ path: 'docsSharedWithUser', model: Doc })
-      .exec((err, user) => {
-        if (err) return handleError(err, res);
-        res.json({ loggedIn: req.authenticated, user })
-      });
-  }
-  else {
-    res.json({ loggedIn: req.authenticated, user: null, message: '' })
-  }
-};
 
 const findUser = (id) =>
   new Promise((resolve, reject) => {
@@ -38,6 +13,19 @@ const findUser = (id) =>
       }
       else {
         resolve(user);
+      }
+    });
+  });
+
+const createUser = (email) =>
+  new Promise((resolve, reject) => {
+    const user = new User({ email });
+    user.save((err, saved) => {
+      if (err) {
+        reject(err);
+      }
+      else {
+        resolve(saved);
       }
     });
   });
@@ -54,7 +42,6 @@ export function listDocs(authorId) {
     });
   });
 }
-
 
 const saveNewDoc = (user, name, content, sharedWith) =>
   new Promise((resolve, reject) => {
@@ -119,7 +106,7 @@ export function saveDoc(req, res) {
     .then(() => {
       res.json({ id });
     });
-};
+}
 
 function canView(user, doc) {
   const email = user.email;
@@ -196,6 +183,56 @@ export function updateDoc(authorId, docId, user, nodes, content) {
 
       return new Promise((resolve, reject) => {
         doc.save((err, success) => {
+          if (err) {
+            reject(err);
+          }
+          else {
+            resolve(success);
+          }
+        });
+      });
+    });
+}
+
+const getIdsByEmails = (emails) =>
+  new Promise((resolve, reject) => {
+    User.find({
+      email: {
+        $in: emails
+      }
+    }, (err, success) => {
+      if (err) {
+        reject(err);
+      }
+      else {
+        resolve(success);
+      }
+    });
+  });
+
+const findNewUsers = (emails, users) => {
+  console.log(emails, users);
+  const userEmails = users.map(user => user.email);
+  return emails.filter(email => userEmails.indexOf(email) < 0);
+};
+
+export function createGroup(userId, name, emails) {
+  return getIdsByEmails(emails)
+    .then(users => {
+      const newUsers = findNewUsers(emails, users);
+      const promises = newUsers.map(user => createUser(user));
+      return Promise.all(promises)
+      .then(results => [...results, ...users]);
+    })
+    .then(members => {
+      const memberIds = members.map(member => member.userId);
+      const group = new Group({
+        name,
+        members: [...memberIds, userId],
+        admins: [userId]
+      });
+      return new Promise((resolve, reject) => {
+        group.save((err, success) => {
           if (err) {
             reject(err);
           }
