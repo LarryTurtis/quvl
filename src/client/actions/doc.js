@@ -15,7 +15,7 @@ export const getFailure = createAction('GET_DOC_FAILED');
 
 export function createDoc(name, doc) {
   return (dispatch) => {
-    const url = '/save';
+    const url = '/api/save';
     const body = JSON.stringify({ name, doc });
     const inviteRequest = buildPost(url, body);
 
@@ -38,7 +38,7 @@ export function listDocs() {
   return (dispatch, getState) => {
     const state = getState();
     const userId = state.login.user && state.login.user.userId;
-    const url = `/docs/${userId}`;
+    const url = `/api/docs/${userId}`;
     const inviteRequest = buildGet(url);
 
     dispatch(listStart());
@@ -58,7 +58,7 @@ export function listDocs() {
 
 export function getDoc(userId, docId) {
   return (dispatch) => {
-    const url = `/docs/${userId}/${docId}`;
+    const url = `/api/docs/${userId}/${docId}`;
     const inviteRequest = buildGet(url);
 
     dispatch(getStart());

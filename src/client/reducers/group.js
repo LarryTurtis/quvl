@@ -3,15 +3,29 @@ import { handleActions } from 'redux-actions';
 const defaultState = {};
 
 const group = handleActions({
-  GROUP_STARTED: (state) => ({
+  CREATE_GROUP_STARTED: (state) => ({
     ...state,
     isSending: true
   }),
-  GROUP_COMPLETED: (state) => ({
+  CREATE_GROUP_COMPLETED: (state) => ({
     ...state,
     isSending: false
   }),
-  GROUP_FAILED: (state, action) => ({
+  CREATE_GROUP_FAILED: (state, action) => ({
+    ...state,
+    isSending: false,
+    error: action.payload.message
+  }),
+  LIST_GROUP_STARTED: (state) => ({
+    ...state,
+    isSending: true
+  }),
+  LIST_GROUP_COMPLETED: (state, action) => ({
+    ...state,
+    isSending: false,
+    items: action.payload
+  }),
+  LIST_GROUP_FAILED: (state, action) => ({
     ...state,
     isSending: false,
     error: action.payload.message

@@ -211,7 +211,6 @@ const getIdsByEmails = (emails) =>
   });
 
 const findNewUsers = (emails, users) => {
-  console.log(emails, users);
   const userEmails = users.map(user => user.email);
   return emails.filter(email => userEmails.indexOf(email) < 0);
 };
@@ -222,7 +221,7 @@ export function createGroup(userId, name, emails) {
       const newUsers = findNewUsers(emails, users);
       const promises = newUsers.map(user => createUser(user));
       return Promise.all(promises)
-      .then(results => [...results, ...users]);
+        .then(results => [...results, ...users]);
     })
     .then(members => {
       const memberIds = members.map(member => member.userId);
@@ -240,6 +239,43 @@ export function createGroup(userId, name, emails) {
             resolve(success);
           }
         });
+      });
+    });
+}
+
+
+const findMemberGroups = (userId) =>
+  new Promise((resolve, reject) => {
+    Group.find({ members: userId }, (err, success) => {
+      if (err) {
+        reject(err);
+      }
+      else {
+        resolve(success);
+      }
+    });
+  });
+
+const findAdminGroups = (userId) =>
+  new Promise((resolve, reject) => {
+    Group.find({ admins: userId }, (err, success) => {
+      if (err) {
+        reject(err);
+      }
+      else {
+        resolve(success);
+      }
+    });
+  });
+
+export function findGroups(userId) {
+  console.log(userId);
+  return Promise.all([findMemberGroups(userId), findAdminGroups(userId)])
+    .then(results => {
+      console.log(results);
+      return ({
+        members: results[0],
+        admins: results[1]
       });
     });
 }

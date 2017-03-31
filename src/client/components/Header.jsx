@@ -33,7 +33,7 @@ class Header extends Component {
       <ul className="nav navbar-nav">
         <li><Link to="/">Home</Link></li>
         <li><Link to="/newdoc">New Document</Link></li>
-        <li><Link to="/newgroup">New Writing Group</Link></li>
+        <li><Link to="/groups">My Writing Groups</Link></li>
         <li><Link to="/mydocs">My Documents</Link></li>
       </ul>);
 

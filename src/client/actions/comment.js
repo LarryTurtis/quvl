@@ -7,7 +7,7 @@ export const commentFailure = createAction('COMMENT_FAILED');
 
 export function saveComment(authorId, docId, nodes, comment) {
   return (dispatch) => {
-    const url = `/docs/${authorId}/${docId}`;
+    const url = `/api/docs/${authorId}/${docId}`;
     const body = JSON.stringify({ nodes, comment });
     const inviteRequest = buildPost(url, body);
 
