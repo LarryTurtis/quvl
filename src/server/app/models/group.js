@@ -2,11 +2,12 @@
 // load the things we need
 import mongoose from 'mongoose';
 import autoIncrement from 'mongoose-auto-increment';
+import User from './user';
 
 const groupSchema = mongoose.Schema({
   name: String,
-  members: [Number],
-  admins: [Number]
+  members: [{ type: String, ref: User }],
+  admins: [{ type: String, ref: User }]
 });
 
 groupSchema.plugin(autoIncrement.plugin, {

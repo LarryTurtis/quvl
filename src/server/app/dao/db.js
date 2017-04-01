@@ -224,7 +224,7 @@ export function createGroup(userId, name, emails) {
         .then(results => [...results, ...users]);
     })
     .then(members => {
-      const memberIds = members.map(member => member.userId);
+      const memberIds = members.map(member => member._id);
       const group = new Group({
         name,
         members: [...memberIds, userId],
@@ -244,35 +244,39 @@ export function createGroup(userId, name, emails) {
 }
 
 
-const findMemberGroups = (userId) =>
+const findMemberGroups = (_id) =>
   new Promise((resolve, reject) => {
-    Group.find({ members: userId }, (err, success) => {
-      if (err) {
-        reject(err);
-      }
-      else {
-        resolve(success);
-      }
-    });
+    Group.find({ members: _id })
+      .populate({ path: 'admins', model: 'User', select: 'picture email name' })
+      .populate({ path: 'members', model: 'User', select: 'picture email name' })
+      .exec((err, success) => {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(success);
+        }
+      });
   });
 
-const findAdminGroups = (userId) =>
+const findAdminGroups = (_id) =>
   new Promise((resolve, reject) => {
-    Group.find({ admins: userId }, (err, success) => {
-      if (err) {
-        reject(err);
-      }
-      else {
-        resolve(success);
-      }
-    });
+    Group.find({ admins: _id })
+      .populate({ path: 'admins', model: 'User', select: 'userId picture email name' })
+      .populate({ path: 'members', model: 'User', select: 'userId picture email name' })
+      .exec((err, success) => {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(success);
+        }
+      });
   });
 
-export function findGroups(userId) {
-  console.log(userId);
-  return Promise.all([findMemberGroups(userId), findAdminGroups(userId)])
+export function findGroups(_id) {
+  return Promise.all([findMemberGroups(_id), findAdminGroups(_id)])
     .then(results => {
-      console.log(results);
       return ({
         members: results[0],
         admins: results[1]

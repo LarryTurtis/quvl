@@ -37,16 +37,16 @@ module.exports = (app) => {
 
   app.post('/api/groups', isLoggedIn, (req, res, next) => {
     const name = req.body.name;
-    const userId = req.user.userId;
+    const _id = req.user._id;
     const emails = req.body.emails.split(',').map(email => email.trim());
-    createGroup(userId, name, emails)
+    createGroup(_id, name, emails)
       .then(doc => res.json(doc))
       .catch(next);
   });
 
   app.get('/api/groups', isLoggedIn, (req, res, next) => {
-    const userId = req.user.userId;
-    findGroups(userId)
+    const _id = req.user._id;
+    findGroups(_id)
       .then(doc => res.json(doc))
       .catch(next);
   });

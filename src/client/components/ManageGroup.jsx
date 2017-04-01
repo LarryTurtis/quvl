@@ -17,7 +17,7 @@ class ManageGroup extends Component {
 
   render() {
     const members = this.state.members && this.state.members.map(member => (
-      <li key={member}>{member}</li>
+      <li key={member.userId}>{member.email}</li>
     ));
 
     return (

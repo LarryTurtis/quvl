@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import connect from '../util/connect';
 import { listGroups } from '../actions/group';
 import ManageGroup from './ManageGroup';
+import NewGroup from './NewGroup';
 
 class GroupList extends Component {
 
@@ -42,12 +43,17 @@ class GroupList extends Component {
       );
     }
     return (
-      <div className="row">
-        <div className="col-xs-6">
-          {memberGroups}
+      <div>
+        <div className="row">
+          <div className="col-xs-6">
+            {memberGroups}
+          </div>
+          <div className="col-xs-6">
+            {adminGroups}
+          </div>
         </div>
-        <div className="col-xs-6">
-          {adminGroups}
+        <div className="row">
+          <NewGroup />
         </div>
       </div>
     );

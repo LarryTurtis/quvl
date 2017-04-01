@@ -7,9 +7,13 @@ const group = handleActions({
     ...state,
     isSending: true
   }),
-  CREATE_GROUP_COMPLETED: (state) => ({
+  CREATE_GROUP_COMPLETED: (state, action) => ({
     ...state,
-    isSending: false
+    isSending: false,
+    items: {
+      members: [...state.items.members, action.payload],
+      admins: [...state.items.admins, action.payload]
+    }
   }),
   CREATE_GROUP_FAILED: (state, action) => ({
     ...state,
