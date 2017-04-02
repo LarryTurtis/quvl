@@ -1,4 +1,5 @@
 import sanitizeHtml from 'sanitize-html';
+import validator from 'validator';
 import md5 from 'md5';
 import User from '../models/user';
 import Doc from '../models/doc';
@@ -20,17 +21,22 @@ const findUser = (id) =>
 
 const createUser = (email) =>
   new Promise((resolve, reject) => {
-    const user = new User({
-      email, picture: `https://www.gravatar.com/avatar/${md5(email)}`
-    });
-    user.save((err, saved) => {
-      if (err) {
-        reject(err);
-      }
-      else {
-        resolve(saved);
-      }
-    });
+    if (!validator.isEmail(email)) {
+      throw new Error('Not a valid email');
+    }
+    else {
+      const user = new User({
+        email, picture: `https://www.gravatar.com/avatar/${md5(email)}`
+      });
+      user.save((err, saved) => {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(saved);
+        }
+      });
+    }
   });
 
 export function listDocs(authorId) {
@@ -298,3 +304,17 @@ export function addMember(groupId, member) {
       });
     }).then(findGroup);
 }
+
+export function removeMember(groupId, member) {
+  return new Promise((resolve, reject) => {
+    Group.update({ groupId }, { $pull: { members: { user: member._id.toString() } } }, (err) => {
+      if (err) {
+        reject(err);
+      }
+      else {
+        resolve(groupId);
+      }
+    });
+  }).then(findGroup);
+}
+

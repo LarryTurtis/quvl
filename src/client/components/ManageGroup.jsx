@@ -19,15 +19,21 @@ class ManageGroup extends Component {
     };
   }
 
+
   componentWillReceiveProps(props) {
-    this.state = {
+    this.setState({
       members: props.manager.members,
       name: props.manager.name,
       groupId: props.manager.groupId
-    };
+    });
   }
 
-  addMember = () => {
+  updateEmail = (e) => {
+    this.setState({ email: e.target.value });
+  }
+
+  addMember = (e) => {
+    e.preventDefault();
     const data = {
       type: 'ADD',
       groupId: this.state.groupId,
@@ -59,14 +65,16 @@ class ManageGroup extends Component {
     return (
       <div>
         <h3>{this.state.name}</h3>
-        <div className="row">
-          <div className="col-xs-8">
-            <input type="email" onChange={this.updateEmail} />
+        <form onSubmit={this.addMember}>
+          <div className="row">
+            <div className="col-xs-8">
+              <input type="email" onChange={this.updateEmail} />
+            </div>
+            <div className="col-xs-4">
+              <button className="btn btn-default">Add Member</button>
+            </div>
           </div>
-          <div className="col-xs-4">
-            <button className="btn btn-default" onClick={this.addMember}>Add Member</button>
-          </div>
-        </div>
+        </form>
         <ul>
           {members}
         </ul>

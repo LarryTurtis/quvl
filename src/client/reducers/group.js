@@ -39,7 +39,6 @@ const group = handleActions({
     ...state,
     isSending: false,
     items: state.items.map(item => {
-      console.log(item, action.payload);
       if (item.groupId === action.payload.groupId) {
         return action.payload;
       }
@@ -55,9 +54,15 @@ const group = handleActions({
     ...state,
     isSending: true
   }),
-  REMOVE_MEMBER_COMPLETED: (state) => ({
+  REMOVE_MEMBER_COMPLETED: (state, action) => ({
     ...state,
-    isSending: false
+    isSending: false,
+    items: state.items.map(item => {
+      if (item.groupId === action.payload.groupId) {
+        return action.payload;
+      }
+      return item;
+    })
   }),
   REMOVE_MEMBER_FAILED: (state, action) => ({
     ...state,
