@@ -6,8 +6,10 @@ import User from './user';
 
 const groupSchema = mongoose.Schema({
   name: String,
-  members: [{ type: String, ref: User }],
-  admins: [{ type: String, ref: User }]
+  members: [{
+    user: { type: String, ref: User },
+    admin: Boolean
+  }]
 });
 
 groupSchema.plugin(autoIncrement.plugin, {

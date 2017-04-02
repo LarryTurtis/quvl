@@ -4,7 +4,9 @@ import {
   getDocForCommenting,
   updateDoc,
   createGroup,
-  findGroups
+  findGroups,
+  addMember,
+  removeMember
 } from '../dao/db';
 
 const isLoggedIn = (req, res, next) => {
@@ -49,6 +51,19 @@ module.exports = (app) => {
     findGroups(_id)
       .then(doc => res.json(doc))
       .catch(next);
+  });
+
+  app.put('/api/groups/:groupId', isLoggedIn, (req, res, next) => {
+    if (req.body.type === 'ADD') {
+      addMember(req.params.groupId, req.body.member)
+        .then(doc => res.json(doc))
+        .catch(next);
+    }
+    if (req.body.type === 'REMOVE') {
+      removeMember(req.params.groupId, req.body.member)
+        .then(doc => res.json(doc))
+        .catch(next);
+    }
   });
 };
 

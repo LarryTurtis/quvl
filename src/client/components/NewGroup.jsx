@@ -79,6 +79,7 @@ class NewGroup extends Component {
               name="members"
               rows="3"
               placeholder="abc@123.com, def@456.com, ghi@789.com, etc..."
+              required
               onChange={this.handleEmailChange}
             />
           </div>

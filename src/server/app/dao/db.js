@@ -1,4 +1,5 @@
 import sanitizeHtml from 'sanitize-html';
+import md5 from 'md5';
 import User from '../models/user';
 import Doc from '../models/doc';
 import Group from '../models/group';
@@ -19,7 +20,9 @@ const findUser = (id) =>
 
 const createUser = (email) =>
   new Promise((resolve, reject) => {
-    const user = new User({ email });
+    const user = new User({
+      email, picture: `https://www.gravatar.com/avatar/${md5(email)}`
+    });
     user.save((err, saved) => {
       if (err) {
         reject(err);
@@ -215,7 +218,36 @@ const findNewUsers = (emails, users) => {
   return emails.filter(email => userEmails.indexOf(email) < 0);
 };
 
-export function createGroup(userId, name, emails) {
+export function findGroups(_id) {
+  return new Promise((resolve, reject) => {
+    Group.find({ 'members.user': _id })
+      .populate({ path: 'members.user', model: 'User', select: 'userId picture email name' })
+      .exec((err, success) => {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(success);
+        }
+      });
+  });
+}
+
+const findGroup = (groupId) =>
+  new Promise((resolve, reject) => {
+    Group.findOne({ groupId })
+      .populate({ path: 'members.user', model: 'User', select: 'userId picture email name' })
+      .exec((err, group) => {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(group);
+        }
+      });
+  });
+
+export function createGroup(_id, name, emails) {
   return getIdsByEmails(emails)
     .then(users => {
       const newUsers = findNewUsers(emails, users);
@@ -224,11 +256,13 @@ export function createGroup(userId, name, emails) {
         .then(results => [...results, ...users]);
     })
     .then(members => {
-      const memberIds = members.map(member => member._id);
+      console.log(members)
+      const memberIds = members.map(member => {
+        return { user: member._id, admin: false };
+      });
       const group = new Group({
         name,
-        members: [...memberIds, userId],
-        admins: [userId]
+        members: [...memberIds, { user: _id, admin: true }]
       });
       return new Promise((resolve, reject) => {
         group.save((err, success) => {
@@ -236,50 +270,31 @@ export function createGroup(userId, name, emails) {
             reject(err);
           }
           else {
-            resolve(success);
+            resolve(success.groupId);
           }
         });
-      });
+      })
+        .then(findGroup);
     });
 }
 
-
-const findMemberGroups = (_id) =>
-  new Promise((resolve, reject) => {
-    Group.find({ members: _id })
-      .populate({ path: 'admins', model: 'User', select: 'picture email name' })
-      .populate({ path: 'members', model: 'User', select: 'picture email name' })
-      .exec((err, success) => {
-        if (err) {
-          reject(err);
-        }
-        else {
-          resolve(success);
-        }
-      });
-  });
-
-const findAdminGroups = (_id) =>
-  new Promise((resolve, reject) => {
-    Group.find({ admins: _id })
-      .populate({ path: 'admins', model: 'User', select: 'userId picture email name' })
-      .populate({ path: 'members', model: 'User', select: 'userId picture email name' })
-      .exec((err, success) => {
-        if (err) {
-          reject(err);
-        }
-        else {
-          resolve(success);
-        }
-      });
-  });
-
-export function findGroups(_id) {
-  return Promise.all([findMemberGroups(_id), findAdminGroups(_id)])
+export function addMember(groupId, member) {
+  const group = findGroup(groupId);
+  const user = member._id ? findUser(member._id) : createUser(member.email);
+  return Promise.all([group, user])
     .then(results => {
-      return ({
-        members: results[0],
-        admins: results[1]
+      const foundGroup = results[0];
+      const foundUser = results[1];
+      foundGroup.members.push({ user: foundUser._id.toString(), admin: false });
+      return new Promise((resolve, reject) => {
+        foundGroup.save((err, savedGroup) => {
+          if (err) {
+            reject(err);
+          }
+          else {
+            resolve(groupId);
+          }
+        });
       });
-    });
+    }).then(findGroup);
 }

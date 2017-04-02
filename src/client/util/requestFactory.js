@@ -35,3 +35,13 @@ export const buildPost = (url, body) => {
   );
   return request;
 };
+
+export const buildPut = (url, body) => {
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/json');
+  const request = new Request(
+    url,
+    { method: 'PUT', body, headers }
+  );
+  return request;
+};
