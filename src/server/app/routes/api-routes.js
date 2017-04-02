@@ -17,7 +17,7 @@ const isLoggedIn = (req, res, next) => {
 };
 
 module.exports = (app) => {
-  app.post('/save', isLoggedIn, saveDoc);
+  app.post('/api/save', isLoggedIn, saveDoc);
 
   app.get('/api/docs/:userId', isLoggedIn, (req, res, next) => {
     listDocs(req.user.userId)
