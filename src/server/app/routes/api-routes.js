@@ -8,7 +8,8 @@ import {
   addMember,
   removeMember,
   promoteMember,
-  demoteMember
+  demoteMember,
+  createWorkshop
 } from '../dao/db';
 
 const isLoggedIn = (req, res, next) => {
@@ -77,6 +78,41 @@ module.exports = (app) => {
         .catch(next);
     }
   });
+
+  app.post('/api/groups/:groupId/workshops', isLoggedIn, (req, res, next) => {
+    // create a new workshop
+    createWorkshop(req.params.groupId, req.body.date, req.body.slots, req.user._id)
+      .then(workshop => res.json(workshop))
+      .catch(next);
+  });
+
+  app.get('/api/groups/:groupId/workshops/:workshopId', isLoggedIn, (req, res, next) => {
+    // retrieve a workshop
+  });
+
+  app.put('/api/groups/:groupId/workshops/:workshopId', isLoggedIn, (req, res, next) => {
+    // update a workshop
+    if (req.body.type === 'ADD_MEMBER') {
+
+    }
+    if (req.body.type === 'REMOVE_MEMBER') {
+
+    }
+    if (req.body.type === 'SUBMIT') {
+
+    }
+    if (req.body.type === 'RESCHEDULE') {
+
+    }
+    if (req.body.type === 'CANCEL') {
+
+    }
+    if (req.body.type === 'ADD_SLOT') {
+
+    }
+  });
+
+
 };
 
 

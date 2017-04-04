@@ -4,6 +4,7 @@ import md5 from 'md5';
 import User from '../models/user';
 import Doc from '../models/doc';
 import Group from '../models/group';
+import Workshop from '../models/workshop';
 import setRanges from './setRanges';
 import wrapTags from './wrapTags';
 
@@ -373,5 +374,26 @@ export function demoteMember(groupId, member, userId) {
     .then(findGroup);
 }
 
-
-
+export function createWorkshop(group, date, slots, userId) {
+  return findGroup(group)
+    .then(foundGroup => {
+      if (!isAdmin(foundGroup.members, userId)) {
+        throw Error('Not Authorized');
+      }
+      return new Promise((resolve, reject) => {
+        const workshop = new Workshop({
+          date,
+          slots,
+          group
+        });
+        workshop.save((err, saved) => {
+          if (err) {
+            reject(err);
+          }
+          else {
+            resolve(saved);
+          }
+        });
+      });
+    });
+}
