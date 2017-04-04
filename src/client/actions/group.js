@@ -9,13 +9,9 @@ export const listGroupStart = createAction('LIST_GROUP_STARTED');
 export const listGroupComplete = createAction('LIST_GROUP_COMPLETED');
 export const listGroupFailure = createAction('LIST_GROUP_FAILED');
 
-export const addMemberStart = createAction('ADD_MEMBER_STARTED');
-export const addMemberComplete = createAction('ADD_MEMBER_COMPLETED');
-export const addMemberFailure = createAction('ADD_MEMBER_FAILED');
-
-export const removeMemberStart = createAction('REMOVE_MEMBER_STARTED');
-export const removeMemberComplete = createAction('REMOVE_MEMBER_COMPLETED');
-export const removeMemberFailure = createAction('REMOVE_MEMBER_FAILED');
+export const updateMemberStart = createAction('UPDATE_MEMBER_STARTED');
+export const updateMemberComplete = createAction('UPDATE_MEMBER_COMPLETED');
+export const updateMemberFailure = createAction('UPDATE_MEMBER_FAILED');
 
 export function createGroup(name, emails) {
   return (dispatch) => {
@@ -58,13 +54,13 @@ export function listGroups() {
   };
 }
 
-export function addMember(groupId, member) {
+export function updateMember(groupId, data) {
   return (dispatch) => {
     const url = `/api/groups/${groupId}`;
-    const body = JSON.stringify({ type: 'ADD', member });
+    const body = JSON.stringify(data);
     const addRequest = buildPut(url, body);
 
-    dispatch(addMemberStart());
+    dispatch(updateMemberStart());
     return fetch(addRequest, {
       credentials: 'same-origin'
     })
@@ -74,28 +70,7 @@ export function addMember(groupId, member) {
         }
         throw Error(response.statusText);
       })
-      .then(json => dispatch(addMemberComplete(json)))
-      .catch(error => dispatch(addMemberFailure(error)));
-  };
-}
-
-export function removeMember(groupId, member) {
-  return (dispatch) => {
-    const url = `/api/groups/${groupId}`;
-    const body = JSON.stringify({ type: 'REMOVE', member });
-    const removeRequest = buildPut(url, body);
-
-    dispatch(removeMemberStart());
-    return fetch(removeRequest, {
-      credentials: 'same-origin'
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw Error(response.statusText);
-      })
-      .then(json => dispatch(removeMemberComplete(json)))
-      .catch(error => dispatch(removeMemberFailure(error)));
+      .then(json => dispatch(updateMemberComplete(json)))
+      .catch(error => dispatch(updateMemberFailure(error)));
   };
 }

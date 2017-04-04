@@ -6,7 +6,9 @@ import {
   createGroup,
   findGroups,
   addMember,
-  removeMember
+  removeMember,
+  promoteMember,
+  demoteMember
 } from '../dao/db';
 
 const isLoggedIn = (req, res, next) => {
@@ -55,12 +57,22 @@ module.exports = (app) => {
 
   app.put('/api/groups/:groupId', isLoggedIn, (req, res, next) => {
     if (req.body.type === 'ADD') {
-      addMember(req.params.groupId, req.body.member)
+      addMember(req.params.groupId, req.body.member, req.user._id)
         .then(doc => res.json(doc))
         .catch(next);
     }
     if (req.body.type === 'REMOVE') {
-      removeMember(req.params.groupId, req.body.member)
+      removeMember(req.params.groupId, req.body.member, req.user._id)
+        .then(doc => res.json(doc))
+        .catch(next);
+    }
+    if (req.body.type === 'PROMOTE') {
+      promoteMember(req.params.groupId, req.body.member, req.user._id)
+        .then(doc => res.json(doc))
+        .catch(next);
+    }
+    if (req.body.type === 'DEMOTE') {
+      demoteMember(req.params.groupId, req.body.member, req.user._id)
         .then(doc => res.json(doc))
         .catch(next);
     }

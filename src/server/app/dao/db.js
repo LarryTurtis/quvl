@@ -125,7 +125,6 @@ function canView(user, doc) {
 function getDoc(authorId, docId) {
   return new Promise((resolve, reject) => {
     Doc.findOne({ authorId, docId }, (err, found) => {
-      console.log(err, found, 'getting doc')
       if (err) {
         reject(err);
       }
@@ -262,7 +261,6 @@ export function createGroup(_id, name, emails) {
         .then(results => [...results, ...users]);
     })
     .then(members => {
-      console.log(members)
       const memberIds = members.map(member => {
         return { user: member._id, admin: false };
       });
@@ -284,13 +282,22 @@ export function createGroup(_id, name, emails) {
     });
 }
 
-export function addMember(groupId, member) {
+const isAdmin = (members, userId) => {
+  return members.some(member =>
+    member.user._id.toString() === userId.toString()
+    && member.admin);
+}
+
+export function addMember(groupId, member, userId) {
   const group = findGroup(groupId);
   const user = member._id ? findUser(member._id) : createUser(member.email);
   return Promise.all([group, user])
     .then(results => {
       const foundGroup = results[0];
       const foundUser = results[1];
+      if (!isAdmin(foundGroup.members, userId)) {
+        throw Error('Not Authorized');
+      }
       foundGroup.members.push({ user: foundUser._id.toString(), admin: false });
       return new Promise((resolve, reject) => {
         foundGroup.save((err, savedGroup) => {
@@ -305,16 +312,66 @@ export function addMember(groupId, member) {
     }).then(findGroup);
 }
 
-export function removeMember(groupId, member) {
-  return new Promise((resolve, reject) => {
-    Group.update({ groupId }, { $pull: { members: { user: member._id.toString() } } }, (err) => {
-      if (err) {
-        reject(err);
+export function removeMember(groupId, member, userId) {
+  return findGroup(groupId)
+    .then(foundGroup => {
+      if (!isAdmin(foundGroup.members, userId)) {
+        throw Error('Not Authorized');
       }
-      else {
-        resolve(groupId);
-      }
-    });
-  }).then(findGroup);
+      return new Promise((resolve, reject) =>
+        Group.update({ groupId }, { $pull: { members: { user: member._id.toString() } } },
+          (err) => {
+            if (err) {
+              reject(err);
+            }
+            else {
+              resolve(groupId);
+            }
+          }));
+    })
+    .then(findGroup);
 }
+
+export function promoteMember(groupId, member, userId) {
+  return findGroup(groupId)
+    .then(foundGroup => {
+      if (!isAdmin(foundGroup.members, userId)) {
+        throw Error('Not Authorized');
+      }
+      return new Promise((resolve, reject) =>
+        Group.update({ groupId, members: { $elemMatch: { user: member._id.toString() } } }, { $set: { 'members.$.admin': true } },
+          (err) => {
+            if (err) {
+              reject(err);
+            }
+            else {
+              resolve(groupId);
+            }
+          }));
+    })
+    .then(findGroup);
+}
+
+
+export function demoteMember(groupId, member, userId) {
+  return findGroup(groupId)
+    .then(foundGroup => {
+      if (!isAdmin(foundGroup.members, userId)) {
+        throw Error('Not Authorized');
+      }
+      return new Promise((resolve, reject) =>
+        Group.update({ groupId, members: { $elemMatch: { user: member._id.toString() } } }, { $set: { 'members.$.admin': false } },
+          (err) => {
+            if (err) {
+              reject(err);
+            }
+            else {
+              resolve(groupId);
+            }
+          }));
+    })
+    .then(findGroup);
+}
+
+
 

@@ -31,11 +31,11 @@ const group = handleActions({
     isSending: false,
     error: action.payload.message
   }),
-  ADD_MEMBER_STARTED: (state) => ({
+  UPDATE_MEMBER_STARTED: (state) => ({
     ...state,
     isSending: true
   }),
-  ADD_MEMBER_COMPLETED: (state, action) => ({
+  UPDATE_MEMBER_COMPLETED: (state, action) => ({
     ...state,
     isSending: false,
     items: state.items.map(item => {
@@ -45,26 +45,7 @@ const group = handleActions({
       return item;
     })
   }),
-  ADD_MEMBER_FAILED: (state, action) => ({
-    ...state,
-    isSending: false,
-    error: action.payload.message
-  }),
-  REMOVE_MEMBER_STARTED: (state) => ({
-    ...state,
-    isSending: true
-  }),
-  REMOVE_MEMBER_COMPLETED: (state, action) => ({
-    ...state,
-    isSending: false,
-    items: state.items.map(item => {
-      if (item.groupId === action.payload.groupId) {
-        return action.payload;
-      }
-      return item;
-    })
-  }),
-  REMOVE_MEMBER_FAILED: (state, action) => ({
+  UPDATE_MEMBER_FAILED: (state, action) => ({
     ...state,
     isSending: false,
     error: action.payload.message

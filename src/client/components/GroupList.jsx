@@ -1,26 +1,27 @@
 import React, { Component, PropTypes } from 'react';
 import connect from '../util/connect';
-import { listGroups, addMember, removeMember } from '../actions/group';
+import { listGroups, updateMember } from '../actions/group';
 import ManageGroup from './ManageGroup';
+import ShowGroup from './ShowGroup';
 import NewGroup from './NewGroup';
 
 class GroupList extends Component {
 
   static propTypes = {
     listGroups: PropTypes.func,
-    addMember: PropTypes.func,
-    removeMember: PropTypes.func,
-    group: PropTypes.object
+    updateMember: PropTypes.func,
+    group: PropTypes.object,
+    login: PropTypes.object
   };
 
   static actionsToProps = {
     listGroups,
-    addMember,
-    removeMember
+    updateMember
   };
 
   static stateToProps = state => ({
-    group: state.group
+    group: state.group,
+    login: state.login
   });
 
   constructor(props) {
@@ -33,26 +34,29 @@ class GroupList extends Component {
   }
 
   updateGroup = ({ type, groupId, member }) => {
-    if (type === 'ADD') {
-      this.props.addMember(groupId, member);
-    }
-    if (type === 'REMOVE') {
-      this.props.removeMember(groupId, member);
-    }
+    this.props.updateMember(groupId, { type, member });
   }
 
   render() {
     const groups = this.props.group;
     let memberGroups;
     if (groups && groups.items) {
-      memberGroups = groups.items.map(group =>
-        <ManageGroup key={group.groupId} manager={group} callback={this.updateGroup} />
+      memberGroups = groups.items.map(group => {
+        const userIsAdmin = group.members.some(member =>
+          member.user._id === this.props.login.user._id
+          && member.admin
+        );
+        if (userIsAdmin) {
+          return <ManageGroup key={group.groupId} manager={group} callback={this.updateGroup} />;
+        }
+        return <ShowGroup key={group.groupId} manager={group} />;
+      }
       );
     }
     return (
       <div>
         <div className="row">
-          <div className="col-xs-6">
+          <div className="col-xs-10">
             <h4>You are a member of these groups</h4>
             {memberGroups}
           </div>

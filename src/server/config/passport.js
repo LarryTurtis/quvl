@@ -36,11 +36,7 @@ module.exports = (passport) => {
             return done(err);
           }
 
-          if (user) {
-            return done(null, false);
-          }
-
-          const newUser = new User();
+          const newUser = user || new User();
           const url = `https://www.gravatar.com/avatar/${md5(email)}`;
           // set the user's local credentials
           newUser.email = email;
@@ -133,11 +129,11 @@ module.exports = (passport) => {
               return done(err);
 
             // if the user is found, then log them in
-            if (user) {
+            if (user && user.facebook.email) {
               return done(null, user); // user found, return that user
             } else {
               // if there is no user found with that facebook id, create them
-              var newUser = new User();
+              var newUser = user || new User();
               console.log(profile);
               // set all of the facebook information in our user model
               newUser.facebook.id = profile.id; // set the users facebook id                   
@@ -206,14 +202,14 @@ module.exports = (passport) => {
             if (err)
               return done(err);
 
-            if (user) {
+            if (user && user.google.email) {
 
               // if a user is found, log them in
               return done(null, user);
             } else {
               // if the user isnt in our database, create a new user
               console.log(profile);
-              var newUser = new User();
+              var newUser = user || new User();
 
               // set all of the relevant information
               newUser.google.id = profile.id;
