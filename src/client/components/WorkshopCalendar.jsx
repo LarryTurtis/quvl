@@ -1,22 +1,36 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import connect from '../util/connect';
+import { listGroups } from '../actions/group';
 import { listWorkshops } from '../actions/workshop';
 import Calendar from './Calendar';
 import Workshop from './Workshop';
 
+function getMonthDates(date) {
+  const current = date || new Date();
+  return {
+    start: new Date(current.getFullYear(), current.getMonth(), 1),
+    end: new Date(current.getFullYear(), current.getMonth() + 1, 0)
+  };
+}
+
 class WorkshopCalendar extends Component {
 
   static propTypes = {
-    listWorkshops: PropTypes.func
+    listWorkshops: PropTypes.func,
+    listGroups: PropTypes.func,
+    group: PropTypes.object,
+    workshop: PropTypes.object
   };
 
   static actionsToProps = {
-    listWorkshops
+    listWorkshops,
+    listGroups
   };
 
   static stateToProps = state => ({
-    workshop: state.workshop
+    workshop: state.workshop,
+    group: state.group
   });
 
   constructor(props) {
@@ -25,9 +39,15 @@ class WorkshopCalendar extends Component {
   }
 
   componentWillMount() {
+    this.props.listGroups()
+      .then(() => {
+        const groupIds = this.props.group && this.props.group.items.map(group => group.groupId);
+        this.props.listWorkshops({ ...getMonthDates(), groupIds });
+      });
   }
 
-  handleWorkshopSelect = (date) => {
+  handleWorkshopSelect = (date, events) => {
+    console.log(events)
     this.setState({
       selectedDate: date,
       showWorkshop: true
@@ -43,7 +63,7 @@ class WorkshopCalendar extends Component {
     return (
       <div className="row">
         <div className="col-xs-6">
-          <Calendar callback={this.handleWorkshopSelect} />
+          <Calendar callback={this.handleWorkshopSelect} events={this.props.workshop.items} />
         </div>
         <div className="col-xs-6">
           {workshop}

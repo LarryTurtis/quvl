@@ -10,7 +10,13 @@ const workshop = handleActions({
   CREATE_WORKSHOP_COMPLETED: (state, action) => ({
     ...state,
     isSending: false,
-    items: [...state.items, action.payload]
+    items: state.items.map(item => {
+      console.log(item)
+      if (item[0] && item[0].group === action.payload.group) {
+        return [...item, action.payload];
+      }
+      return item;
+    })
   }),
   CREATE_WORKSHOP_FAILED: (state, action) => ({
     ...state,

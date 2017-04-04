@@ -34,10 +34,10 @@ export function createWorkshop(groupId, date, slots) {
   };
 }
 
-export function listWorkshops(groupId, dateRange) {
+export function listWorkshops(data) {
   return (dispatch) => {
-    const url = `/api/groups/${groupId}/workshops`;
-    const inviteRequest = buildGet(url, null, dateRange);
+    const url = '/api/workshops';
+    const inviteRequest = buildGet(url, null, data);
 
     dispatch(listWorkshopsStart());
     return fetch(inviteRequest, {

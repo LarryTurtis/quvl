@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import moment from 'moment';
 import connect from '../util/connect';
+import Week from './Week';
 import './Calendar.styl';
 
 /**
@@ -22,7 +23,8 @@ function getDaysInMonth(month, year) {
 class WorkshopCalendar extends Component {
 
   static propTypes = {
-    callback: PropTypes.func
+    callback: PropTypes.func,
+    events: PropTypes.array
   };
 
   constructor(props) {
@@ -99,34 +101,26 @@ class WorkshopCalendar extends Component {
     });
   }
 
-  clickedDay(day) {
+  clickedDay = (day, events) => {
     const callback = this.props.callback;
     if (callback) {
-      callback(day);
+      callback(day, events);
     }
   }
 
   render() {
-    let counter = 100;
-    const firstDay = new Date(this.state.currentYear, this.state.currentMonth, 1);
-    const lastDay = new Date(this.state.currentYear, this.state.currentMonth + 1, 0);
+    let counter = 0;
     const weeks = this.getWeeks().map(week => {
-      const days = week.map(day => {
-        const isGrey = day.gray;
-        const isAfter = moment(day).isAfter() && moment(day).isSameOrAfter(firstDay) && moment(day).isSameOrBefore(lastDay);
-        const bound = isAfter ? () => this.clickedDay(day) : null;
-        return (
-          <td key={day.getTime()}>
-            <div
-              onClick={bound}
-              className={`${isGrey ? 'gray' : ''} ${isAfter ? 'after' : ''} content`}
-            >
-              {day.getDate()}
-            </div>
-          </td>);
-      });
       counter += 1;
-      return (<tr key={counter}>{days}</tr>);
+      return (
+        <Week
+          key={counter}
+          week={week}
+          currentYear={this.state.currentYear}
+          currentMonth={this.state.currentMonth}
+          callback={this.clickedDay}
+          events={this.props.events}
+        />);
     });
 
     return (

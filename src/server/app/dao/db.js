@@ -397,3 +397,24 @@ export function createWorkshop(group, date, slots, userId) {
       });
     });
 }
+
+export function listWorkshops(groupIds, start, end, userId) {
+  const promises = groupIds.map(group =>
+    findGroup(group)
+      .then(foundGroup => {
+        if (!isAdmin(foundGroup.members, userId)) {
+          throw Error('Not Authorized');
+        }
+        return new Promise((resolve, reject) => {
+          Workshop.find({ group, date: { $gte: start, $lte: end } }, (err, found) => {
+            if (err) {
+              reject(err);
+            }
+            else {
+              resolve(found);
+            }
+          });
+        });
+      }));
+  return Promise.all(promises);
+}
