@@ -202,11 +202,12 @@ module.exports = (passport) => {
             if (err)
               return done(err);
 
-            if (user && user.google.email) {
+            if (user && user.google) {
 
               // if a user is found, log them in
               return done(null, user);
-            } else {
+            }
+            else {
               // if the user isnt in our database, create a new user
               console.log(profile);
               var newUser = user || new User();

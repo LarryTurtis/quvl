@@ -11,8 +11,7 @@ const workshop = handleActions({
     ...state,
     isSending: false,
     items: state.items.map(item => {
-      console.log(item)
-      if (item[0] && item[0].group === action.payload.group) {
+      if (item[0] && item[0].group._id === action.payload.group._id) {
         return [...item, action.payload];
       }
       return item;

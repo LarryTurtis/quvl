@@ -289,6 +289,11 @@ const isAdmin = (members, userId) => {
     && member.admin);
 }
 
+const isMember = (members, userId) => {
+  return members.some(member =>
+    member.user._id.toString() === userId.toString());
+}
+
 export function addMember(groupId, member, userId) {
   const group = findGroup(groupId);
   const user = member._id ? findUser(member._id) : createUser(member.email);
@@ -384,14 +389,14 @@ export function createWorkshop(group, date, slots, userId) {
         const workshop = new Workshop({
           date,
           slots,
-          group
+          group: foundGroup._id
         });
         workshop.save((err, saved) => {
           if (err) {
             reject(err);
           }
           else {
-            resolve(saved);
+            resolve(saved.populate({ path: 'group', model: 'Group' }).execPopulate());
           }
         });
       });
@@ -402,18 +407,20 @@ export function listWorkshops(groupIds, start, end, userId) {
   const promises = groupIds.map(group =>
     findGroup(group)
       .then(foundGroup => {
-        if (!isAdmin(foundGroup.members, userId)) {
+        if (!isMember(foundGroup.members, userId)) {
           throw Error('Not Authorized');
         }
         return new Promise((resolve, reject) => {
-          Workshop.find({ group, date: { $gte: start, $lte: end } }, (err, found) => {
-            if (err) {
-              reject(err);
-            }
-            else {
-              resolve(found);
-            }
-          });
+          Workshop.find({ group: foundGroup._id })
+            .populate({ path: 'group', model: 'Group' })
+            .exec((err, found) => {
+              if (err) {
+                reject(err);
+              }
+              else {
+                resolve(found);
+              }
+            });
         });
       }));
   return Promise.all(promises);

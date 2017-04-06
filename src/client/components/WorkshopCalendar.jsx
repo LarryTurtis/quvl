@@ -41,15 +41,19 @@ class WorkshopCalendar extends Component {
   componentWillMount() {
     this.props.listGroups()
       .then(() => {
-        const groupIds = this.props.group && this.props.group.items.map(group => group.groupId);
-        this.props.listWorkshops({ ...getMonthDates(), groupIds });
+        const groupIds = this.props.group &&
+          this.props.group.items &&
+          this.props.group.items.map(group => group.groupId);
+        if (groupIds) {
+          this.props.listWorkshops({ ...getMonthDates(), groupIds });
+        }
       });
   }
 
   handleWorkshopSelect = (date, events) => {
-    console.log(events)
     this.setState({
-      selectedDate: date,
+      events,
+      date,
       showWorkshop: true
     });
   }
@@ -57,7 +61,7 @@ class WorkshopCalendar extends Component {
   render() {
     let workshop;
     if (this.state.showWorkshop) {
-      workshop = (<Workshop date={this.state.selectedDate} />);
+      workshop = (<Workshop date={this.state.date} events={this.state.events} />);
     }
 
     return (

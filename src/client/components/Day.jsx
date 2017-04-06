@@ -10,12 +10,12 @@ const Day = (props) => {
     moment(day).isSameOrAfter(props.today) &&
     moment(day).isSameOrAfter(props.firstDay) &&
     moment(day).isSameOrBefore(props.lastDay);
-  const bound = isAfter ? () => props.callback(day, props.events) : null;
+  const handleClick = () => props.callback(day, props.events);
+  const bound = isAfter ? handleClick : null;
 
-  if (props.events.length) {
+  if (props.events && props.events.length) {
     events = <p><span className="glyphicon glyphicon-book" /></p>;
   }
-
   return (
     <div
       onClick={bound}

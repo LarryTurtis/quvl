@@ -3,13 +3,20 @@ import connect from '../util/connect';
 import { createWorkshop } from '../actions/workshop';
 import Callout from './Callout';
 
+const filterGroups = ({ items }, { user }) => items.filter(item =>
+  item.members.some(member =>
+    member.user._id === user._id
+    && member.admin));
+
 class Workshop extends Component {
 
   static propTypes = {
     date: PropTypes.object,
     group: PropTypes.object,
+    login: PropTypes.object,
     workshop: PropTypes.object,
     createWorkshop: PropTypes.func,
+    filteredGroups: PropTypes.array
   };
 
   static actionsToProps = {
@@ -18,16 +25,19 @@ class Workshop extends Component {
 
   static stateToProps = state => ({
     workshop: state.workshop,
-    group: state.group
+    group: state.group,
+    login: state.login
   });
 
   constructor(props) {
     super(props);
-    this.state = { date: props.date, selectedGroup: props.group.items[0].groupId };
+    const filteredGroups = filterGroups(props.group, props.login);
+    this.state = { date: props.date, filteredGroups, selectedGroup: filteredGroups[0].groupId };
   }
 
   componentWillReceiveProps(props) {
-    this.setState({ date: props.date });
+    const filteredGroups = filterGroups(props.group, props.login);
+    this.setState({ date: props.date, filteredGroups, selectedGroup: filteredGroups[0].groupId });
   }
 
   handleSlotsChange = (e) => {
@@ -47,7 +57,7 @@ class Workshop extends Component {
   }
 
   render() {
-    const { workshop, group } = this.props;
+    const { workshop } = this.props;
     let callout;
     let groups;
 
@@ -62,46 +72,49 @@ class Workshop extends Component {
       />);
     }
 
-    if (group.items) {
-      groups = group.items.map(item => (
-        <option value={item.groupId} key={item.groupId}>{item.name}</option>
-      ));
+    // transform groups into html
+    if (this.state.filteredGroups) {
+      groups = this.state.filteredGroups.map(item =>
+        <option value={item.groupId} key={item.groupId} > {item.name}</option>);
     }
 
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <h3>Schedule Workshop</h3>
-        {callout}
-        <label htmlFor="group">
-          Select A Group:
+    if (groups) {
+      return (
+        <form onSubmit={this.handleSubmit}>
+          <h3>Schedule Workshop</h3>
+          {callout}
+          <label htmlFor="group">
+            Select A Group:
           </label>
-        <div className="form-group">
-          <select
-            className="form-control"
-            name="group"
-            required
-            onChange={this.handleGroupChange}
-          >
-            {groups}
-          </select>
-        </div>
-        <label htmlFor="slots">
-          Number of Slots: (Leave blank for unlimited)
+          <div className="form-group">
+            <select
+              className="form-control"
+              name="group"
+              required
+              onChange={this.handleGroupChange}
+            >
+              {groups}
+            </select>
+          </div>
+          <label htmlFor="slots">
+            Number of Slots: (Leave blank for unlimited)
           </label>
-        <div className="form-group">
-          <input
-            className="form-control"
-            type="number"
-            dir="auto"
-            name="slots"
-            onChange={this.handleSlotsChange}
-          />
-        </div>
-        <button type="submit" className="btn btn-default">
-          Save
+          <div className="form-group">
+            <input
+              className="form-control"
+              type="number"
+              dir="auto"
+              name="slots"
+              onChange={this.handleSlotsChange}
+            />
+          </div>
+          <button type="submit" className="btn btn-default">
+            Save
           </button>
-      </form>
-    );
+        </form>
+      );
+    }
+    return (<div />);
   }
 }
 
