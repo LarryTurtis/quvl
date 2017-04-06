@@ -33,7 +33,7 @@ class Workshop extends Component {
         return (<li key={event._id}>
           <ul className="qv-workshop-details">
             <li><h4>Workshop</h4></li>
-            <li>Group: {event.group.name}</li>
+            <li>Group: {event.name}</li>
             <li>Open Slots: {event.slots - event.members.length}</li>
           </ul>
         </li>);

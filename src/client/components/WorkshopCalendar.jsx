@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import connect from '../util/connect';
 import { listGroups } from '../actions/group';
-import { listWorkshops } from '../actions/workshop';
 import Calendar from './Calendar';
 import Workshop from './Workshop';
 
@@ -17,20 +16,17 @@ function getMonthDates(date) {
 class WorkshopCalendar extends Component {
 
   static propTypes = {
-    listWorkshops: PropTypes.func,
     listGroups: PropTypes.func,
-    group: PropTypes.object,
-    workshop: PropTypes.object
+    group: PropTypes.object
   };
 
   static actionsToProps = {
-    listWorkshops,
     listGroups
   };
 
   static stateToProps = state => ({
-    workshop: state.workshop,
-    group: state.group
+    group: state.group,
+    workshop: state.workshop
   });
 
   constructor(props) {
@@ -39,15 +35,7 @@ class WorkshopCalendar extends Component {
   }
 
   componentWillMount() {
-    this.props.listGroups()
-      .then(() => {
-        const groupIds = this.props.group &&
-          this.props.group.items &&
-          this.props.group.items.map(group => group.groupId);
-        if (groupIds) {
-          this.props.listWorkshops({ ...getMonthDates(), groupIds });
-        }
-      });
+    this.props.listGroups();
   }
 
   handleWorkshopSelect = (date, events) => {
@@ -60,14 +48,21 @@ class WorkshopCalendar extends Component {
 
   render() {
     let workshop;
+    let workshops;
     if (this.state.showWorkshop) {
       workshop = (<Workshop date={this.state.date} events={this.state.events} />);
+    }
+
+    if (this.props.group && this.props.group.items) {
+      workshops = this.props.group.items.map(item => {
+        return item.workshops;
+      });
     }
 
     return (
       <div className="row">
         <div className="col-xs-6">
-          <Calendar callback={this.handleWorkshopSelect} events={this.props.workshop.items} />
+          <Calendar callback={this.handleWorkshopSelect} events={workshops} />
         </div>
         <div className="col-xs-6">
           {workshop}

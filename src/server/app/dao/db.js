@@ -4,7 +4,6 @@ import md5 from 'md5';
 import User from '../models/user';
 import Doc from '../models/doc';
 import Group from '../models/group';
-import Workshop from '../models/workshop';
 import setRanges from './setRanges';
 import wrapTags from './wrapTags';
 
@@ -283,16 +282,13 @@ export function createGroup(_id, name, emails) {
     });
 }
 
-const isAdmin = (members, userId) => {
-  return members.some(member =>
-    member.user._id.toString() === userId.toString()
-    && member.admin);
-}
+const isAdmin = (members, userId) => members.some(member =>
+  member.user._id.toString() === userId.toString()
+  && member.admin);
 
-const isMember = (members, userId) => {
-  return members.some(member =>
-    member.user._id.toString() === userId.toString());
-}
+
+const isMember = (members, userId) => members.some(member =>
+  member.user._id.toString() === userId.toString());
 
 export function addMember(groupId, member, userId) {
   const group = findGroup(groupId);
@@ -386,42 +382,19 @@ export function createWorkshop(group, date, slots, userId) {
         throw Error('Not Authorized');
       }
       return new Promise((resolve, reject) => {
-        const workshop = new Workshop({
+        const workshop = {
           date,
-          slots,
-          group: foundGroup._id
-        });
-        workshop.save((err, saved) => {
+          slots
+        };
+        foundGroup.workshops.push(workshop);
+        foundGroup.save((err, saved) => {
           if (err) {
             reject(err);
           }
           else {
-            resolve(saved.populate({ path: 'group', model: 'Group' }).execPopulate());
+            resolve(saved);
           }
         });
       });
     });
-}
-
-export function listWorkshops(groupIds, start, end, userId) {
-  const promises = groupIds.map(group =>
-    findGroup(group)
-      .then(foundGroup => {
-        if (!isMember(foundGroup.members, userId)) {
-          throw Error('Not Authorized');
-        }
-        return new Promise((resolve, reject) => {
-          Workshop.find({ group: foundGroup._id })
-            .populate({ path: 'group', model: 'Group' })
-            .exec((err, found) => {
-              if (err) {
-                reject(err);
-              }
-              else {
-                resolve(found);
-              }
-            });
-        });
-      }));
-  return Promise.all(promises);
 }

@@ -49,6 +49,38 @@ const group = handleActions({
     ...state,
     isSending: false,
     error: action.payload.message
+  }),
+  CREATE_WORKSHOP_STARTED: (state) => ({
+    ...state,
+    isSending: true
+  }),
+  CREATE_WORKSHOP_COMPLETED: (state, action) => ({
+    ...state,
+    isSending: false,
+    items: state.items.map(item => {
+      if (item.groupId === action.payload.groupId) {
+        return action.payload;
+      }
+      return item;
+    })
+  }),
+  CREATE_WORKSHOP_FAILED: (state, action) => ({
+    ...state,
+    isSending: false,
+    error: action.payload.message
+  }),
+  UPDATE_WORKSHOP_STARTED: (state) => ({
+    ...state,
+    isSending: true
+  }),
+  UPDATE_WORKSHOP_COMPLETED: (state) => ({
+    ...state,
+    isSending: false
+  }),
+  UPDATE_WORKSHOP_FAILED: (state, action) => ({
+    ...state,
+    isSending: false,
+    error: action.payload.message
   })
 },
   defaultState);

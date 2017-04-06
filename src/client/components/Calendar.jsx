@@ -103,6 +103,7 @@ class WorkshopCalendar extends Component {
 
   clickedDay = (day, events) => {
     const callback = this.props.callback;
+    this.setState({ selected: day });
     if (callback) {
       callback(day, events);
     }
@@ -120,6 +121,7 @@ class WorkshopCalendar extends Component {
           currentMonth={this.state.currentMonth}
           callback={this.clickedDay}
           events={this.props.events}
+          selected={this.state.selected}
         />);
     });
 

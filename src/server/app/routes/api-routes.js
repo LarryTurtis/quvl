@@ -87,18 +87,6 @@ module.exports = (app) => {
       .catch(next);
   });
 
-  app.get('/api/workshops', isLoggedIn, (req, res, next) => {
-    // retrieve all workshops
-    const groupIds = req.query.groupIds.split(",");
-    const start = req.query.start;
-    const end = req.query.end;
-    const userId = req.user._id;
-    console.log(groupIds, start, end, userId)
-    listWorkshops(groupIds, start, end, userId)
-      .then(workshop => res.json(workshop))
-      .catch(next);
-  });
-
   app.put('/api/groups/:groupId/workshops/:workshopId', isLoggedIn, (req, res, next) => {
     // update a workshop
     if (req.body.type === 'ADD_MEMBER') {

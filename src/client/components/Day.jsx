@@ -6,6 +6,7 @@ const Day = (props) => {
   let events;
   const day = props.day;
   const isGrey = day.gray;
+  const isSelected = props.isSelected;
   const isAfter =
     moment(day).isSameOrAfter(props.today) &&
     moment(day).isSameOrAfter(props.firstDay) &&
@@ -16,10 +17,11 @@ const Day = (props) => {
   if (props.events && props.events.length) {
     events = <p><span className="glyphicon glyphicon-book" /></p>;
   }
+
   return (
     <div
       onClick={bound}
-      className={`${isGrey ? 'gray' : ''} ${isAfter ? 'after' : ''} content`}
+      className={`${isGrey ? 'gray' : ''} ${isAfter ? 'after' : ''} ${isSelected ? 'selected' : ''} content`}
     >
       {day.getDate()}
       {events}
@@ -32,6 +34,7 @@ Day.propTypes = {
   today: PropTypes.object,
   firstDay: PropTypes.object,
   lastDay: PropTypes.object,
+  isSelected: PropTypes.bool,
   callback: PropTypes.func,
   events: PropTypes.array
 };

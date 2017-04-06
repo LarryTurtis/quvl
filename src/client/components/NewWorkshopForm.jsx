@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import connect from '../util/connect';
-import { createWorkshop } from '../actions/workshop';
+import { createWorkshop } from '../actions/group';
 import Callout from './Callout';
 
 const filterGroups = ({ items }, { user }) => items.filter(item =>
@@ -14,9 +14,7 @@ class Workshop extends Component {
     date: PropTypes.object,
     group: PropTypes.object,
     login: PropTypes.object,
-    workshop: PropTypes.object,
-    createWorkshop: PropTypes.func,
-    filteredGroups: PropTypes.array
+    createWorkshop: PropTypes.func
   };
 
   static actionsToProps = {
@@ -24,7 +22,6 @@ class Workshop extends Component {
   };
 
   static stateToProps = state => ({
-    workshop: state.workshop,
     group: state.group,
     login: state.login
   });
@@ -32,12 +29,12 @@ class Workshop extends Component {
   constructor(props) {
     super(props);
     const filteredGroups = filterGroups(props.group, props.login);
-    this.state = { date: props.date, filteredGroups, selectedGroup: filteredGroups[0].groupId };
+    this.state = { date: props.date, filteredGroups, selectedGroup: filteredGroups[0].groupId, showForm: false };
   }
 
   componentWillReceiveProps(props) {
     const filteredGroups = filterGroups(props.group, props.login);
-    this.setState({ date: props.date, filteredGroups, selectedGroup: filteredGroups[0].groupId });
+    this.setState({ date: props.date, filteredGroups, selectedGroup: filteredGroups[0].groupId, showForm: false });
   }
 
   handleSlotsChange = (e) => {
@@ -46,6 +43,14 @@ class Workshop extends Component {
 
   handleGroupChange = (e) => {
     this.setState({ selectedGroup: e.target.value });
+  }
+
+  showForm = () => {
+    this.setState({ showForm: true });
+  }
+
+  hideForm = () => {
+    this.setState({ showForm: false });
   }
 
   handleSubmit = (e) => {
@@ -57,11 +62,11 @@ class Workshop extends Component {
   }
 
   render() {
-    const { workshop } = this.props;
+    const { group } = this.props;
     let callout;
     let groups;
 
-    if (workshop.isSending) {
+    if (group.isSending) {
       return <div className="sb-invite-form">Spinner</div>;
     }
 
@@ -78,41 +83,44 @@ class Workshop extends Component {
         <option value={item.groupId} key={item.groupId} > {item.name}</option>);
     }
 
+    const button = (<button onClick={this.showForm} className="btn btn-default">Schedule Workshop</button>);
+    const form = (<form onSubmit={this.handleSubmit}>
+      <h3>Schedule Workshop</h3>
+      {callout}
+      <label htmlFor="group">
+        Select A Group:
+          </label>
+      <div className="form-group">
+        <select
+          className="form-control"
+          name="group"
+          required
+          onChange={this.handleGroupChange}
+        >
+          {groups}
+        </select>
+      </div>
+      <label htmlFor="slots">
+        Number of Slots: (Leave blank for unlimited)
+          </label>
+      <div className="form-group">
+        <input
+          className="form-control"
+          type="number"
+          dir="auto"
+          name="slots"
+          onChange={this.handleSlotsChange}
+        />
+      </div>
+      <button type="submit" className="btn btn-default">Save</button>
+      <button onClick={this.hideForm} className="btn btn-default">Cancel</button>
+    </form>);
+
     if (groups) {
-      return (
-        <form onSubmit={this.handleSubmit}>
-          <h3>Schedule Workshop</h3>
-          {callout}
-          <label htmlFor="group">
-            Select A Group:
-          </label>
-          <div className="form-group">
-            <select
-              className="form-control"
-              name="group"
-              required
-              onChange={this.handleGroupChange}
-            >
-              {groups}
-            </select>
-          </div>
-          <label htmlFor="slots">
-            Number of Slots: (Leave blank for unlimited)
-          </label>
-          <div className="form-group">
-            <input
-              className="form-control"
-              type="number"
-              dir="auto"
-              name="slots"
-              onChange={this.handleSlotsChange}
-            />
-          </div>
-          <button type="submit" className="btn btn-default">
-            Save
-          </button>
-        </form>
-      );
+      if (this.state.showForm) {
+        return form;
+      }
+      return button;
     }
     return (<div />);
   }
