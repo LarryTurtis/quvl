@@ -2,6 +2,7 @@ let text;
 let previousBody;
 let wrappedNodes = [];
 let range;
+let center;
 
 function hasClass(element, cls) {
   return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
@@ -32,6 +33,12 @@ function wrapNode(node) {
     parent.insertBefore(wrapper, node);
     parent.insertBefore(beforeNode, wrapper);
     parent.removeChild(node);
+
+    const rect = wrapper.getBoundingClientRect();
+    center = {
+      x: rect.left + ((rect.right - rect.left) / 2),
+      y: rect.top
+    };
   }
   else if (node === range.endContainer
     && node.nodeName === '#text'
@@ -94,10 +101,16 @@ function addComment(element) {
     const wrapper = document.createElement('span');
     wrapper.className = ' select';
     wrapper.appendChild(selectedNode);
-    parent.insertBefore(afterNode, text.anchorNode)
+    parent.insertBefore(afterNode, text.anchorNode);
     parent.insertBefore(wrapper, afterNode);
     parent.insertBefore(beforeNode, wrapper);
     parent.removeChild(text.anchorNode);
+
+    const rect = wrapper.getBoundingClientRect();
+    center = {
+      x: rect.left + ((rect.right - rect.left) / 2),
+      y: rect.top
+    };
 
     const localRange = parent.getAttribute('data-range').split('-');
     if (localRange) {
@@ -117,7 +130,9 @@ function addComment(element) {
     walkTheDOM(range.commonAncestorContainer, range.endContainer, node => {
       startNodeFound = startNodeFound || range.startContainer === node;
       endNodeFound = endNodeFound || range.endContainer === node;
-      if (startNodeFound) nodesToWrap.push(node);
+      if (startNodeFound) {
+        nodesToWrap.push(node);
+      }
     });
 
     nodesToWrap.forEach(wrapNode);
@@ -134,32 +149,54 @@ function addComment(element) {
   }
 }
 
+function clearSelection() {
+  if (window.getSelection) {
+    window.getSelection().removeAllRanges();
+  }
+  else if (document.selection) {
+    document.selection.empty();
+  }
+}
+
 class Selector {
   constructor(element, select, deselect) {
     this.element = element;
+    this.deselect = deselect;
     this.listener = () => {
       wrappedNodes = [];
       range = null;
       text = window.getSelection();
-      if (text.isCollapsed) {
-        if (previousBody) {
-          this.element.innerHTML = previousBody;
-          previousBody = null;
-        }
-        deselect();
+
+      if (previousBody) {
+        this.element.innerHTML = previousBody;
+        previousBody = null;
       }
-      else {
+      deselect();
+      center = null;
+      if (!text.isCollapsed) {
         addComment(element);
+        this.center = center;
         select(wrappedNodes);
       }
     };
     this.element.addEventListener('mouseup', this.listener);
   }
   on = () => {
+    previousBody = null;
     this.element.addEventListener('mouseup', this.listener);
   }
   off = () => {
     this.element.removeEventListener('mouseup', this.listener);
+  }
+  position = () => this.center;
+  cancel = () => {
+    clearSelection();
+    if (previousBody) {
+      this.element.innerHTML = previousBody;
+      previousBody = null;
+    }
+    this.deselect();
+    center = null;
   }
 
 }

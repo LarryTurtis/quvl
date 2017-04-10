@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { push } from 'react-router-redux';
 import TinyMCE from 'react-tinymce';
 import connect from '../util/connect';
 import { createDoc } from '../actions/doc';
@@ -7,15 +8,19 @@ class NewDoc extends Component {
 
   static propTypes = {
     createDoc: PropTypes.func,
-    doc: PropTypes.object
+    doc: PropTypes.object,
+    login: PropTypes.object,
+    push: PropTypes.func
   };
 
   static actionsToProps = {
-    createDoc
+    createDoc,
+    push
   };
 
   static stateToProps = state => ({
-    doc: state.doc
+    doc: state.doc,
+    login: state.login
   });
 
   constructor(props) {
@@ -24,7 +29,11 @@ class NewDoc extends Component {
   }
 
   handleSubmit = () => {
-    this.props.createDoc(this.state.name, this.state.content);
+    this.props.createDoc(this.state.name, this.state.content).then(result => {
+      const docId = result.payload.id;
+      const authorId = this.props.login.user.userId;
+      this.props.push(`/doc/${authorId}/${docId}`);
+    });
   }
 
   handleNameChange = (e) => {

@@ -73,6 +73,7 @@ class Doc extends Component {
 
   cancelComment = () => {
     this.setState({ selectedText: false, nodes: [] });
+    this.selector.cancel();
     this.selector.on();
   }
 
@@ -82,6 +83,7 @@ class Doc extends Component {
 
     if (this.state.selectedText) {
       addCommentButton = (<AddComment
+        position={this.selector.position}
         addCallback={this.addComment}
         saveCallback={this.saveComment}
         cancelCallback={this.cancelComment}
@@ -93,9 +95,9 @@ class Doc extends Component {
         <h1>{doc && doc.name}</h1>
         <div id="content" className="col-sm-8" dangerouslySetInnerHTML={this.getMarkup(doc && doc.revisions[doc.revisions.length - 1].doc)} />
         <div className="col-sm-4 comments">
-          {addCommentButton}
           <Comments>{doc && doc.comments}</Comments>
         </div>
+        {addCommentButton}
       </div>
     );
   }

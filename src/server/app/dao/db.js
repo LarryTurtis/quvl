@@ -183,7 +183,7 @@ function createNewRevision(requested, operations, commentId, authorId) {
 export function updateDoc(authorId, docId, user, nodes, content) {
   return getDocForCommenting(user, authorId, docId)
     .then(doc => {
-      const commentId = doc.comments.length - 1;
+      const commentId = doc.comments.length;
       const newRevision = createNewRevision(doc, nodes, commentId, authorId);
 
       doc.comments.push({ commentId, authorId, docId, content });
