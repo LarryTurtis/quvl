@@ -159,9 +159,10 @@ function clearSelection() {
 }
 
 class Selector {
-  constructor(element, select, deselect) {
+  constructor(element, selectCb, deselectCb) {
     this.element = element;
-    this.deselect = deselect;
+    this.deselectCb = deselectCb;
+    this.selectCb = selectCb;
     this.listener = () => {
       wrappedNodes = [];
       range = null;
@@ -171,16 +172,17 @@ class Selector {
         this.element.innerHTML = previousBody;
         previousBody = null;
       }
-      deselect();
+      deselectCb();
       center = null;
       if (!text.isCollapsed) {
         addComment(element);
         this.center = center;
-        select(wrappedNodes);
+        selectCb(wrappedNodes);
       }
     };
     this.element.addEventListener('mouseup', this.listener);
   }
+
   on = () => {
     previousBody = null;
     this.element.addEventListener('mouseup', this.listener);
@@ -195,7 +197,7 @@ class Selector {
       this.element.innerHTML = previousBody;
       previousBody = null;
     }
-    this.deselect();
+    this.deselectCb();
     center = null;
   }
 

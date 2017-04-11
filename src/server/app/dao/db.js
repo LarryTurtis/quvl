@@ -174,8 +174,7 @@ function createNewRevision(requested, operations, commentId, authorId) {
   const id = latestRevisionId + 1;
 
   let doc = wrapTags(saved, operations);
-  doc = doc.replace(/data-comment-id="\*"/g, 'data-comment-id="' + commentId + '"');
-  doc = doc.replace(/data-author-id="\*"/g, 'data-author-id="' + authorId + '"');
+  doc = doc.replace(/data-id="\*/g, `data-id="${authorId}-${commentId}`);
 
   return { id, doc, operations };
 }

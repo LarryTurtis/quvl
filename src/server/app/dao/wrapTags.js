@@ -8,7 +8,6 @@ String.prototype.splice = function(start, newSubStr) {
 
 var wrapBoth = (node, operation) => {
   var range = parse5Utils.getAttribute(node, "data-range");
-  parse5Utils.removeAttribute(node, "data-range");
   range = range.split("-");
   var start = parseInt(range[0]);
   var end = parseInt(range[1]);
@@ -16,33 +15,40 @@ var wrapBoth = (node, operation) => {
   var parsedStart = operation.start - start;
   var parsedEnd = operation.end - start;
 
-  //put a tag for any trailing chars not in the comment
-  if (end > operation.end) {
-    var preTag = `<span data-range="${operation.end + 1}-${end}">`;
-    var postTag = `</span>`;
-    text = text.splice(end + 1, postTag);
-    text = text.splice(parsedEnd + 1, preTag);
+  if (node.nodeName === 'quvl-tag' && start === operation.start && end === operation.end) {
+    const oldId = parse5Utils.getAttribute(node, 'data-id');
+    parse5Utils.setAttribute(node, 'data-id', `*|${oldId}`);
   }
+  else {
+    parse5Utils.removeAttribute(node, "data-range");
+    //put a tag for any trailing chars not in the comment
+    if (end > operation.end) {
+      var preTag = `<span data-range="${operation.end + 1}-${end}">`;
+      var postTag = `</span>`;
+      text = text.splice(end + 1, postTag);
+      text = text.splice(parsedEnd + 1, preTag);
+    }
 
-  //make the comment
-  var openTag = `<quvl-tag data-author-id='*' data-comment-id='*' data-range="${operation.start}-${operation.end}">`;
-  var closeTag = "</quvl-tag>";
-  text = text.splice(parsedEnd + 1, closeTag)
-  text = text.splice(parsedStart, openTag);
+    //make the comment
+    var openTag = `<quvl-tag data-id='*' data-range="${operation.start}-${operation.end}">`;
+    var closeTag = "</quvl-tag>";
+    text = text.splice(parsedEnd + 1, closeTag)
+    text = text.splice(parsedStart, openTag);
 
-  //add the opening chars
-  if (start < operation.start) {
-    var preTag = `<span data-range="${start}-${operation.start-1}">`;
-    var postTag = `</span>`;
-    text = text.splice(parsedStart, postTag);
-    text = text.splice(0, preTag);
+    //add the opening chars
+    if (start < operation.start) {
+      var preTag = `<span data-range="${start}-${operation.start-1}">`;
+      var postTag = `</span>`;
+      text = text.splice(parsedStart, postTag);
+      text = text.splice(0, preTag);
+    }
+
+    var parsed = parse5.parseFragment(text);
+    parse5Utils.remove(node.childNodes[0]);
+    parsed.childNodes.forEach(childNode => {
+      parse5Utils.append(node, childNode);
+    });
   }
-
-  var parsed = parse5.parseFragment(text);
-  parse5Utils.remove(node.childNodes[0]);
-  parsed.childNodes.forEach(childNode => {
-    parse5Utils.append(node, childNode);
-  });
 }
 
 //put a span, followed by quvl tag
@@ -55,7 +61,7 @@ var wrapStart = (node, operation) => {
   var text = node.childNodes[0].value;
   var parsedStart = operation.start - start;
 
-  var openTag = `<quvl-tag data-author-id='*' data-comment-id='*' data-range="${operation.start}-${end}">`;
+  var openTag = `<quvl-tag data-id='*' data-range="${operation.start}-${end}">`;
   var closeTag = "</quvl-tag>";
 
   text = text.splice(end + 1, closeTag)
@@ -88,7 +94,7 @@ var wrapEnd = (node, operation) => {
   text = text.splice(end, postTag);
   text = text.splice(parsedEnd + 1, preTag);
 
-  var openTag = `<quvl-tag data-author-id='*' data-comment-id='*' data-range="${start}-${operation.end}">`;
+  var openTag = `<quvl-tag data-id='*' data-range="${start}-${operation.end}">`;
   var closeTag = "</quvl-tag>";
 
   text = text.splice(parsedEnd + 1, closeTag)
@@ -165,13 +171,12 @@ const wrapTags = (requested, ops) => {
 
     if (startNodeToWrap === endNodeToWrap) {
       wrapBoth(startNodeToWrap, operation);
-    } 
+    }
     else {
       wrapStart(startNodeToWrap, operation);
       wrapEnd(endNodeToWrap, operation);
     }
   });
-
   const results = parse5.serialize(myHtmlDoc);
   return results;
 }
