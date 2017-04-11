@@ -90,7 +90,7 @@ class ManageGroup extends Component {
     });
 
     return (
-      <div className="form-inline">
+      <div className="card form-inline">
         <h3>{this.state.name}</h3>
         <form onSubmit={this.addMember}>
           <div className="row">

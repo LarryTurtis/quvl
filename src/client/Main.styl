@@ -4,9 +4,9 @@
 }
 
 html,
-body {
-    height: 100%;
-}
+body.qv
+    height: 100%
+    background-color: #FAFAFA
 
 ::selection {
   background: #00c496; 
@@ -25,8 +25,16 @@ h1, h2, h3, h4, h5, h6 #content, #content p {
 }
 
 #content, #title {
-    background: white
     font-size: 20px
+}
+
+.card {
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.04);
+    border: 1px solid rgba(0,0,0,.09);
+    border-radius: 3px;
+    margin: 10px;
+    padding: 10px;
 }
 
 #content {
@@ -81,11 +89,6 @@ quvl-tag {
     background-color: rgba(223, 52, 48, 0.3);
 }
 
-.comments {
-    font-family: 'Lato', sans-serif;
-    background: #e1e1e1;
-}
-
 .addComment {
     margin-bottom: 15px;
 }
@@ -96,8 +99,6 @@ quvl-tag {
 
 .comment {
     transition: transform 100ms;
-    box-shadow: 1px 1px 3px #808080;
-    background-color: white;
     margin: 10px;
     padding: 3px;
 }

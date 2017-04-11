@@ -54,7 +54,7 @@ class NewGroup extends Component {
     }
 
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form className="card" onSubmit={this.handleSubmit}>
         <h3>Create New Group</h3>
         <div className="form-group">
           {callout}

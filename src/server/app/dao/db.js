@@ -124,14 +124,16 @@ function canView(user, doc) {
 
 function getDoc(authorId, docId) {
   return new Promise((resolve, reject) => {
-    Doc.findOne({ authorId, docId }, (err, found) => {
-      if (err) {
-        reject(err);
-      }
-      else {
-        resolve(found);
-      }
-    });
+    Doc.findOne({ authorId, docId })
+      .populate({ path: 'comments.author', model: 'User', select: 'userId picture email name' })
+      .exec((err, found) => {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(found);
+        }
+      });
   });
 }
 
@@ -185,7 +187,7 @@ export function updateDoc(authorId, docId, user, nodes, content) {
       const commentId = doc.comments.length;
       const newRevision = createNewRevision(doc, nodes, commentId, authorId);
 
-      doc.comments.push({ commentId, authorId, docId, content });
+      doc.comments.push({ commentId, author: user._id.toString(), docId, content });
       doc.revisions.push(newRevision);
 
       return new Promise((resolve, reject) => {
@@ -197,7 +199,9 @@ export function updateDoc(authorId, docId, user, nodes, content) {
             resolve(success);
           }
         });
-      });
+      })
+        .then(saved => saved.populate({ path: 'comments.author', model: 'User', select: 'userId picture email name' })
+          .execPopulate());
     });
 }
 

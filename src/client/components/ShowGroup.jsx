@@ -37,7 +37,7 @@ class ShowGroup extends Component {
     });
 
     return (
-      <div>
+      <div className="card">
         <h3>{this.state.name}</h3>
         <ul>
           {members}

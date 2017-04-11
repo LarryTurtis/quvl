@@ -80,6 +80,11 @@ class Doc extends Component {
   render() {
     const doc = this.props.doc.current;
     let addCommentButton;
+    let comments;
+
+    if (doc && doc.comments && doc.comments.length) {
+      comments = <Comments>{doc && doc.comments}</Comments>;
+    }
 
     if (this.state.selectedText) {
       addCommentButton = (<AddComment
@@ -93,9 +98,9 @@ class Doc extends Component {
     return (
       <div className="row">
         <h1>{doc && doc.name}</h1>
-        <div id="content" className="col-sm-8" dangerouslySetInnerHTML={this.getMarkup(doc && doc.revisions[doc.revisions.length - 1].doc)} />
-        <div className="col-sm-4 comments">
-          <Comments>{doc && doc.comments}</Comments>
+        <div id="content" className="card col-sm-9" dangerouslySetInnerHTML={this.getMarkup(doc && doc.revisions[doc.revisions.length - 1].doc)} />
+        <div className="col-sm-3">
+          {comments}
         </div>
         {addCommentButton}
       </div>

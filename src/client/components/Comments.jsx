@@ -18,9 +18,9 @@ class Comments extends Component {
     if (this.props.children) {
       comments = this.props.children.map(comment =>
         (<li key={comment.commentId}>
-          <div data-author-id={comment.authorId} data-comment-id={comment.commendId} className="comment">
+          <div data-id={`${comment.author.userId}-${comment.commentId}`} className="card comment">
             <div className="comment-heading">
-              <img alt="" src={comment.picture} /> {comment.author}<br />
+              <img alt="" src={comment.author.picture} /> {comment.author.email}<br />
               <span className="date"><Moment format="h:mm A MM-DD-YY">{comment.created_at}</Moment></span>
             </div>
             <div className="comment-content">
@@ -31,7 +31,7 @@ class Comments extends Component {
     }
 
     return (
-      <ul>{comments}</ul>
+      <div className="comments"><ul>{comments}</ul></div>
     );
   }
 }
