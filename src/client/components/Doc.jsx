@@ -99,7 +99,7 @@ class Doc extends Component {
       <div className="row">
         <h1>{doc && doc.name}</h1>
         <div id="content" className="card col-sm-9" dangerouslySetInnerHTML={this.getMarkup(doc && doc.revisions[doc.revisions.length - 1].doc)} />
-        <div className="col-sm-3">
+        <div id="comments" className="col-sm-3">
           {comments}
         </div>
         {addCommentButton}

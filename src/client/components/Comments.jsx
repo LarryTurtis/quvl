@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Moment from 'react-moment';
 import connect from '../util/connect';
+import { commentMouseEnter, commentMouseLeave } from '../util/commentListener';
 
 class Comments extends Component {
 
@@ -17,15 +18,17 @@ class Comments extends Component {
     let comments = [];
     if (this.props.children) {
       comments = this.props.children.map(comment =>
-        (<li key={comment.commentId}>
-          <div data-id={`${comment.author.userId}-${comment.commentId}`} className="card comment">
-            <div className="comment-heading">
-              <img alt="" src={comment.author.picture} /> {comment.author.email}<br />
-              <span className="date"><Moment format="h:mm A MM-DD-YY">{comment.created_at}</Moment></span>
+        (<li key={comment.commentId} onMouseEnter={commentMouseEnter} onMouseLeave={commentMouseLeave}>
+          <div className="media card comment" data-id={`${comment.author.userId}-${comment.commentId}`}>
+            <div className="media-left">
+              <img alt="" className="media-object" src={comment.author.picture} />
             </div>
-            <div className="comment-content">
-              {comment.content}
+            <div className="media-body">
+              <h4 className="media-heading comment-heading">{comment.author.email}<br />
+                <span className="date"><Moment format="h:mma MM/DD/YY">{comment.created_at}</Moment></span>
+              </h4>
             </div>
+            {comment.content}
           </div>
         </li>));
     }
