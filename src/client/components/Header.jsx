@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react';
+import { Navbar, NavDropdown, Nav, NavItem, MenuItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { push } from 'react-router-redux';
 import connect from '../util/connect';
 import { doLogout } from '../actions/login';
+import './Header.styl';
 
 class Header extends Component {
 
@@ -28,50 +30,47 @@ class Header extends Component {
   }
 
   render() {
-
     let leftLinks = (
-      <ul className="nav navbar-nav">
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/newdoc">New Document</Link></li>
-        <li><Link to="/groups">Writing Groups</Link></li>
-        <li><Link to="/mydocs">Documents</Link></li>
-        <li><Link to="/workshops">Workshop Calendar</Link></li>
-      </ul>);
+      <Nav bsStyle="pills">
+        <NavDropdown title="Documents" id="documents">
+          <MenuItem><Link to="/mydocs">My Documents</Link></MenuItem>
+          <MenuItem><Link to="/newdoc">New Document</Link></MenuItem>
+        </NavDropdown>
+        <NavDropdown title="Groups" id="groups">
+          <MenuItem><Link to="/groups">My Groups</Link></MenuItem>
+          <MenuItem><Link to="/newgroup">New Group</Link></MenuItem>
+        </NavDropdown>
+        <NavItem><Link to="/workshops">Workshop Calendar</Link></NavItem>
+      </Nav>);
 
     if (!this.props.user) {
       leftLinks = null;
     }
 
     let rightLinks = (
-      <ul className="nav navbar-nav navbar-right">
-        <li><button className="btn btn-default navbar-btn" onClick={this.handleLogout}>Log out</button></li>
-      </ul>);
+      <Nav bsStyle="pills" className="navbar-right">
+        <NavItem><Link onClick={this.handleLogout}>Log out</Link></NavItem>
+      </Nav>);
 
     if (!this.props.user) {
       rightLinks = (
-        <ul className="nav navbar-nav navbar-right">
-          <li><Link to="/signup">Sign up</Link></li>
-          <li><Link to="/login">Log in</Link></li>
-        </ul>
+        <Nav pullRight bsStyle="pills">
+          <NavItem><Link to="/signup">Sign up</Link></NavItem>
+          <NavItem><Link to="/login">Log in</Link></NavItem>
+        </Nav>
       );
     }
 
     return (
-      <nav className="navbar navbar-default">
-        <div className="container">
-          <div className="navbar-header">
-            <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-              <span className="sr-only">Toggle navigation</span>
-              <span className="icon-bar" />
-            </button>
-            <a className="navbar-brand" href="#quvl">QUVL</a>
-          </div>
-          <div className="navbar-collapse" id="bs-example-navbar-collapse-1">
-            {leftLinks}
-            {rightLinks}
-          </div>
-        </div>
-      </nav>
+      <Navbar className="qv-header">
+        <Navbar.Header>
+          <Navbar.Brand>
+            <Link to="/" className="navbar-brand">QUVL</Link>
+          </Navbar.Brand>
+        </Navbar.Header>
+        {leftLinks}
+        {rightLinks}
+      </Navbar>
     );
   }
 

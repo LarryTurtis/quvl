@@ -6,6 +6,7 @@ import Signup from './Signup';
 import DocList from './components/DocList';
 import Doc from './components/Doc';
 import NewDoc from './components/NewDoc';
+import NewGroup from './components/NewGroup';
 import GroupList from './components/GroupList';
 import WorkshopCalendar from './components/WorkshopCalendar';
 
@@ -16,6 +17,7 @@ const routes = [
     <Route path="/newdoc" component={NewDoc} />
     <Route path="/mydocs" component={DocList} />
     <Route path="/groups" component={GroupList} />
+    <Route path="/newgroup" component={NewGroup} />
     <Route path="/workshops" component={WorkshopCalendar} />
     <Route path="/doc/:authorId/:docId" component={Doc} />
   </Route>

@@ -1,17 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import { Link } from 'react-router';
 import connect from '../util/connect';
 import { listGroups } from '../actions/group';
 import Calendar from './Calendar';
 import Workshop from './Workshop';
-
-function getMonthDates(date) {
-  const current = date || new Date();
-  return {
-    start: new Date(current.getFullYear(), current.getMonth(), 1),
-    end: new Date(current.getFullYear(), current.getMonth() + 1, 0)
-  };
-}
 
 class WorkshopCalendar extends Component {
 
@@ -25,8 +16,7 @@ class WorkshopCalendar extends Component {
   };
 
   static stateToProps = state => ({
-    group: state.group,
-    workshop: state.workshop
+    group: state.group
   });
 
   constructor(props) {

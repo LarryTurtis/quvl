@@ -3,7 +3,6 @@ import connect from '../util/connect';
 import { listGroups, updateMember } from '../actions/group';
 import ManageGroup from './ManageGroup';
 import ShowGroup from './ShowGroup';
-import NewGroup from './NewGroup';
 
 class GroupList extends Component {
 
@@ -40,6 +39,9 @@ class GroupList extends Component {
   render() {
     const groups = this.props.group;
     let memberGroups;
+    if (groups.isSending) {
+      return (<div></div>);
+    }
     if (groups && groups.items) {
       memberGroups = groups.items.map(group => {
         const userIsAdmin = group.members.some(member =>
@@ -54,15 +56,10 @@ class GroupList extends Component {
       );
     }
     return (
-      <div>
-        <div className="row">
-          <div className="col-xs-10">
-            <h4>You are a member of these groups</h4>
-            {memberGroups}
-          </div>
-        </div>
-        <div className="row">
-          <NewGroup />
+      <div className="row">
+        <div className="col-xs-10">
+          <h4>You are a member of these groups</h4>
+          {memberGroups}
         </div>
       </div>
     );

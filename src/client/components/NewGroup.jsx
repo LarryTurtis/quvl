@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { Link } from 'react-router';
+import { push } from 'react-router-redux';
 import connect from '../util/connect';
 import { createGroup } from '../actions/group';
 import Callout from './Callout';
+import './NewGroup.styl';
 
 class NewGroup extends Component {
 
@@ -12,7 +13,8 @@ class NewGroup extends Component {
   };
 
   static actionsToProps = {
-    createGroup
+    createGroup,
+    push
   };
 
   static stateToProps = state => ({
@@ -35,7 +37,10 @@ class NewGroup extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.createGroup(this.state.groupName, this.state.emails);
+    this.props.createGroup(this.state.groupName, this.state.emails)
+      .then(() => {
+        this.props.push('/groups');
+      });
   }
 
   render() {
@@ -54,7 +59,7 @@ class NewGroup extends Component {
     }
 
     return (
-      <form className="card" onSubmit={this.handleSubmit}>
+      <form className="qv-newgroup card" onSubmit={this.handleSubmit}>
         <h3>Create New Group</h3>
         <div className="form-group">
           {callout}

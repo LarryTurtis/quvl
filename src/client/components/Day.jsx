@@ -15,13 +15,13 @@ const Day = (props) => {
   const bound = isAfter ? handleClick : null;
 
   if (props.events && props.events.length) {
-    events = <p><span className="glyphicon glyphicon-book" /></p>;
+    events = <p><span className="glyphicon glyphicon-star" /></p>;
   }
 
   return (
     <div
       onClick={bound}
-      className={`${isGrey ? 'gray' : ''} ${isAfter ? 'after' : ''} ${isSelected ? 'selected' : ''} content`}
+      className={`${isGrey || !isAfter ? 'gray' : ''} ${isAfter ? 'after' : ''} ${isSelected ? 'selected' : ''} content`}
     >
       {day.getDate()}
       {events}

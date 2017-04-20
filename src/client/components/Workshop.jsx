@@ -30,11 +30,12 @@ class Workshop extends Component {
     let eventList;
     if (this.state.events) {
       eventList = this.state.events.map(event => {
+        console.log(event)
         return (<li key={event._id}>
-          <ul className="qv-workshop-details">
+          <ul className="card qv-workshop-details">
             <li><h4>Workshop</h4></li>
             <li>Group: {event.name}</li>
-            <li>Open Slots: {event.slots - event.members.length}</li>
+            <li>Open Slots: {event.slots ? event.slots - event.members.length : 'Unlimited'}</li>
           </ul>
         </li>);
       });
