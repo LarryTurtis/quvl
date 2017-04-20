@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Modal, Button, ButtonToolbar } from 'react-bootstrap';
 
 import connect from '../util/connect';
 import './ManageGroup.styl';
@@ -30,6 +31,15 @@ class ManageGroup extends Component {
 
   updateEmail = (e) => {
     this.setState({ email: e.target.value });
+  }
+
+  showAddMemberForm = () => {
+    this.setState({ visible: true });
+  }
+
+  hideAddMemberForm = (e) => {
+    e.preventDefault();
+    this.setState({ visible: false });
   }
 
   addMember = (e) => {
@@ -83,28 +93,42 @@ class ManageGroup extends Component {
           <div className="col-xs-2"><img alt="" src={member.user.picture} /></div>
           <div className="col-xs-4">{member.user.email}</div>
           <div className="col-xs-6">
-            <button className="btn btn-default" onClick={boundRemove}>Remove</button>
-            {promoteButton}
+            <ButtonToolbar>
+              <button className="btn btn-default" onClick={boundRemove}>Remove</button>
+              {promoteButton}
+            </ButtonToolbar>
           </div>
         </li>);
     });
 
+    const modal = (<Modal bsSize="small" show={this.state.visible} onHide={this.hideAddMemberForm} aria-labelledby="contained-modal-title-sm">
+      <form onSubmit={this.addMember}>
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-sm">Add Member</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="form-group">
+            <label htmlFor="comment">Member:</label>
+            <input type="email" className="form-control" required placeholder="name@email.com" onChange={this.updateEmail} />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={this.hideAddMemberForm}>Cancel</Button>
+          <Button type="submit">Save</Button>
+        </Modal.Footer>
+      </form>
+    </Modal>);
+
     return (
       <div className="card form-inline qv-group">
-        <h3>{this.state.name}</h3>
-        <form onSubmit={this.addMember}>
-          <div className="row">
-            <div className="col-xs-6">
-              <input type="email" onChange={this.updateEmail} />
-            </div>
-            <div className="col-xs-6">
-              <button className="btn btn-default">Add Member</button>
-            </div>
-          </div>
-        </form>
+        <div className="qv-group-header">
+          {this.state.name}
+          <Button onClick={this.showAddMemberForm}>Add Member</Button>
+        </div>
         <ul>
           {members}
         </ul>
+        {modal}
       </div>
     );
   }

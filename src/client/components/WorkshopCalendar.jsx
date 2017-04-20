@@ -38,21 +38,19 @@ class WorkshopCalendar extends Component {
 
   render() {
     let workshop;
-    let workshops;
+    let groups;
     if (this.state.showWorkshop) {
       workshop = (<Workshop date={this.state.date} events={this.state.events} />);
     }
 
     if (this.props.group && this.props.group.items) {
-      workshops = this.props.group.items.map(item => {
-        return item.workshops;
-      });
+      groups = this.props.group.items;
     }
 
     return (
       <div className="row">
         <div className="col-xs-6">
-          <Calendar callback={this.handleWorkshopSelect} events={workshops} />
+          <Calendar callback={this.handleWorkshopSelect} events={groups} />
         </div>
         <div className="col-xs-6">
           {workshop}

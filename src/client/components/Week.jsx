@@ -6,9 +6,9 @@ import connect from '../util/connect';
 const findEventGroups = (day, eventGroups) => {
   let results = [];
   eventGroups.forEach(group => {
-    const filtered = group.filter(event => moment(day).isSame(event.date, 'day'));
+    const filtered = group.workshops.filter(event => moment(day).isSame(event.date, 'day'));
     if (filtered.length) {
-      results = [...results, ...filtered];
+      results = [...results, group];
     }
   });
   return results;

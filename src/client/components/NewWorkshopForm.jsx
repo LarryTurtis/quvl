@@ -28,13 +28,27 @@ class Workshop extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      date: props.date,
+      showForm: false
+    };
     const filteredGroups = filterGroups(props.group, props.login);
-    this.state = { date: props.date, filteredGroups, selectedGroup: filteredGroups[0].groupId, showForm: false };
+    if (filteredGroups && filteredGroups.length) {
+      this.state.filteredGroups = filteredGroups;
+      this.state.selectedGroup = filteredGroups[0].groupId;
+    }
   }
 
   componentWillReceiveProps(props) {
+    this.state = {
+      date: props.date,
+      showForm: false
+    };
     const filteredGroups = filterGroups(props.group, props.login);
-    this.setState({ date: props.date, filteredGroups, selectedGroup: filteredGroups[0].groupId, showForm: false });
+    if (filteredGroups && filteredGroups.length) {
+      this.state.filteredGroups = filteredGroups;
+      this.state.selectedGroup = filteredGroups[0].groupId;
+    }
   }
 
   handleSlotsChange = (e) => {
@@ -58,7 +72,10 @@ class Workshop extends Component {
     const groupId = this.state.selectedGroup;
     const date = this.state.date;
     const slots = this.state.slots;
-    this.props.createWorkshop(groupId, date, slots);
+    this.props.createWorkshop(groupId, date, slots)
+      .then(() => {
+        this.setState({ showForm: false });
+      });
   }
 
   render() {

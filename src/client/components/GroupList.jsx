@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
 import connect from '../util/connect';
 import { listGroups, updateMember } from '../actions/group';
 import ManageGroup from './ManageGroup';
@@ -39,10 +40,16 @@ class GroupList extends Component {
   render() {
     const groups = this.props.group;
     let memberGroups;
+    let groupHeader = (
+      <div>
+        You are not currently a member of any groups. Want to <Link to='/newgroup'>create a group?</Link>
+      </div>
+    );
     if (groups.isSending) {
       return (<div></div>);
     }
-    if (groups && groups.items) {
+    if (groups && groups.items && groups.items.length) {
+      groupHeader = 'You are a member of these groups:';
       memberGroups = groups.items.map(group => {
         const userIsAdmin = group.members.some(member =>
           member.user._id === this.props.login.user._id
@@ -58,7 +65,7 @@ class GroupList extends Component {
     return (
       <div className="row">
         <div className="col-xs-10">
-          <h4>You are a member of these groups</h4>
+          <h4>{groupHeader}</h4>
           {memberGroups}
         </div>
       </div>
