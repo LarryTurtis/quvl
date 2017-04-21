@@ -45,7 +45,7 @@ class Workshop extends Component {
 
         const members = event.members && event.members.map(member => {
           return (
-            <li className="row qv-manage-member" key={member.user.userId}>
+            <li className="row qv-manage-member" key={member._id}>
               <div className="col-xs-2"><img alt="" src={member.user.picture} /></div>
               <div className="col-xs-6">{member.user.email}</div>
             </li>);

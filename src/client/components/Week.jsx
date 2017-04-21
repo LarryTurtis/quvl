@@ -3,20 +3,6 @@ import moment from 'moment';
 import Day from './Day';
 import connect from '../util/connect';
 
-const findEventGroups = (day, eventGroups) => {
-  let results = [];
-  eventGroups.forEach(group => {
-    const filtered = group.workshops.filter(event => moment(day).isSame(event.date, 'day'));
-    if (filtered.length) {
-      const added = filtered.map(item => {
-        return { ...item, name: group.name, groupId: group.groupId };
-      });
-      results = [...results, ...added];
-    }
-  });
-  return results;
-};
-
 class Week extends Component {
 
   static propTypes = {
@@ -24,7 +10,7 @@ class Week extends Component {
     currentYear: PropTypes.number,
     currentMonth: PropTypes.number,
     callback: PropTypes.func,
-    events: PropTypes.array,
+    events: PropTypes.object,
     selected: PropTypes.object
   };
 
@@ -40,7 +26,7 @@ class Week extends Component {
     const lastDay = new Date(this.props.currentYear, this.props.currentMonth + 1, 0);
     const days = this.props.week.map(day => {
       const isSelected = this.props.selected === day;
-      const events = this.props.events && findEventGroups(day, this.props.events);
+      const events = this.props.events && this.props.events[day];
       return (<td key={day.getTime()}>
         <Day
           callback={this.props.callback}

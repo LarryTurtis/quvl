@@ -4,6 +4,29 @@ import { listGroups } from '../actions/group';
 import Calendar from './Calendar';
 import Workshop from './Workshop';
 
+
+/**
+ * Transforms the groups object into an object with keys = dates.
+ * @param {*} day 
+ * @param {*} eventGroups 
+ */
+const transformEventGroups = (groups) => {
+  const results = {};
+  groups.forEach(group => {
+    group.workshops.forEach(workshop => {
+      const key = new Date(workshop.date);
+      const event = { ...workshop, name: group.name, groupId: group.groupId }
+      if (results[key]) {
+        results[key].push(event);
+      }
+      else {
+        results[key] = [event];
+      }
+    });
+  });
+  return results;
+};
+
 class WorkshopCalendar extends Component {
 
   static propTypes = {
@@ -29,6 +52,7 @@ class WorkshopCalendar extends Component {
   }
 
   handleWorkshopSelect = (date, events) => {
+    console.log(events)
     this.setState({
       events,
       date,
@@ -44,7 +68,7 @@ class WorkshopCalendar extends Component {
     }
 
     if (this.props.group && this.props.group.items) {
-      groups = this.props.group.items;
+      groups = transformEventGroups(this.props.group.items);
     }
 
     return (

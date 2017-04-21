@@ -24,7 +24,7 @@ class Calendar extends Component {
 
   static propTypes = {
     callback: PropTypes.func,
-    events: PropTypes.array
+    events: PropTypes.object
   };
 
   constructor(props) {
