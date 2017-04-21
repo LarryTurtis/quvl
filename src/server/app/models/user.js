@@ -9,7 +9,7 @@ const userSchema = mongoose.Schema({
   created_at: { type: Date, default: Date.now },
   last_login: { type: Date, default: Date.now },
   access_token: String,
-  email: String,
+  email: { type: String, unique: true },
   picture: String,
   local: {
     email: String,

@@ -22,24 +22,41 @@ const findUser = (id) =>
     });
   });
 
-const createUser = (email) =>
+const findUserByEmail = (email) =>
   new Promise((resolve, reject) => {
-    if (!validator.isEmail(email)) {
-      throw new Error('Not a valid email');
-    }
-    else {
-      const user = new User({
-        email, picture: `https://www.gravatar.com/avatar/${md5(email)}`
-      });
-      user.save((err, saved) => {
-        if (err) {
-          reject(err);
+    User.findOne({ email }, (err, user) => {
+      if (err) {
+        reject(err);
+      }
+      else {
+        resolve(user);
+      }
+    });
+  });
+
+const createUser = (email) =>
+  findUserByEmail(email).then(user => {
+    if (!user) {
+      return new Promise((resolve, reject) => {
+        if (!validator.isEmail(email)) {
+          throw new Error('Not a valid email');
         }
         else {
-          resolve(saved);
+          const newUser = new User({
+            email, picture: `https://www.gravatar.com/avatar/${md5(email)}`
+          });
+          newUser.save((err, saved) => {
+            if (err) {
+              reject(err);
+            }
+            else {
+              resolve(saved);
+            }
+          });
         }
       });
     }
+    return user;
   });
 
 export function listDocs(authorId) {
@@ -225,8 +242,13 @@ const getIdsByEmails = (emails) =>
   });
 
 const findNewUsers = (emails, users) => {
+  const dupes = {};
   const userEmails = users.map(user => user.email);
-  return emails.filter(email => userEmails.indexOf(email) < 0);
+  return emails.filter(email => {
+    const ok = !dupes[email] && userEmails.indexOf(email) < 0;
+    dupes[email] = true;
+    return ok;
+  });
 };
 
 export function findGroups(_id) {
@@ -294,13 +316,12 @@ const isAdmin = (members, userId) => members.some(member =>
   member.user._id.toString() === userId.toString()
   && member.admin);
 
-
 const isMember = (members, userId) => members.some(member =>
   member.user._id.toString() === userId.toString());
 
 export function addMember(groupId, member, userId) {
   const group = findGroup(groupId);
-  const user = member._id ? findUser(member._id) : createUser(member.email);
+  const user = createUser(member.email);
   return Promise.all([group, user])
     .then(results => {
       const foundGroup = results[0];
@@ -364,6 +385,7 @@ export function promoteMember(groupId, member, userId) {
 
 
 export function demoteMember(groupId, member, userId) {
+  // need to ensure creator always remains admin and can't demote himself (or be demoted)
   return findGroup(groupId)
     .then(foundGroup => {
       if (!isAdmin(foundGroup.members, userId)) {

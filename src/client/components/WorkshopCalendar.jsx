@@ -51,10 +51,19 @@ class WorkshopCalendar extends Component {
     this.props.listGroups();
   }
 
-  handleWorkshopSelect = (date, events) => {
-    console.log(events)
+  componentWillReceiveProps(props) {
+    if (props.group && props.group.items && props.group.items.length) {
+      const transformedGroups = transformEventGroups(props.group.items);
+      this.setState({
+        transformedGroups,
+        selectedEvent: transformedGroups[this.state.date]
+      });
+    }
+  }
+
+  handleWorkshopSelect = (date) => {
     this.setState({
-      events,
+      selectedEvent: this.state.transformedGroups[date],
       date,
       showWorkshop: true
     });
@@ -64,7 +73,7 @@ class WorkshopCalendar extends Component {
     let workshop;
     let groups;
     if (this.state.showWorkshop) {
-      workshop = (<Workshop date={this.state.date} events={this.state.events} />);
+      workshop = (<Workshop date={this.state.date} events={this.state.selectedEvent} />);
     }
 
     if (this.props.group && this.props.group.items) {

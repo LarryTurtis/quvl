@@ -101,11 +101,11 @@ class Calendar extends Component {
     });
   }
 
-  clickedDay = (day, events) => {
+  clickedDay = (day) => {
     const callback = this.props.callback;
     this.setState({ selected: day });
     if (callback) {
-      callback(day, events);
+      callback(day);
     }
   }
 

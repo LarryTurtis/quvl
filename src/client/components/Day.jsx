@@ -11,7 +11,7 @@ const Day = (props) => {
     moment(day).isSameOrAfter(props.today) &&
     moment(day).isSameOrAfter(props.firstDay) &&
     moment(day).isSameOrBefore(props.lastDay);
-  const handleClick = () => props.callback(day, props.events);
+  const handleClick = () => props.callback(day);
   const bound = isAfter ? handleClick : null;
 
   if (props.events && props.events.length) {
