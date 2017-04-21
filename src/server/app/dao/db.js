@@ -406,6 +406,8 @@ export function createWorkshop(group, date, slots, userId) {
 }
 
 export function addMemberToWorkshop(group, workshopId, userId) {
+  // need to check if user is already signed up.
+
   return new Promise((resolve, reject) => {
     Group.findOneAndUpdate(
       { groupId: group, 'members.user': userId, 'workshops._id': workshopId },
@@ -413,6 +415,9 @@ export function addMemberToWorkshop(group, workshopId, userId) {
         $push: {
           'workshops.$.members': { user: userId }
         }
+      },
+      {
+        new: true
       },
       (err, doc) => {
         if (err) {
