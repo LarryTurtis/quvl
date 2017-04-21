@@ -20,7 +20,7 @@ function getDaysInMonth(month, year) {
   return days;
 }
 
-class WorkshopCalendar extends Component {
+class Calendar extends Component {
 
   static propTypes = {
     callback: PropTypes.func,
@@ -154,4 +154,4 @@ class WorkshopCalendar extends Component {
   }
 }
 
-export default connect(WorkshopCalendar);
+export default connect(Calendar);

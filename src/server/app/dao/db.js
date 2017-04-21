@@ -233,6 +233,7 @@ export function findGroups(_id) {
   return new Promise((resolve, reject) => {
     Group.find({ 'members.user': _id })
       .populate({ path: 'members.user', model: 'User', select: 'userId picture email name' })
+      .populate({ path: 'workshops.members.user', model: 'User', select: 'userId picture email name' })
       .exec((err, success) => {
         if (err) {
           reject(err);
@@ -248,6 +249,7 @@ const findGroup = (groupId) =>
   new Promise((resolve, reject) => {
     Group.findOne({ groupId })
       .populate({ path: 'members.user', model: 'User', select: 'userId picture email name' })
+      .populate({ path: 'workshops.members.user', model: 'User', select: 'userId picture email name' })
       .exec((err, group) => {
         if (err) {
           reject(err);
@@ -406,11 +408,18 @@ export function createWorkshop(group, date, slots, userId) {
 }
 
 export function addMemberToWorkshop(group, workshopId, userId) {
-  // need to check if user is already signed up.
-
   return new Promise((resolve, reject) => {
     Group.findOneAndUpdate(
-      { groupId: group, 'members.user': userId, 'workshops._id': workshopId },
+      {
+        groupId: group,
+        'members.user': userId,
+        'workshops._id': workshopId,
+        workshops: {
+          $elemMatch: {
+            'members.user': { $ne: userId }
+          }
+        }
+      },
       {
         $push: {
           'workshops.$.members': { user: userId }
@@ -428,5 +437,15 @@ export function addMemberToWorkshop(group, workshopId, userId) {
         }
       }
     );
-  });
+  })
+    .then(saved => {
+      if (saved) {
+        const populateQuery = [
+          { path: 'members.user', model: 'User', select: 'userId picture email name' },
+          { path: 'workshops.members.user', model: 'User', select: 'userId picture email name' }
+        ];
+        return saved.populate(populateQuery).execPopulate();
+      }
+      return null;
+    });
 }

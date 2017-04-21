@@ -72,10 +72,7 @@ class Workshop extends Component {
     const groupId = this.state.selectedGroup;
     const date = this.state.date;
     const slots = this.state.slots;
-    this.props.createWorkshop(groupId, date, slots)
-      .then(() => {
-        this.setState({ showForm: false });
-      });
+    this.props.createWorkshop(groupId, date, slots);
   }
 
   render() {

@@ -73,9 +73,15 @@ const group = handleActions({
     ...state,
     isSending: true
   }),
-  UPDATE_WORKSHOP_COMPLETED: (state) => ({
+  UPDATE_WORKSHOP_COMPLETED: (state, action) => ({
     ...state,
-    isSending: false
+    isSending: false,
+    items: state.items.map(item => {
+      if (item.groupId === action.payload.groupId) {
+        return action.payload;
+      }
+      return item;
+    })
   }),
   UPDATE_WORKSHOP_FAILED: (state, action) => ({
     ...state,

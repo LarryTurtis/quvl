@@ -8,7 +8,10 @@ const findEventGroups = (day, eventGroups) => {
   eventGroups.forEach(group => {
     const filtered = group.workshops.filter(event => moment(day).isSame(event.date, 'day'));
     if (filtered.length) {
-      results = [...results, group];
+      const added = filtered.map(item => {
+        return { ...item, name: group.name, groupId: group.groupId };
+      });
+      results = [...results, ...added];
     }
   });
   return results;

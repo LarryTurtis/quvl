@@ -39,24 +39,29 @@ class Workshop extends Component {
     let eventList;
     if (this.state.events) {
       eventList = this.state.events.map(event => {
-        const workshops = event.workshops.map(workshop => {
-          const addMember = () => {
-            this.addMember(event.groupId, workshop._id);
-          };
+        const addMember = () => {
+          this.addMember(event.groupId, event._id);
+        };
+
+        const members = event.members && event.members.map(member => {
           return (
-            <li className="qv-workshop card" key={workshop._id}>
-              <p>Open Slots: {workshop.slots ? workshop.slots - workshop.members.length : 'Unlimited'}</p>
+            <li className="row qv-manage-member" key={member.user.userId}>
+              <div className="col-xs-2"><img alt="" src={member.user.picture} /></div>
+              <div className="col-xs-6">{member.user.email}</div>
+            </li>);
+        });
+
+        return (<li key={event._id}>
+          <ul className="card qv-workshop-details">
+            <li><h4>Group: {event.name}</h4></li>
+            <li className="qv-workshop card" key={event._id}>
+              <p>Open Slots: {event.slots ? event.slots - event.members.length : 'Unlimited'}</p>
+              <ul>{members}</ul>
               <ButtonToolbar>
                 <Button bsSize="xsmall" bsStyle="primary" onClick={addMember}>Sign Up</Button>
                 <Button bsSize="xsmall" bsStyle="danger">Delete</Button>
               </ButtonToolbar>
             </li>
-          );
-        });
-        return (<li key={event._id}>
-          <ul className="card qv-workshop-details">
-            <li><h4>Group: {event.name}</h4></li>
-            <ul>{workshops}</ul>
           </ul>
         </li>);
       });
