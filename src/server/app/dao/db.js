@@ -1,11 +1,14 @@
 import sanitizeHtml from 'sanitize-html';
 import validator from 'validator';
 import md5 from 'md5';
+import mongoose from 'mongoose';
 import User from '../models/user';
 import Doc from '../models/doc';
 import Group from '../models/group';
 import setRanges from './setRanges';
 import wrapTags from './wrapTags';
+
+const ObjectId = mongoose.Schema.ObjectId;
 
 const findUser = (id) =>
   new Promise((resolve, reject) => {
@@ -400,4 +403,25 @@ export function createWorkshop(group, date, slots, userId) {
         });
       });
     });
+}
+
+export function addMemberToWorkshop(group, workshopId, userId) {
+  return new Promise((resolve, reject) => {
+    Group.findOneAndUpdate(
+      { groupId: group, 'members.user': userId, 'workshops._id': workshopId },
+      {
+        $push: {
+          'workshops.$.members': { user: userId }
+        }
+      },
+      (err, doc) => {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(doc);
+        }
+      }
+    );
+  });
 }

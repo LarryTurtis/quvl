@@ -16,7 +16,7 @@ const groupSchema = mongoose.Schema({
     slots: Number,
     members: [{
       user: { type: String, ref: User },
-      submitted: Boolean,
+      submitted: { type: Boolean, default: false },
       doc: { type: String, ref: Doc }
     }]
   }]

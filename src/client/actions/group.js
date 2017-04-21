@@ -105,6 +105,7 @@ export function createWorkshop(groupId, date, slots) {
 }
 
 export function updateWorkshop(groupId, workshopId, data) {
+  console.log(groupId, workshopId, data)
   return (dispatch) => {
     const url = `/api/groups/${groupId}/workshops/${workshopId}`;
     const body = JSON.stringify(data);

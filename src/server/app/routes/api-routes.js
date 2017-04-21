@@ -10,7 +10,7 @@ import {
   promoteMember,
   demoteMember,
   createWorkshop,
-  listWorkshops
+  addMemberToWorkshop
 } from '../dao/db';
 
 const isLoggedIn = (req, res, next) => {
@@ -90,7 +90,9 @@ module.exports = (app) => {
   app.put('/api/groups/:groupId/workshops/:workshopId', isLoggedIn, (req, res, next) => {
     // update a workshop
     if (req.body.type === 'ADD_MEMBER') {
-
+      addMemberToWorkshop(req.params.groupId, req.params.workshopId, req.user._id)
+        .then(workshop => res.json(workshop))
+        .catch(next);
     }
     if (req.body.type === 'REMOVE_MEMBER') {
 
