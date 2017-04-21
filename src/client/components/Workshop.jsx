@@ -10,7 +10,6 @@ class Workshop extends Component {
 
   static propTypes = {
     date: PropTypes.object,
-    login: PropTypes.login,
     events: PropTypes.array,
     updateWorkshop: PropTypes.func
   };
@@ -18,10 +17,6 @@ class Workshop extends Component {
   static actionsToProps = {
     updateWorkshop
   };
-
-  static stateToProps = state => ({
-    login: state.login
-  });
 
   constructor(props) {
     super(props);
@@ -38,19 +33,12 @@ class Workshop extends Component {
   }
 
   render() {
-
     let eventList;
     if (this.state.events) {
       eventList = this.state.events.map(event => {
-
         const addMember = () => {
           this.addMember(event.groupId, event._id);
         };
-
-        const userIsAdmin = event.members.some(member =>
-          member.user._id === this.props.login.user._id
-          && member.admin
-        );
 
         const deleteButton = <Button bsSize="xsmall" bsStyle="danger">Delete</Button>;
 
@@ -70,7 +58,7 @@ class Workshop extends Component {
               <ul>{members}</ul>
               <ButtonToolbar>
                 <Button bsSize="xsmall" bsStyle="primary" onClick={addMember}>Sign Up</Button>
-                {userIsAdmin ? deleteButton : null}
+                {event.userIsAdmin ? deleteButton : null}
               </ButtonToolbar>
             </li>
           </ul>

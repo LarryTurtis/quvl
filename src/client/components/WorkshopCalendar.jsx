@@ -10,12 +10,17 @@ import Workshop from './Workshop';
  * @param {*} day 
  * @param {*} eventGroups 
  */
-const transformEventGroups = (groups) => {
+const transformEventGroups = (groups, user) => {
   const results = {};
   groups.forEach(group => {
     group.workshops.forEach(workshop => {
       const key = new Date(workshop.date);
-      const event = { ...workshop, name: group.name, groupId: group.groupId }
+      const userIsAdmin = group.members.some(member =>
+          member.user._id === user._id
+          && member.admin
+        );
+
+      const event = { ...workshop, name: group.name, groupId: group.groupId, userIsAdmin };
       if (results[key]) {
         results[key].push(event);
       }
@@ -31,7 +36,8 @@ class WorkshopCalendar extends Component {
 
   static propTypes = {
     listGroups: PropTypes.func,
-    group: PropTypes.object
+    group: PropTypes.object,
+    login: PropTypes.object
   };
 
   static actionsToProps = {
@@ -39,7 +45,8 @@ class WorkshopCalendar extends Component {
   };
 
   static stateToProps = state => ({
-    group: state.group
+    group: state.group,
+    login: state.login
   });
 
   constructor(props) {
@@ -53,7 +60,7 @@ class WorkshopCalendar extends Component {
 
   componentWillReceiveProps(props) {
     if (props.group && props.group.items && props.group.items.length) {
-      const transformedGroups = transformEventGroups(props.group.items);
+      const transformedGroups = transformEventGroups(props.group.items, props.login.user);
       this.setState({
         transformedGroups,
         selectedEvent: transformedGroups[this.state.date]
@@ -77,7 +84,7 @@ class WorkshopCalendar extends Component {
     }
 
     if (this.props.group && this.props.group.items) {
-      groups = transformEventGroups(this.props.group.items);
+      groups = transformEventGroups(this.props.group.items, this.props.login.user);
     }
 
     return (
