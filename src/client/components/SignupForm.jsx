@@ -80,10 +80,10 @@ class SignupForm extends Component {
               <input type="password" className="form-control" name="password" placeholder="Password" onChange={this.handlePasswordChange} />
             </div>
           </form>
-          <button className="btn btn-primary" data-dismiss="modal" onClick={this.handleLogin}>Login</button>
+          <button className="btn btn-primary" data-dismiss="modal" onClick={this.handleLogin}>Sign up</button>
           <hr />OR<hr />
-          <a href="/auth/facebook" className="btn btn-primary" data-dismiss="modal"><span className="fa fa-facebook" />Login with Facebook</a>
-          <a href="/auth/google" className="btn btn-danger" data-dismiss="modal"><span className="fa fa-google-plus" />Login with Google</a>
+          <a href="/auth/facebook" className="btn btn-primary" data-dismiss="modal"><span className="fa fa-facebook" />Sign up with Facebook</a>
+          <a href="/auth/google" className="btn btn-danger" data-dismiss="modal"><span className="fa fa-google-plus" />Sign up with Google</a>
         </div>
         <div className="col-sm-4" />
       </div>

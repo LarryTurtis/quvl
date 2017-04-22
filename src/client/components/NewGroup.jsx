@@ -63,10 +63,10 @@ class NewGroup extends Component {
         <h3>Create New Group</h3>
         <div className="form-group">
           {callout}
-          <label htmlFor="group" className="pt-label modifier">
+          <label htmlFor="group">
             Group Name:
           </label>
-          <div className="pt-input-group modifier">
+          <div className="form-group">
             <input
               className="form-control"
               type="text"
