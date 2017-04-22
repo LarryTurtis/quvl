@@ -471,3 +471,52 @@ export function addMemberToWorkshop(group, workshopId, userId) {
       return null;
     });
 }
+
+export function cancelWorkshop(groupId, workshopId, userId) {
+  return findGroup(groupId)
+    .then(foundGroup => {
+      if (!isAdmin(foundGroup.members, userId)) {
+        throw Error('Not Authorized');
+      }
+      return new Promise((resolve, reject) =>
+        Group.update({ groupId }, { $pull: { workshops: { _id: workshopId } } },
+          (err) => {
+            if (err) {
+              reject(err);
+            }
+            else {
+              resolve(groupId);
+            }
+          }));
+    })
+    .then(findGroup);
+}
+
+export function removeMemberFromWorkshop(groupId, workshopId, userId) {
+  return new Promise((resolve, reject) => {
+    Group.findOneAndUpdate(
+      {
+        groupId,
+        'workshops._id': workshopId
+      },
+      {
+        $pull: {
+          'workshops.$.members': { user: userId }
+        }
+      },
+      {
+        new: true
+      },
+      (err) => {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(groupId);
+        }
+      }
+    );
+  })
+    .then(findGroup);
+}
+

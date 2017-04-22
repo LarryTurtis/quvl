@@ -32,6 +32,16 @@ class Workshop extends Component {
     this.props.updateWorkshop(groupId, workshopId, data);
   }
 
+  removeMember(groupId, workshopId) {
+    const data = { type: 'REMOVE_MEMBER' };
+    this.props.updateWorkshop(groupId, workshopId, data);
+  }
+
+  cancelWorkshop(groupId, workshopId) {
+    const data = { type: 'CANCEL' };
+    this.props.updateWorkshop(groupId, workshopId, data);
+  }
+
   render() {
     let eventList;
     if (this.state.events) {
@@ -40,7 +50,17 @@ class Workshop extends Component {
           this.addMember(event.groupId, event._id);
         };
 
-        const deleteButton = <Button bsSize="xsmall" bsStyle="danger">Delete</Button>;
+        const cancel = () => {
+          this.cancelWorkshop(event.groupId, event._id);
+        };
+
+        const removeMember = () => {
+          this.removeMember(event.groupId, event._id);
+        };
+
+        const cancelButton = <Button bsSize="xsmall" bsStyle="danger" onClick={cancel}>Cancel</Button>;
+        const signupButton = <Button bsSize="xsmall" bsStyle="primary" onClick={addMember}>Sign Up</Button>;
+        const withdrawButton = <Button bsSize="xsmall" bsStyle="warning" onClick={removeMember}>Withdraw</Button>;
 
         const members = event.members && event.members.map(member => {
           return (
@@ -52,13 +72,13 @@ class Workshop extends Component {
 
         return (<li key={event._id}>
           <ul className="card qv-workshop-details">
-            <li><h4>Group: {event.name}</h4></li>
-            <li className="qv-workshop card" key={event._id}>
+            <li><p>Group: {event.name}</p></li>
+            <li>
               <p>Open Slots: {event.slots ? event.slots - event.members.length : 'Unlimited'}</p>
               <ul>{members}</ul>
               <ButtonToolbar>
-                <Button bsSize="xsmall" bsStyle="primary" onClick={addMember}>Sign Up</Button>
-                {event.userIsAdmin ? deleteButton : null}
+                {event.userIsMember ? withdrawButton : signupButton}
+                {event.userIsAdmin ? cancelButton : null}
               </ButtonToolbar>
             </li>
           </ul>

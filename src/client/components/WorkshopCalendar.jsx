@@ -14,13 +14,22 @@ const transformEventGroups = (groups, user) => {
   const results = {};
   groups.forEach(group => {
     group.workshops.forEach(workshop => {
-      const key = new Date(workshop.date);
       const userIsAdmin = group.members.some(member =>
-          member.user._id === user._id
-          && member.admin
-        );
+        member.user._id === user._id
+        && member.admin
+      );
 
-      const event = { ...workshop, name: group.name, groupId: group.groupId, userIsAdmin };
+      const userIsMember = workshop.members.some(member => member.user._id === user._id);
+
+      const event = {
+        ...workshop,
+        name: group.name,
+        groupId: group.groupId,
+        userIsAdmin,
+        userIsMember
+      };
+
+      const key = new Date(workshop.date);
       if (results[key]) {
         results[key].push(event);
       }
@@ -89,7 +98,7 @@ class WorkshopCalendar extends Component {
 
     return (
       <div className="row">
-        <div className="col-xs-6">
+        <div className="card col-xs-6">
           <Calendar callback={this.handleWorkshopSelect} events={groups} />
         </div>
         <div className="col-xs-6">

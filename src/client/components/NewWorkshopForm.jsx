@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react';
+import { Button, ButtonToolbar } from 'react-bootstrap';
 import connect from '../util/connect';
 import { createWorkshop } from '../actions/group';
 import Callout from './Callout';
+import './NewWorkshopForm.styl'
 
 const filterGroups = ({ items }, { user }) => items.filter(item =>
   item.members.some(member =>
@@ -98,7 +100,7 @@ class Workshop extends Component {
     }
 
     const button = (<button onClick={this.showForm} className="btn btn-default">Schedule Workshop</button>);
-    const form = (<form onSubmit={this.handleSubmit}>
+    const form = (<form className="qv-newworkshop card" onSubmit={this.handleSubmit}>
       <h3>Schedule Workshop</h3>
       {callout}
       <label htmlFor="group">
@@ -126,8 +128,10 @@ class Workshop extends Component {
           onChange={this.handleSlotsChange}
         />
       </div>
-      <button type="submit" className="btn btn-default">Save</button>
-      <button onClick={this.hideForm} className="btn btn-default">Cancel</button>
+      <ButtonToolbar>
+        <Button type="submit" bsStyle="primary">Save</Button>
+        <Button onClick={this.hideForm}>Cancel</Button>
+      </ButtonToolbar>
     </form>);
 
     if (groups) {

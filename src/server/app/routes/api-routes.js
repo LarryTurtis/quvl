@@ -10,7 +10,9 @@ import {
   promoteMember,
   demoteMember,
   createWorkshop,
-  addMemberToWorkshop
+  addMemberToWorkshop,
+  cancelWorkshop,
+  removeMemberFromWorkshop
 } from '../dao/db';
 
 const isLoggedIn = (req, res, next) => {
@@ -95,7 +97,9 @@ module.exports = (app) => {
         .catch(next);
     }
     if (req.body.type === 'REMOVE_MEMBER') {
-
+      removeMemberFromWorkshop(req.params.groupId, req.params.workshopId, req.user._id)
+        .then(workshop => res.json(workshop))
+        .catch(next);
     }
     if (req.body.type === 'SUBMIT') {
 
@@ -104,7 +108,9 @@ module.exports = (app) => {
 
     }
     if (req.body.type === 'CANCEL') {
-
+      cancelWorkshop(req.params.groupId, req.params.workshopId, req.user._id)
+        .then(workshop => res.json(workshop))
+        .catch(next);
     }
     if (req.body.type === 'ADD_SLOT') {
 
