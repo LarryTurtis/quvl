@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 import Shell from './Shell';
 import Login from './Login';
+import Home from './Home';
 import Signup from './Signup';
 import DocList from './components/DocList';
 import Doc from './components/Doc';
@@ -20,6 +21,7 @@ const routes = [
     <Route path="/newgroup" component={NewGroup} />
     <Route path="/workshops" component={WorkshopCalendar} />
     <Route path="/doc/:authorId/:docId" component={Doc} />
+    <IndexRoute component={Home} />
   </Route>
 ];
 
