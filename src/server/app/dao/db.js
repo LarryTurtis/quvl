@@ -256,6 +256,7 @@ export function findGroups(_id) {
     Group.find({ 'members.user': _id })
       .populate({ path: 'members.user', model: 'User', select: 'userId picture email name' })
       .populate({ path: 'workshops.members.user', model: 'User', select: 'userId picture email name' })
+      .populate({ path: 'workshops.members.doc', model: 'Doc' })
       .exec((err, success) => {
         if (err) {
           reject(err);
@@ -272,6 +273,7 @@ const findGroup = (groupId) =>
     Group.findOne({ groupId })
       .populate({ path: 'members.user', model: 'User', select: 'userId picture email name' })
       .populate({ path: 'workshops.members.user', model: 'User', select: 'userId picture email name' })
+      .populate({ path: 'workshops.members.doc', model: 'Doc' })
       .exec((err, group) => {
         if (err) {
           reject(err);
@@ -464,7 +466,8 @@ export function addMemberToWorkshop(group, workshopId, userId) {
       if (saved) {
         const populateQuery = [
           { path: 'members.user', model: 'User', select: 'userId picture email name' },
-          { path: 'workshops.members.user', model: 'User', select: 'userId picture email name' }
+          { path: 'workshops.members.user', model: 'User', select: 'userId picture email name' },
+          { path: 'workshops.members.Doc', model: 'Doc' }
         ];
         return saved.populate(populateQuery).execPopulate();
       }
@@ -520,3 +523,48 @@ export function removeMemberFromWorkshop(groupId, workshopId, userId) {
     .then(findGroup);
 }
 
+export function submitDocToWorkshop(groupId, workshopId, docId, userId) {
+  console.log(workshopId)
+  return new Promise((resolve, reject) => {
+    Group.findOneAndUpdate(
+      {
+        groupId,
+        'members.user': userId,
+        'workshops._id': workshopId,
+        workshops: {
+          $elemMatch: {
+            'members.user': userId
+          }
+        }
+      },
+      {
+        $set: {
+          'workshops.$.members.$': { submitted: true, doc: docId }
+        }
+      },
+      {
+        new: true
+      },
+      (err, doc) => {
+        console.log(err, doc)
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(doc);
+        }
+      }
+    );
+  })
+    .then(saved => {
+      if (saved) {
+        const populateQuery = [
+          { path: 'members.user', model: 'User', select: 'userId picture email name' },
+          { path: 'workshops.members.user', model: 'User', select: 'userId picture email name' },
+          { path: 'workshops.members.doc', model: 'Doc' }
+        ];
+        return saved.populate(populateQuery).execPopulate();
+      }
+      return null;
+    });
+}

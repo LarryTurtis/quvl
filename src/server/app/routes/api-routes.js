@@ -12,7 +12,8 @@ import {
   createWorkshop,
   addMemberToWorkshop,
   cancelWorkshop,
-  removeMemberFromWorkshop
+  removeMemberFromWorkshop,
+  submitDocToWorkshop
 } from '../dao/db';
 
 const isLoggedIn = (req, res, next) => {
@@ -102,7 +103,9 @@ module.exports = (app) => {
         .catch(next);
     }
     if (req.body.type === 'SUBMIT') {
-
+      submitDocToWorkshop(req.params.groupId, req.params.workshopId, req.body.docId, req.user._id)
+        .then(workshop => res.json(workshop))
+        .catch(next);
     }
     if (req.body.type === 'RESCHEDULE') {
 

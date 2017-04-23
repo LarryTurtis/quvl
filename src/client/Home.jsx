@@ -1,9 +1,10 @@
 import React, { Component, PropTypes } from 'react';
-import { Button, ButtonToolbar } from 'react-bootstrap';
+import { Modal, Button, ButtonToolbar } from 'react-bootstrap';
 import moment from 'moment';
 import Moment from 'react-moment';
 import connect from './util/connect';
-import { listGroups } from './actions/group';
+import { listGroups, updateWorkshop } from './actions/group';
+import { listDocs } from './actions/doc';
 import './Home.styl';
 
 /**
@@ -15,9 +16,7 @@ const transformEventGroups = (groups, user) => {
   const results = [];
   groups.forEach(group => {
     group.workshops.forEach(workshop => {
-
       const next30 = moment().add(30, 'days');
-
       if (moment(workshop.date).isSameOrBefore(next30) &&
         moment(workshop.date).isSameOrAfter()) {
         const userIsAdmin = group.members.some(member =>
@@ -25,7 +24,11 @@ const transformEventGroups = (groups, user) => {
           && member.admin
         );
         const userIsMember = workshop.members.some(member => member.user._id === user._id);
-        const userHasSubmitted = workshop.members.some(member => member.user._id === user._id && member.user.submitted);
+        const userHasSubmitted = workshop.members.some(
+          member =>
+            member.user._id === user._id &&
+            member.user.submitted
+        );
 
         results.push({
           ...workshop,
@@ -50,17 +53,23 @@ class Home extends Component {
 
   static propTypes = {
     listGroups: PropTypes.func,
+    listDocs: PropTypes.func,
+    updateWorkshop: PropTypes.func,
     group: PropTypes.object,
-    login: PropTypes.object
+    login: PropTypes.object,
+    doc: PropTypes.object
   };
 
   static actionsToProps = {
-    listGroups
+    listGroups,
+    listDocs,
+    updateWorkshop
   };
 
   static stateToProps = state => ({
     group: state.group,
-    login: state.login
+    login: state.login,
+    doc: state.doc
   });
 
   constructor(props) {
@@ -70,10 +79,17 @@ class Home extends Component {
 
   componentWillMount() {
     this.props.listGroups();
+    this.props.listDocs();
   }
 
   componentWillReceiveProps(props) {
-    if (props.login && props.login.user && props.group && props.group.items && props.group.items.length) {
+    if (
+      props.login &&
+      props.login.user &&
+      props.group &&
+      props.group.items &&
+      props.group.items.length
+    ) {
       const transformedGroups = transformEventGroups(props.group.items, props.login.user);
       this.setState({
         transformedGroups
@@ -81,22 +97,76 @@ class Home extends Component {
     }
   }
 
-  submitDoc = (groupId, workshopId) => {
-
+  submitDoc = (e) => {
+    e.preventDefault();
+    const data = { type: 'SUBMIT', docId: this.state.selected.docId };
+    this.props.updateWorkshop(this.state.selected.groupId, this.state.selected.workshopId, data);
   }
 
   removeDoc = (groupId, workshopId) => {
 
   }
 
+  showSubmitForm = (groupId, workshopId) => {
+    this.setState({
+      selected: {
+        groupId,
+        workshopId
+      }
+    });
+    this.setState({ visible: true });
+  }
+
+  hideSubmitForm = () => {
+    this.setState({ visible: false });
+  }
+
+  handleDocSelect = (e) => {
+    e.preventDefault();
+    this.setState({
+      selected: {
+        ...this.state.selected,
+        docId: e.target.value
+      }
+    });
+  }
+
   render() {
     let groups;
+    let options = [<option key="0" value={false}>None</option>];
+
+    if (this.props.doc && this.props.doc.items && this.props.doc.items.length) {
+      options = options.concat(this.props.doc.items.map(doc =>
+        <option key={doc._id} value={doc._id}>{doc.name}</option>
+      ));
+    }
+
+    const modal = (<Modal bsSize="small" show={this.state.visible} onHide={this.hideSubmitForm} aria-labelledby="contained-modal-title-sm">
+      <form onSubmit={this.submitDoc}>
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-sm">Submit Document</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="form-group">
+            <label htmlFor="comment">Member:</label>
+            <select type="email" className="form-control" required placeholder="name@email.com" onChange={this.handleDocSelect}>
+              {options}
+            </select>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={this.hideSubmitForm}>Cancel</Button>
+          <Button type="submit">Save</Button>
+        </Modal.Footer>
+      </form>
+    </Modal>);
+
     if (this.state.transformedGroups) {
       groups = this.state.transformedGroups.map(workshop => {
         let buttons;
         const members = workshop.members.map(member => {
-          const submitDoc = () => {
-            this.submitDoc(workshop.groupId, workshop._id);
+          const showSubmitForm = () => {
+            this.showSubmitForm(workshop.groupId, workshop._id);
           };
 
           const removeDoc = () => {
@@ -106,7 +176,7 @@ class Home extends Component {
           const submitted = <p>Submitted <span className="glyphicon glyphicon-star" /></p>;
           const notSubmitted = <p>Not Submitted <span className="glyphicon glyphicon-warning-sign" /></p>;
 
-          const submitButton = <Button bsSize="xsmall" bsStyle="primary" onClick={submitDoc}>Submit</Button>;
+          const submitButton = <Button bsSize="xsmall" bsStyle="primary" onClick={showSubmitForm}>Submit</Button>;
           const withdrawButton = <Button bsSize="xsmall" bsStyle="warning" onClick={removeDoc}>Withdraw</Button>;
 
           if (workshop.userIsMember) {
@@ -148,10 +218,10 @@ class Home extends Component {
         <ul>
           {groups}
         </ul>
+        {modal}
       </div>
     );
   }
-
 }
 
 export default connect(Home);
