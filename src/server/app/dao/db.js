@@ -256,7 +256,6 @@ export function findGroups(_id) {
     Group.find({ 'members.user': _id })
       .populate({ path: 'members.user', model: 'User', select: 'userId picture email name' })
       .populate({ path: 'workshops.members.user', model: 'User', select: 'userId picture email name' })
-      .populate({ path: 'workshops.members.doc', model: 'Doc' })
       .exec((err, success) => {
         if (err) {
           reject(err);
@@ -273,7 +272,6 @@ const findGroup = (groupId) =>
     Group.findOne({ groupId })
       .populate({ path: 'members.user', model: 'User', select: 'userId picture email name' })
       .populate({ path: 'workshops.members.user', model: 'User', select: 'userId picture email name' })
-      .populate({ path: 'workshops.members.doc', model: 'Doc' })
       .exec((err, group) => {
         if (err) {
           reject(err);
@@ -466,8 +464,7 @@ export function addMemberToWorkshop(group, workshopId, userId) {
       if (saved) {
         const populateQuery = [
           { path: 'members.user', model: 'User', select: 'userId picture email name' },
-          { path: 'workshops.members.user', model: 'User', select: 'userId picture email name' },
-          { path: 'workshops.members.Doc', model: 'Doc' }
+          { path: 'workshops.members.user', model: 'User', select: 'userId picture email name' }
         ];
         return saved.populate(populateQuery).execPopulate();
       }
@@ -524,9 +521,8 @@ export function removeMemberFromWorkshop(groupId, workshopId, userId) {
 }
 
 export function submitDocToWorkshop(groupId, workshopId, docId, userId) {
-  console.log(workshopId)
   return new Promise((resolve, reject) => {
-    Group.findOneAndUpdate(
+    Group.findOne(
       {
         groupId,
         'members.user': userId,
@@ -537,17 +533,8 @@ export function submitDocToWorkshop(groupId, workshopId, docId, userId) {
           }
         }
       },
-      {
-        $set: {
-          'workshops.$.members.$': { submitted: true, doc: docId }
-        }
-      },
-      {
-        new: true
-      },
       (err, doc) => {
-        console.log(err, doc)
-        if (err) {
+        if (err || !doc) {
           reject(err);
         }
         else {
@@ -556,12 +543,35 @@ export function submitDocToWorkshop(groupId, workshopId, docId, userId) {
       }
     );
   })
+
+    // this BS approach is necessary because mongodb does not support positional $ on
+    // nested arrays
+    .then(found => new Promise((resolve, reject) => {
+      found.workshops.forEach(workshop => {
+        if (workshop._id.toString() === workshopId) {
+          workshop.members.forEach(member => {
+            if (member.user === userId.toString()) {
+              member.doc = docId;
+              member.submitted = true;
+              found.markModified('workshops');
+              found.save((err, saved) => {
+                if (err) {
+                  reject(err);
+                }
+                else {
+                  resolve(saved);
+                }
+              });
+            }
+          });
+        }
+      });
+    }))
     .then(saved => {
       if (saved) {
         const populateQuery = [
           { path: 'members.user', model: 'User', select: 'userId picture email name' },
-          { path: 'workshops.members.user', model: 'User', select: 'userId picture email name' },
-          { path: 'workshops.members.doc', model: 'Doc' }
+          { path: 'workshops.members.user', model: 'User', select: 'userId picture email name' }
         ];
         return saved.populate(populateQuery).execPopulate();
       }

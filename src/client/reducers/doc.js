@@ -23,6 +23,7 @@ const docReducer = handleActions({
   LIST_DOCS_COMPLETED: (state, action) => ({
     ...state,
     isSending: false,
+    error: null,
     items: action.payload
   }),
   LIST_DOCS_FAILED: (state, action) => ({
@@ -37,6 +38,7 @@ const docReducer = handleActions({
   GET_DOC_COMPLETED: (state, action) => ({
     ...state,
     isSending: false,
+    error: null,
     current: action.payload
   }),
   GET_DOC_FAILED: (state, action) => ({

@@ -24,6 +24,7 @@ const group = handleActions({
   LIST_GROUP_COMPLETED: (state, action) => ({
     ...state,
     isSending: false,
+    error: null,
     items: action.payload
   }),
   LIST_GROUP_FAILED: (state, action) => ({

@@ -78,6 +78,16 @@ class Doc extends Component {
   }
 
   render() {
+    const failure = (
+      <div className="row">
+        <h1>Error: Document does not exist</h1>
+      </div>
+    );
+
+    if (this.props.doc.error) {
+      return failure;
+    }
+
     const doc = this.props.doc.current;
     let addCommentButton;
     let comments;
@@ -95,7 +105,7 @@ class Doc extends Component {
       />);
     }
 
-    return (
+    const success = (
       <div className="row">
         <h1>{doc && doc.name}</h1>
         <div id="content" className="card col-sm-9" dangerouslySetInnerHTML={this.getMarkup(doc && doc.revisions[doc.revisions.length - 1].doc)} />
@@ -105,6 +115,8 @@ class Doc extends Component {
         {addCommentButton}
       </div>
     );
+
+    return success;
   }
 }
 

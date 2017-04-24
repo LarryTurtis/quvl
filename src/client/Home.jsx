@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Modal, Button, ButtonToolbar } from 'react-bootstrap';
+import { Link } from 'react-router';
 import moment from 'moment';
 import Moment from 'react-moment';
 import connect from './util/connect';
@@ -100,7 +101,10 @@ class Home extends Component {
   submitDoc = (e) => {
     e.preventDefault();
     const data = { type: 'SUBMIT', docId: this.state.selected.docId };
-    this.props.updateWorkshop(this.state.selected.groupId, this.state.selected.workshopId, data);
+    this.props.updateWorkshop(this.state.selected.groupId, this.state.selected.workshopId, data)
+      .then(() => {
+        this.hideSubmitForm();
+      });
   }
 
   removeDoc = (groupId, workshopId) => {
@@ -137,7 +141,7 @@ class Home extends Component {
 
     if (this.props.doc && this.props.doc.items && this.props.doc.items.length) {
       options = options.concat(this.props.doc.items.map(doc =>
-        <option key={doc._id} value={doc._id}>{doc.name}</option>
+        <option key={doc._id} value={doc.docId}>{doc.name}</option>
       ));
     }
 
@@ -179,6 +183,8 @@ class Home extends Component {
           const submitButton = <Button bsSize="xsmall" bsStyle="primary" onClick={showSubmitForm}>Submit</Button>;
           const withdrawButton = <Button bsSize="xsmall" bsStyle="warning" onClick={removeDoc}>Withdraw</Button>;
 
+          const linkToSubmission = <Link to={`/doc/${member.user.userId}/${member.doc}`}>Review Submission</Link>;
+
           if (workshop.userIsMember) {
             buttons = (
               <ButtonToolbar>
@@ -194,6 +200,7 @@ class Home extends Component {
             <div className="media-body">
               <h4 className="media-heading comment-heading">{member.user.email}</h4>
               {member.submitted ? submitted : notSubmitted}
+              {member.submitted ? linkToSubmission : ''}
             </div>
           </div>
           </li>);
