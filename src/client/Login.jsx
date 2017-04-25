@@ -10,7 +10,8 @@ class Login extends Component {
 
   static propTypes = {
     checkLogin: PropTypes.func,
-    push: PropTypes.func
+    push: PropTypes.func,
+    seeking: PropTypes.string
   };
 
   static actionsToProps = {
@@ -28,7 +29,7 @@ class Login extends Component {
     this.props.checkLogin()
       .then((response) => {
         if (!response.error) {
-          this.props.push('/');
+          this.props.push(props.seeking || '/');
         }
       });
   }

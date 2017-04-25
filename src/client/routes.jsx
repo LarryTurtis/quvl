@@ -11,10 +11,15 @@ import NewGroup from './components/NewGroup';
 import GroupList from './components/GroupList';
 import WorkshopCalendar from './components/WorkshopCalendar';
 
+let seekingRoute;
+function findNext(nextState) {
+  seekingRoute = nextState.location.pathname;
+}
+
 const routes = [
-  <Route path="/login" component={Login} />,
+  <Route path="/login" component={() => (<Login seeking={seekingRoute} />)} />,
   <Route path="/signup" component={Signup} />,
-  <Route path="/" component={Shell}>
+  <Route path="/" onEnter={findNext} component={Shell}>
     <Route path="/newdoc" component={NewDoc} />
     <Route path="/mydocs" component={DocList} />
     <Route path="/groups" component={GroupList} />
