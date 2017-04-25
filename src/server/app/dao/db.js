@@ -137,9 +137,20 @@ export function saveDoc(req, res) {
     });
 }
 
+function isMemberOfGroup(userId, groupId) {
+  return new Promise(resolve => {
+    Group.findOne({ groupId, 'members.user': userId }, (err, doc) => {
+      resolve(err || doc);
+    });
+  });
+}
+
 function canView(user, doc) {
-  const email = user.email;
-  return (doc.sharedWith.indexOf(email) >= 0 || doc.authorId === user.userId);
+  if (doc.authorId === user.userId) {
+    return new Promise(resolve => resolve(true));
+  }
+  const promises = doc.sharedWith.map(groupId => isMemberOfGroup(user._id, groupId));
+  return Promise.all(promises).then(results => results.some(x => x));
 }
 
 function getDoc(authorId, docId) {
@@ -158,10 +169,15 @@ function getDoc(authorId, docId) {
 }
 
 export function getDocForCommenting(user, authorId, docId) {
+  let foundDoc;
   return getDoc(authorId, docId)
     .then(doc => {
-      if (canView(user, doc)) {
-        return doc;
+      foundDoc = doc;
+      return canView(user, foundDoc);
+    })
+    .then(foundUser => {
+      if (foundUser) {
+        return foundDoc;
       }
       throw new Error('Unauthorized');
     });
@@ -567,14 +583,24 @@ export function submitDocToWorkshop(groupId, workshopId, docId, userId) {
         }
       });
     }))
-    .then(saved => {
-      if (saved) {
-        const populateQuery = [
-          { path: 'members.user', model: 'User', select: 'userId picture email name' },
-          { path: 'workshops.members.user', model: 'User', select: 'userId picture email name' }
-        ];
-        return saved.populate(populateQuery).execPopulate();
-      }
-      return null;
-    });
+    .then(() => new Promise((resolve, reject) =>
+      Doc.findOneAndUpdate(
+        {
+          docId
+        },
+        {
+          $push: {
+            sharedWith: groupId
+          }
+        },
+        (err) => {
+          if (err) {
+            reject(err);
+          }
+          else {
+            resolve(groupId);
+          }
+        })
+    ))
+    .then(findGroup);
 }
