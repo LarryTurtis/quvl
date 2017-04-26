@@ -14,12 +14,36 @@ class Comments extends Component {
     this.state = {};
   }
 
+  hoveredComment = (selected) => {
+    this.setState({ selected });
+    commentMouseEnter(selected);
+  }
+
+  unhoveredComment = (selected) => {
+    if (this.state.selected === selected) {
+      this.setState({ selected: null });
+      commentMouseLeave(selected);
+    }
+  }
+
   render() {
     let comments = [];
     if (this.props.children) {
-      comments = this.props.children.map(comment =>
-        (<li key={comment.commentId} onMouseEnter={commentMouseEnter} onMouseLeave={commentMouseLeave}>
-          <div className="media card comment" data-id={`${comment.author.userId}-${comment.commentId}`}>
+      comments = this.props.children.map(comment => {
+        const dataId = `${comment.author.userId}-${comment.commentId}`;
+        const hover = () => {
+          this.hoveredComment(dataId);
+        };
+        const unhover = () => {
+          this.unhoveredComment(dataId);
+        };
+        const classes = `media card comment ${this.state.selected === dataId ? 'highlight' : ''}`;
+        return (<li
+          key={comment.commentId}
+          onMouseEnter={hover}
+          onMouseLeave={unhover}
+        >
+          <div className={classes} data-id={dataId}>
             <div className="media-left">
               <img alt="" className="media-object" src={comment.author.picture} />
             </div>
@@ -30,7 +54,9 @@ class Comments extends Component {
             </div>
             {comment.content}
           </div>
-        </li>));
+        </li>
+        );
+      });
     }
 
     return (

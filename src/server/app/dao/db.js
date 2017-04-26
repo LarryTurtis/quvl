@@ -189,7 +189,7 @@ export function getDocForCommenting(user, authorId, docId) {
  * @type {RegExp}
  */
 function sortComments(content) {
-  var regex = /data-comment-id="([0-9]+)"/g;
+  var regex = /data-id="[0-9-]+([0-9]+)"/g;
   var seen = {}
   var counter = 0;
   var m;
@@ -225,6 +225,12 @@ export function updateDoc(authorId, docId, user, nodes, content) {
 
       doc.comments.push({ commentId, author: user._id.toString(), docId, content });
       doc.revisions.push(newRevision);
+
+      const indexes = sortComments(newRevision.doc);
+      doc.comments.forEach(comment => {
+        comment.index = indexes[comment.commentId];
+      });
+      doc.comments.sort((a, b) => a.index - b.index);
 
       return new Promise((resolve, reject) => {
         doc.save((err, success) => {

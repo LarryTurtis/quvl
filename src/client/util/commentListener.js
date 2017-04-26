@@ -1,17 +1,18 @@
-const commentMouseEnter = (e) => {
-  const id = e.target.getAttribute('data-id');
+const commentMouseEnter = (id) => {
+  console.log(id)
   if (id) {
-    const el = document.querySelector(`[data-id="${id}"]`);
-    el.classList.add('highlight');
+    const el = document.querySelectorAll(`[data-id~="${id}"]`);
+    el.forEach(item => {
+      item.classList.add('highlight');
+    });
   }
 };
 
-const commentMouseLeave = (e) => {
-  const id = e.target.getAttribute('data-id');
-  if (id) {
-    const el = document.querySelector(`[data-id="${id}"]`);
-    el.classList.remove('highlight');
-  }
+const commentMouseLeave = (id) => {
+  const el = document.querySelectorAll(`[data-id~="${id}"]`);
+  el.forEach(item => {
+    item.classList.remove('highlight');
+  });
 };
 
 export { commentMouseEnter, commentMouseLeave };

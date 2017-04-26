@@ -12,4 +12,6 @@ const commentSchema = mongoose.Schema({
   index: Number
 });
 
+commentSchema.index({ index: 1 });
+
 export default commentSchema;
