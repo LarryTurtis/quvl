@@ -17,7 +17,7 @@ var wrapBoth = (node, operation) => {
 
   if (node.nodeName === 'quvl-tag' && start === operation.start && end === operation.end) {
     const oldId = parse5Utils.getAttribute(node, 'data-id');
-    parse5Utils.setAttribute(node, 'data-id', `* ${oldId}`);
+    parse5Utils.setAttribute(node, 'data-id', `${oldId} *`);
   }
   else {
     parse5Utils.removeAttribute(node, "data-range");

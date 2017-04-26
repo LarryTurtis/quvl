@@ -50,7 +50,7 @@ class Header extends Component {
 
     let rightLinks = (
       <Nav bsStyle="pills" className="navbar-right">
-        <LinkContainer onClick={this.handleLogout}><NavItem>Log out</NavItem></LinkContainer>
+        <NavItem onClick={this.handleLogout}>Log out</NavItem>
       </Nav>);
 
     if (!this.props.user) {
