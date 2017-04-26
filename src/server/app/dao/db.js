@@ -604,3 +604,74 @@ export function submitDocToWorkshop(groupId, workshopId, docId, userId) {
     ))
     .then(findGroup);
 }
+
+export function removeDocFromWorkshop(groupId, workshopId, userId) {
+  let docId;
+  return new Promise((resolve, reject) => {
+    Group.findOne(
+      {
+        groupId,
+        'members.user': userId,
+        'workshops._id': workshopId,
+        workshops: {
+          $elemMatch: {
+            'members.user': userId
+          }
+        }
+      },
+      (err, doc) => {
+        if (err || !doc) {
+          reject(err);
+        }
+        else {
+          resolve(doc);
+        }
+      }
+    );
+  })
+
+    // this BS approach is necessary because mongodb does not support positional $ on
+    // nested arrays
+    .then(found => new Promise((resolve, reject) => {
+      found.workshops.forEach(workshop => {
+        if (workshop._id.toString() === workshopId) {
+          workshop.members.forEach(member => {
+            if (member.user === userId.toString()) {
+              docId = member.doc;
+              member.doc = undefined;
+              member.submitted = false;
+              found.markModified('workshops');
+              found.save((err, saved) => {
+                if (err) {
+                  reject(err);
+                }
+                else {
+                  resolve(saved);
+                }
+              });
+            }
+          });
+        }
+      });
+    }))
+    .then(() => new Promise((resolve, reject) =>
+      Doc.findOneAndUpdate(
+        {
+          docId
+        },
+        {
+          $pull: {
+            sharedWith: groupId
+          }
+        },
+        (err) => {
+          if (err) {
+            reject(err);
+          }
+          else {
+            resolve(groupId);
+          }
+        })
+    ))
+    .then(findGroup);
+}

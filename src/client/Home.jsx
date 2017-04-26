@@ -28,7 +28,7 @@ const transformEventGroups = (groups, user) => {
         const userHasSubmitted = workshop.members.some(
           member =>
             member.user._id === user._id &&
-            member.user.submitted
+            member.submitted
         );
 
         results.push({
@@ -107,8 +107,12 @@ class Home extends Component {
       });
   }
 
-  removeDoc = (groupId, workshopId) => {
-
+  withdrawDoc = (groupId, workshopId) => {
+    const data = { type: 'WITHDRAW' };
+    this.props.updateWorkshop(groupId, workshopId, data)
+      .then(() => {
+        this.hideSubmitForm();
+      });
   }
 
   showSubmitForm = (groupId, workshopId) => {
@@ -173,15 +177,15 @@ class Home extends Component {
             this.showSubmitForm(workshop.groupId, workshop._id);
           };
 
-          const removeDoc = () => {
-            this.removeDoc(workshop.groupId, workshop._id);
+          const withdrawDoc = () => {
+            this.withdrawDoc(workshop.groupId, workshop._id);
           };
 
           const submitted = <p>Submitted <span className="glyphicon glyphicon-star" /></p>;
           const notSubmitted = <p>Not Submitted <span className="glyphicon glyphicon-warning-sign" /></p>;
 
           const submitButton = <Button bsSize="xsmall" bsStyle="primary" onClick={showSubmitForm}>Submit</Button>;
-          const withdrawButton = <Button bsSize="xsmall" bsStyle="warning" onClick={removeDoc}>Withdraw</Button>;
+          const withdrawButton = <Button bsSize="xsmall" bsStyle="warning" onClick={withdrawDoc}>Withdraw</Button>;
 
           const linkToSubmission = <Link to={`/doc/${member.user.userId}/${member.doc}`}>Review Submission</Link>;
 
