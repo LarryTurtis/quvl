@@ -31,10 +31,12 @@ class DocList extends Component {
 
   render() {
     let docs;
-    if (this.props.doc.items) {
+    if (this.props.doc.items && this.props.doc.items.length) {
       docs = this.props.doc.items.map(item => (
         <li value={item.docId} key={item.docId}><Link to={`/doc/${this.props.user.userId}/${item.docId}`}>{item.name}</Link></li>
       ));
+    } else {
+      docs = <li>You have not created any documents yet. <Link to="/newdoc">Create one now?</Link></li>;
     }
     return (
       <ul>

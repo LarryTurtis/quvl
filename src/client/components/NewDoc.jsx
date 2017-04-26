@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { push } from 'react-router-redux';
+import { Button, ButtonToolbar } from 'react-bootstrap';
 import TinyMCE from 'react-tinymce';
 import connect from '../util/connect';
 import { createDoc } from '../actions/doc';
@@ -47,22 +48,27 @@ class NewDoc extends Component {
   render() {
     return (
       <div>
-        <h3>
-          <input
-            name="docname"
-            className="form-control"
-            type="text"
-            placeholder="Untitled"
-            onChange={this.handleNameChange}
-          />
-        </h3>
-        <TinyMCE
-          config={{
-            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
-          }}
-          onChange={this.handleEditorChange}
-        />
-        <button className="btn btn-primary" onClick={this.handleSubmit}>Save</button>
+        <h4>New Document</h4>
+        <form>
+          <div className="form-group">
+            <h3>
+              <input
+                name="docname"
+                className="form-control"
+                type="text"
+                placeholder="Untitled"
+                onChange={this.handleNameChange}
+              />
+            </h3>
+            <TinyMCE
+              config={{
+                toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
+              }}
+              onChange={this.handleEditorChange}
+            />
+          </div>
+          <Button bsStyle="primary" onClick={this.handleSubmit}>Save</Button>
+        </form>
       </div>
     );
   }

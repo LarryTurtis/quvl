@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { push } from 'react-router-redux';
+import { Button } from 'react-bootstrap';
 import connect from '../util/connect';
 import { createGroup } from '../actions/group';
 import Callout from './Callout';
@@ -9,6 +10,7 @@ class NewGroup extends Component {
 
   static propTypes = {
     createGroup: PropTypes.func,
+    push: PropTypes.func,
     group: PropTypes.object
   };
 
@@ -88,9 +90,9 @@ class NewGroup extends Component {
               onChange={this.handleEmailChange}
             />
           </div>
-          <button type="submit" className="btn btn-default">
+          <Button type="submit" bsStyle="primary">
             Save
-          </button>
+          </Button>
         </div>
       </form>
     );

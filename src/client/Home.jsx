@@ -142,19 +142,13 @@ class Home extends Component {
 
   render() {
     let groups;
-    let options = [<option key="0" value={false}>None</option>];
+    let docList;
 
     if (this.props.doc && this.props.doc.items && this.props.doc.items.length) {
-      options = options.concat(this.props.doc.items.map(doc =>
+      const options = options.concat(this.props.doc.items.map(doc =>
         <option key={doc._id} value={doc.docId}>{doc.name}</option>
       ));
-    }
-
-    const modal = (<Modal bsSize="small" show={this.state.visible} onHide={this.hideSubmitForm} aria-labelledby="contained-modal-title-sm">
-      <form onSubmit={this.submitDoc}>
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-sm">Submit Document</Modal.Title>
-        </Modal.Header>
+      docList = (<div>
         <Modal.Body>
           <div className="form-group">
             <label htmlFor="comment">Member:</label>
@@ -167,6 +161,23 @@ class Home extends Component {
           <Button onClick={this.hideSubmitForm}>Cancel</Button>
           <Button type="submit">Save</Button>
         </Modal.Footer>
+      </div>);
+    }
+    else {
+      docList = (<Modal.Body>
+        You have no saved documents.
+        <br />
+        <Link to="/newdoc">Create one now ?</Link>
+      </Modal.Body>);
+    }
+
+
+    const modal = (<Modal bsSize="small" show={this.state.visible} onHide={this.hideSubmitForm} aria-labelledby="contained-modal-title-sm">
+      <form onSubmit={this.submitDoc}>
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-sm">Submit Document</Modal.Title>
+        </Modal.Header>
+        {docList}
       </form>
     </Modal>);
 

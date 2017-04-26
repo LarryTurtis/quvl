@@ -72,14 +72,14 @@ class Workshop extends Component {
 
         return (<li key={event._id}>
           <ul className="card qv-workshop-details">
-            <li><p>Group: {event.name}</p></li>
+            <li><p>Group: {event.name}
+              {event.userIsMember ? withdrawButton : signupButton}
+              {event.userIsAdmin ? cancelButton : null}
+            </p>
+            </li>
             <li>
               <p>Open Slots: {event.slots ? event.slots - event.members.length : 'Unlimited'}</p>
               <ul>{members}</ul>
-              <ButtonToolbar>
-                {event.userIsMember ? withdrawButton : signupButton}
-                {event.userIsAdmin ? cancelButton : null}
-              </ButtonToolbar>
             </li>
           </ul>
         </li>);
