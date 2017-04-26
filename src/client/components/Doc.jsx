@@ -94,15 +94,14 @@ class Doc extends Component {
   handleClick = (e) => {
     clearHighlighted();
     const els = findParents(e.target);
+    let arr = [];
     els.forEach(el => {
       const id = el.getAttribute('data-id');
       if (id) {
-        const arr = id.split(' ');
-        arr.forEach(item => {
-          highlightSelected(item);
-        });
+        arr = [...arr, id.split(' ')];
       }
     });
+    highlightSelected(arr);
   };
 
   render() {

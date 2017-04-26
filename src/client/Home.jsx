@@ -145,9 +145,9 @@ class Home extends Component {
     let docList;
 
     if (this.props.doc && this.props.doc.items && this.props.doc.items.length) {
-      const options = options.concat(this.props.doc.items.map(doc =>
+      const options = this.props.doc.items.map(doc =>
         <option key={doc._id} value={doc.docId}>{doc.name}</option>
-      ));
+      );
       docList = (<div>
         <Modal.Body>
           <div className="form-group">

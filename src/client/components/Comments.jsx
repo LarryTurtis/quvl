@@ -16,9 +16,9 @@ class Comments extends Component {
   }
 
   handleClick = (selected) => {
-    this.setState({ selected });
     clearHighlighted();
-    highlightSelected(selected);
+    highlightSelected([selected]);
+    this.setState({ selected });
   }
 
   render() {
