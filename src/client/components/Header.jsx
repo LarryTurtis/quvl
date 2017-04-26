@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Navbar, NavDropdown, Nav, NavItem, MenuItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 import { push } from 'react-router-redux';
+import { LinkContainer } from 'react-router-bootstrap';
 import connect from '../util/connect';
 import { doLogout } from '../actions/login';
 import './Header.styl';
@@ -33,14 +34,14 @@ class Header extends Component {
     let leftLinks = (
       <Nav bsStyle="pills">
         <NavDropdown title="Documents" id="documents">
-          <MenuItem><Link to="/mydocs">My Documents</Link></MenuItem>
-          <MenuItem><Link to="/newdoc">New Document</Link></MenuItem>
+          <LinkContainer to="/mydocs"><MenuItem>My Documents</MenuItem></LinkContainer>
+          <LinkContainer to="/newdoc"><MenuItem>New Document</MenuItem></LinkContainer>
         </NavDropdown>
         <NavDropdown title="Groups" id="groups">
-          <MenuItem><Link to="/groups">My Groups</Link></MenuItem>
-          <MenuItem><Link to="/newgroup">New Group</Link></MenuItem>
+          <LinkContainer to="/groups"><MenuItem>My Groups</MenuItem></LinkContainer>
+          <LinkContainer to="/newgroup"><MenuItem>New Group</MenuItem></LinkContainer>
         </NavDropdown>
-        <NavItem><Link to="/workshops">Workshop Calendar</Link></NavItem>
+        <LinkContainer to="/workshops"><NavItem>Workshop Calendar</NavItem></LinkContainer>
       </Nav>);
 
     if (!this.props.user) {
@@ -49,14 +50,14 @@ class Header extends Component {
 
     let rightLinks = (
       <Nav bsStyle="pills" className="navbar-right">
-        <NavItem><Link onClick={this.handleLogout}>Log out</Link></NavItem>
+        <LinkContainer onClick={this.handleLogout}><NavItem>Log out</NavItem></LinkContainer>
       </Nav>);
 
     if (!this.props.user) {
       rightLinks = (
         <Nav pullRight bsStyle="pills">
-          <NavItem><Link to="/signup">Sign up</Link></NavItem>
-          <NavItem><Link to="/login">Log in</Link></NavItem>
+          <LinkContainer to="/signup"><NavItem>Sign up</NavItem></LinkContainer>
+          <LinkContainer to="/login"><NavItem>Log in</NavItem></LinkContainer>
         </Nav>
       );
     }

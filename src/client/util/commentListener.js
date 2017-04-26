@@ -1,5 +1,4 @@
-const commentMouseEnter = (id) => {
-  console.log(id)
+const highlightSelected = (id) => {
   if (id) {
     const el = document.querySelectorAll(`[data-id~="${id}"]`);
     el.forEach(item => {
@@ -8,11 +7,19 @@ const commentMouseEnter = (id) => {
   }
 };
 
-const commentMouseLeave = (id) => {
+const dehighlightSelected = (id) => {
   const el = document.querySelectorAll(`[data-id~="${id}"]`);
   el.forEach(item => {
     item.classList.remove('highlight');
   });
 };
 
-export { commentMouseEnter, commentMouseLeave };
+const clearHighlighted = () => {
+  const el = document.querySelectorAll('[data-id]');
+  el.forEach(item => {
+    item.classList.remove('highlight');
+  });
+};
+
+
+export { highlightSelected, dehighlightSelected, clearHighlighted };

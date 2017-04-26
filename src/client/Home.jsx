@@ -18,8 +18,9 @@ const transformEventGroups = (groups, user) => {
   groups.forEach(group => {
     group.workshops.forEach(workshop => {
       const next30 = moment().add(30, 'days');
+      const today = new Date().setHours(0, 0, 0, 0);
       if (moment(workshop.date).isSameOrBefore(next30) &&
-        moment(workshop.date).isSameOrAfter()) {
+        moment(workshop.date).isSameOrAfter(today)) {
         const userIsAdmin = group.members.some(member =>
           member.user._id === user._id
           && member.admin

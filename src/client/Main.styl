@@ -1,3 +1,8 @@
+primary = #026AA7
+highlight = #5e98ba
+secondary = #ffab4a
+tertiary = #2acce5
+
 @font-face {
     font-family: "ACaslonPro-Regular";
     src: url('../../assets/fonts/ACaslonPro-Regular.otf') format('opentype');
@@ -25,7 +30,7 @@ body.qv
     font-family: 'Roboto', sans-serif
 
 ::selection {
-  background: #00c496; 
+  background: tertiary;
 }
 
 li {
@@ -77,42 +82,4 @@ ul {
     clear: both;
     padding-top: 20px;
     text-align: center;
-}
-
-.select {
-    cursor: pointer;
-    background-color: #33C395;
-    border-top: 8px solid #33C395;
-}
-
-quvl-tag.highlight {
-    cursor: pointer;
-    background-color: rgba(223, 52, 48, 1)!important;
-}
-
-.highlight {
-    transform: translate(-5%, 0px);
-}
-
-quvl-tag {
-    cursor: pointer;
-    background-color: rgba(223, 52, 48, 0.3);
-}
-
-.addComment {
-    margin-bottom: 15px;
-}
-
-#addCommentButton {
-    margin-bottom: 15px;
-}
-
-.comment {
-    transition: all 100ms;
-    margin-bottom: 10px;
-    padding: 10px;
-}
-
-.comment img {
-    width: 32px;
 }

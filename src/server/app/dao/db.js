@@ -206,13 +206,13 @@ function sortComments(content) {
   return seen;
 }
 
-function createNewRevision(requested, operations, commentId, authorId) {
+function createNewRevision(requested, operations, commentId, commentAuthorId) {
   const latestRevisionId = requested.revisions.length - 1;
   const saved = requested.revisions[latestRevisionId].doc;
   const id = latestRevisionId + 1;
 
   let doc = wrapTags(saved, operations);
-  doc = doc.replace(/data-id="\*/g, `data-id="${authorId}-${commentId}`);
+  doc = doc.replace(/data-id="\*/g, `data-id="${commentAuthorId}-${commentId}`);
 
   return { id, doc, operations };
 }
@@ -221,7 +221,8 @@ export function updateDoc(authorId, docId, user, nodes, content) {
   return getDocForCommenting(user, authorId, docId)
     .then(doc => {
       const commentId = doc.comments.length;
-      const newRevision = createNewRevision(doc, nodes, commentId, authorId);
+      const commentAuthorId = user.userId;
+      const newRevision = createNewRevision(doc, nodes, commentId, commentAuthorId);
 
       doc.comments.push({ commentId, author: user._id.toString(), docId, content });
       doc.revisions.push(newRevision);

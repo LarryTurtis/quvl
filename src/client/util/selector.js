@@ -37,7 +37,7 @@ function wrapNode(node) {
     const rect = wrapper.getBoundingClientRect();
     center = {
       x: rect.left + ((rect.right - rect.left) / 2),
-      y: rect.top
+      y: rect.top + window.scrollY
     };
   }
   else if (node === range.endContainer
@@ -109,9 +109,8 @@ function addComment(element) {
     const rect = wrapper.getBoundingClientRect();
     center = {
       x: rect.left + ((rect.right - rect.left) / 2),
-      y: rect.top
+      y: rect.top + window.scrollY
     };
-
     const localRange = parent.getAttribute('data-range').split('-');
     if (localRange) {
       wrappedNodes.push({

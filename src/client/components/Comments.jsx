@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import Moment from 'react-moment';
 import connect from '../util/connect';
-import { commentMouseEnter, commentMouseLeave } from '../util/commentListener';
+import { highlightSelected, clearHighlighted } from '../util/commentListener';
+import './Comments.styl';
 
 class Comments extends Component {
 
@@ -14,16 +15,10 @@ class Comments extends Component {
     this.state = {};
   }
 
-  hoveredComment = (selected) => {
+  handleClick = (selected) => {
     this.setState({ selected });
-    commentMouseEnter(selected);
-  }
-
-  unhoveredComment = (selected) => {
-    if (this.state.selected === selected) {
-      this.setState({ selected: null });
-      commentMouseLeave(selected);
-    }
+    clearHighlighted();
+    highlightSelected(selected);
   }
 
   render() {
@@ -31,17 +26,13 @@ class Comments extends Component {
     if (this.props.children) {
       comments = this.props.children.map(comment => {
         const dataId = `${comment.author.userId}-${comment.commentId}`;
-        const hover = () => {
-          this.hoveredComment(dataId);
-        };
-        const unhover = () => {
-          this.unhoveredComment(dataId);
+        const handleClick = () => {
+          this.handleClick(dataId);
         };
         const classes = `media card comment ${this.state.selected === dataId ? 'highlight' : ''}`;
         return (<li
           key={comment.commentId}
-          onMouseEnter={hover}
-          onMouseLeave={unhover}
+          onClick={handleClick}
         >
           <div className={classes} data-id={dataId}>
             <div className="media-left">

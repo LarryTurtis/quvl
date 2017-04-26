@@ -5,6 +5,20 @@ import { saveComment } from '../actions/comment';
 import Comments from './Comments';
 import AddComment from './AddComment';
 import Selector from '../util/selector';
+import { highlightSelected, clearHighlighted } from '../util/commentListener';
+import './Doc.styl';
+
+function findParents(node) {
+  const results = [];
+  while (node != null) {
+    const attribute = node.getAttribute && node.getAttribute('data-id');
+    if (attribute) {
+      results.push(node);
+    }
+    node = node.parentNode;
+  }
+  return results;
+}
 
 class Doc extends Component {
 
@@ -77,6 +91,20 @@ class Doc extends Component {
     this.selector.on();
   }
 
+  handleClick = (e) => {
+    clearHighlighted();
+    const els = findParents(e.target);
+    els.forEach(el => {
+      const id = el.getAttribute('data-id');
+      if (id) {
+        const arr = id.split(' ');
+        arr.forEach(item => {
+          highlightSelected(item);
+        });
+      }
+    });
+  };
+
   render() {
     const failure = (
       <div className="row">
@@ -106,9 +134,12 @@ class Doc extends Component {
     }
 
     const success = (
-      <div className="row">
+      <div className="row" onClick={this.handleClick}>
         <h1>{doc && doc.name}</h1>
-        <div id="content" className="card col-sm-9" dangerouslySetInnerHTML={this.getMarkup(doc && doc.revisions[doc.revisions.length - 1].doc)} />
+        <div id="content"
+          className="card col-sm-9"
+          dangerouslySetInnerHTML={this.getMarkup(doc && doc.revisions[doc.revisions.length - 1].doc)}
+        />
         <div id="comments" className="col-sm-3">
           {comments}
         </div>
