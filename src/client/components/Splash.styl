@@ -1,16 +1,79 @@
-.qv-splash
-  padding: 3em 1em
-  font-family: 'Fredoka One'
-  text-align: center
-  margin-top: -20px
-  background: white
-  width: 100%
+primary = #026AA7
+highlight = #5e98ba
+secondary = #ffab4a
+tertiary = #2acce5
+svgorange = #F8AF3E
 
-.typewriter
-  background-image: url('../../../assets/typewriter.jpg')
+.qv-logo
+  font-family: 'Fredoka One'
+
+.qv-first
+    background: white
+
+.qv-jumbo
+  justify-content: center
+  div
+    padding-left: 1em
+    padding-right: 1em
+  h1
+    font-size: 50px
+    font-family: 'Baloo'
+    span.qv-logo
+      color: primary
+  color: black
+  height: 500px
+
+.qv-splash
+    font-family: 'Raleway-Light'
+    font-size: 24px
+  .qv-splash-nav
+    font-size: 24px
+    padding-left: 1em
+    background: primary
+    a, a:active, a:visited, a:hover
+      background: primary!important
+      color: white
+
+.qv-tryit
+  background: svgorange
+  color: white
+  box-shadow: 1px 1px 3px #e1e1e1
+  border-radius: 15px
+  padding: 5px 20px
+  font-family: Baloo
+  font-size: 20px
+  cursor: pointer
+
+.writing
+  background-image: url('../../../assets/writing.svg')
+  background-color: tertiary
   background-position-x: left
   background-position-y: center
-  background-size: cover
+  background-size: contain
   background-repeat-x: no-repeat
   background-repeat-y: no-repeat
   height: 500px
+
+.typewriter
+  background-image: url('../../../assets/typewriter.svg')
+  background-color: svgorange
+  background-position-x: left
+  background-position-y: center
+  background-size: contain
+  background-repeat-x: no-repeat
+  background-repeat-y: no-repeat
+  height: 500px
+
+.book
+  background-image: url('../../../assets/book.svg')
+  background-color: white
+  background-position-x: center
+  background-position-y: center
+  background-size: contain
+  background-repeat-x: no-repeat
+  background-repeat-y: no-repeat
+  height: 500px
+
+.vertical-align
+    display: flex
+    align-items: center

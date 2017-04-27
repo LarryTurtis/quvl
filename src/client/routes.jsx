@@ -10,6 +10,7 @@ import NewDoc from './components/NewDoc';
 import NewGroup from './components/NewGroup';
 import GroupList from './components/GroupList';
 import Dashboard from './components/Dashboard';
+import Splash from './components/Splash';
 import WorkshopCalendar from './components/WorkshopCalendar';
 
 let seekingRoute;
@@ -20,6 +21,7 @@ function findNext(nextState) {
 const routes = [
   <Route path="/login" component={() => (<Login seeking={seekingRoute} />)} />,
   <Route path="/signup" component={Signup} />,
+  <Route path="/splash" component={Splash} />,
   <Route path="/" onEnter={findNext} component={Shell}>
     <Route path="/newdoc" component={NewDoc} />
     <Route path="/mydocs" component={DocList} />
@@ -27,6 +29,7 @@ const routes = [
     <Route path="/newgroup" component={NewGroup} />
     <Route path="/workshops" component={WorkshopCalendar} />
     <Route path="/doc/:authorId/:docId" component={Doc} />
+    <Route path="/dashboard" component={Dashboard} />
     <IndexRoute component={Home} />
   </Route>
 ];

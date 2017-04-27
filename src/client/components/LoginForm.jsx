@@ -38,7 +38,7 @@ class LoginForm extends Component {
         const type = user.error ? Callout.failure : Callout.success;
         const message = user.error ? FAIL : SUCCESS;
         this.setState({ callout: { type, message } });
-        this.props.replace('/');
+        this.props.replace('/dashboard');
       });
   }
 

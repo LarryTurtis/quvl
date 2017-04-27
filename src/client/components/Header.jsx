@@ -66,7 +66,7 @@ class Header extends Component {
       <Navbar className="qv-header">
         <Navbar.Header>
           <Navbar.Brand>
-            <Link to="/" className="navbar-brand">QUVL</Link>
+            <Link to="/dashboard" className="navbar-brand">QUVL</Link>
           </Navbar.Brand>
         </Navbar.Header>
         {leftLinks}
