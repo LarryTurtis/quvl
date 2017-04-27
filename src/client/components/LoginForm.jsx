@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { ButtonToolbar } from 'react-bootstrap';
 import { replace } from 'react-router-redux';
 import connect from '../util/connect';
 import Callout from '../components/Callout';
@@ -82,8 +83,10 @@ class LoginForm extends Component {
           </form>
           <button className="btn btn-primary" data-dismiss="modal" onClick={this.handleLogin}>Login</button>
           <hr />OR<hr />
+          <ButtonToolbar>
           <a href="/auth/facebook" className="btn btn-primary" data-dismiss="modal"><span className="fa fa-facebook" />Login with Facebook</a>
           <a href="/auth/google" className="btn btn-danger" data-dismiss="modal"><span className="fa fa-google-plus" />Login with Google</a>
+          </ButtonToolbar>
         </div>
         <div className="col-sm-4" />
       </div>

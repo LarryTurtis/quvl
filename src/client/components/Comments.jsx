@@ -35,6 +35,8 @@ class Comments extends Component {
           onClick={handleClick}
         >
           <div className={classes} data-id={dataId}>
+            <div className="qv-triangle" />
+            <div className="qv-triangle inner" />
             <div className="media-left">
               <img alt="" className="media-object" src={comment.author.picture} />
             </div>

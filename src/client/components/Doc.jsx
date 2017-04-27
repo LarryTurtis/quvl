@@ -1,11 +1,12 @@
 import React, { Component, PropTypes } from 'react';
+import { Button } from 'react-bootstrap';
 import connect from '../util/connect';
 import { getDoc } from '../actions/doc';
 import { saveComment } from '../actions/comment';
 import Comments from './Comments';
 import AddComment from './AddComment';
 import Selector from '../util/selector';
-import { highlightSelected, clearHighlighted } from '../util/commentListener';
+import { highlightSelected, clearHighlighted, showAllComments, hideAllComments } from '../util/commentListener';
 import './Doc.styl';
 
 function findParents(node) {
@@ -40,7 +41,9 @@ class Doc extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      commentsVisible: true
+    };
   }
 
   componentWillMount = () => {
@@ -92,17 +95,29 @@ class Doc extends Component {
   }
 
   handleClick = (e) => {
-    clearHighlighted();
-    const els = findParents(e.target);
-    let arr = [];
-    els.forEach(el => {
-      const id = el.getAttribute('data-id');
-      if (id) {
-        arr = [...arr, id.split(' ')];
-      }
-    });
-    highlightSelected(arr);
+    if (this.state.commentsVisible) {
+      clearHighlighted();
+      const els = findParents(e.target);
+      let arr = [];
+      els.forEach(el => {
+        const id = el.getAttribute('data-id');
+        if (id) {
+          arr = [...arr, id.split(' ')];
+        }
+      });
+      highlightSelected(arr);
+    }
   };
+
+  toggleComments = () => {
+    if (!this.state.commentsVisible) {
+      showAllComments();
+    }
+    else {
+      hideAllComments();
+    }
+    this.setState({ commentsVisible: !this.state.commentsVisible });
+  }
 
   render() {
     const failure = (
@@ -134,12 +149,14 @@ class Doc extends Component {
 
     const success = (
       <div className="row" onClick={this.handleClick}>
+        <Button onClick={this.toggleComments}>{this.state.commentsVisible ? 'Hide Comments' : 'Show Comments'}</Button>
         <h1>{doc && doc.name}</h1>
-        <div id="content"
-          className="card col-sm-9"
+        <div
+          id="content"
+          className={`card ${this.state.commentsVisible ? 'col-sm-9' : 'col-sm-12'}`}
           dangerouslySetInnerHTML={this.getMarkup(doc && doc.revisions[doc.revisions.length - 1].doc)}
         />
-        <div id="comments" className="col-sm-3">
+        <div id="comments" className={this.state.commentsVisible ? 'col-sm-3' : 'hidden-sm hidden-xs hidden-md hidden-lg'}>
           {comments}
         </div>
         {addCommentButton}
