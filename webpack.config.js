@@ -37,7 +37,8 @@ const config = {
       },
       {
         include: /\.json$/, loaders: ['json-loader']
-      }
+      },
+      { test: /\.jpg$/, loader: 'file' }
     ]
   },
   plugins: [

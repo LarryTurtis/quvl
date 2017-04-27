@@ -9,6 +9,7 @@ import Doc from './components/Doc';
 import NewDoc from './components/NewDoc';
 import NewGroup from './components/NewGroup';
 import GroupList from './components/GroupList';
+import Dashboard from './components/Dashboard';
 import WorkshopCalendar from './components/WorkshopCalendar';
 
 let seekingRoute;

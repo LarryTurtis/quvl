@@ -39,9 +39,9 @@ class Shell extends Component {
 
   redirectIfNotAuthenticated(user) {
     // If the user is not logged in, if their token has expired, redirect to login.
-    if (!user) {
-      this.props.replace('/login');
-    }
+    // if (!user) {
+    //   this.props.replace('/login');
+    // }
   }
 
   render() {
