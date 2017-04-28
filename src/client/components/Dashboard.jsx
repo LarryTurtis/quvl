@@ -101,6 +101,7 @@ class Dashboard extends Component {
 
   submitDoc = (e) => {
     e.preventDefault();
+    console.log(this.state);
     const data = { type: 'SUBMIT', docId: this.state.selected.docId };
     this.props.updateWorkshop(this.state.selected.groupId, this.state.selected.workshopId, data)
       .then(() => {

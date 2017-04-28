@@ -29,7 +29,7 @@ class Login extends Component {
     this.props.checkLogin()
       .then((response) => {
         if (!response.error) {
-          this.props.push(props.seeking || '/');
+          this.props.push(props.seeking || '/dashboard');
         }
       });
   }

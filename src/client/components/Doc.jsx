@@ -149,7 +149,7 @@ class Doc extends Component {
 
     const success = (
       <div className="row" onClick={this.handleClick}>
-        <Button onClick={this.toggleComments}>{this.state.commentsVisible ? 'Hide Comments' : 'Show Comments'}</Button>
+        {/*<Button onClick={this.toggleComments}>{this.state.commentsVisible ? 'Hide Comments' : 'Show Comments'}</Button>*/}
         <h1>{doc && doc.name}</h1>
         <div
           id="content"
