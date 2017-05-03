@@ -55,6 +55,13 @@ app.use(express.static(config.output.publicPath));
 
 // required for passport
 app.use(session({ secret: 'm00k13bL@yLoc' })); // session secret
+const MongoStore = require('connect-mongo')(session);
+
+app.use(session({
+  secret: 'foo',
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
+}));
+
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
