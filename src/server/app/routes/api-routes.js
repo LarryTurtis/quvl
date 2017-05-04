@@ -16,6 +16,10 @@ import {
   submitDocToWorkshop,
   removeDocFromWorkshop
 } from '../dao/db';
+import ses from '../ses';
+import Mailer from '../Mailer';
+
+const sesMailer = new Mailer(ses);
 
 const isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -51,6 +55,11 @@ module.exports = (app) => {
     const emails = req.body.emails.split(',').map(email => email.trim());
     createGroup(_id, name, emails)
       .then(doc => res.json(doc))
+      .then(() => {
+        emails.forEach(email => {
+          sesMailer.sendInvite(email, req.user.email);
+        });
+      })
       .catch(next);
   });
 

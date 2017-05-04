@@ -37,15 +37,17 @@ class Comments extends Component {
           <div className={classes} data-id={dataId}>
             <div className="qv-triangle" />
             <div className="qv-triangle inner" />
-            <div className="media-left">
-              <img alt="" className="media-object" src={comment.author.picture} />
+            <div className="media-body-container">
+              <div className="media-left">
+                <img alt="" className="media-object" src={comment.author.picture} />
+              </div>
+              <div className="media-body">
+                <p className="media-heading comment-heading">{comment.author.email}<br />
+                  <span className="date"><Moment format="h:mma MM/DD/YY">{comment.created_at}</Moment></span>
+                </p>
+              </div>
+              {comment.content}
             </div>
-            <div className="media-body">
-              <h4 className="media-heading comment-heading">{comment.author.email}<br />
-                <span className="date"><Moment format="h:mma MM/DD/YY">{comment.created_at}</Moment></span>
-              </h4>
-            </div>
-            {comment.content}
           </div>
         </li>
         );

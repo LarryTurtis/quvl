@@ -41,7 +41,10 @@ class Header extends Component {
           <LinkContainer to="/groups"><MenuItem>My Groups</MenuItem></LinkContainer>
           <LinkContainer to="/newgroup"><MenuItem>New Group</MenuItem></LinkContainer>
         </NavDropdown>
-        <LinkContainer to="/workshops"><NavItem>Workshop Calendar</NavItem></LinkContainer>
+        <NavDropdown title="Workshops" id="workshops">
+          <LinkContainer to="/dashboard"><MenuItem>Upcoming</MenuItem></LinkContainer>
+          <LinkContainer to="/workshops"><MenuItem>Calendar</MenuItem></LinkContainer>
+        </NavDropdown>
       </Nav>);
 
     if (!this.props.user) {

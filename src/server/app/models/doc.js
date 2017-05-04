@@ -23,7 +23,7 @@ const docSchema = mongoose.Schema({
 docSchema.plugin(autoIncrement.plugin, {
   model: 'Doc',
   field: 'docId',
-  startAt: 0,
+  startAt: 1,
   incrementBy: 1
 });
 

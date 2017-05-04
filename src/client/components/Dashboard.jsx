@@ -235,10 +235,19 @@ class Dashboard extends Component {
           </li>);
       });
     }
+    else {
+      groups = (
+        <div className="qv-newuser card">
+          <h3>Welcome to quvl!</h3>
+          <p>In order to get started, you first need to <Link to="/newgroup">create a writing group.</Link></p>
+          <p>then, you can <Link to="/newdoc">create a new document.</Link></p>
+          <p>finally, <Link to="/workshops">schedule a workshop.</Link></p>
+        </div>
+      );
+    }
 
     return (
       <div>
-        Upcoming Workshops
         <ul>
           {groups}
         </ul>

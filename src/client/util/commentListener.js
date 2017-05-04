@@ -1,5 +1,5 @@
 
-const OFFSET = 173;
+const OFFSET = 139;
 
 const highlightSelected = (arr) => {
   let translateAmount = 0;
