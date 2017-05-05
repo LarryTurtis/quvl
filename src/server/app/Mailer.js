@@ -12,7 +12,7 @@ class Mailer {
     // TODO: Replace with verified production email address.
     const options = {
       to,
-      from: 'garykertis@gmail.com',
+      from: `${inviter} <no-reply@quvl.io>`,
       title: 'Invitation To Quvl',
       // TODO: Replace with proper formatted HTML doc & link.
       message: templates.newGroup(to, LINK, inviter, name)
