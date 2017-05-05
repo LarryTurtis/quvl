@@ -57,7 +57,7 @@ module.exports = (app) => {
       .then(doc => res.json(doc))
       .then(() => {
         emails.forEach(email => {
-          sesMailer.sendInvite(email, req.user.email);
+          sesMailer.sendInvite(email, req.user.email, name);
         });
       })
       .catch(next);

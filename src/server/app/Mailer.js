@@ -1,19 +1,21 @@
-const LINK = 'https://quvl.io/';
+import templates from './templates';
+
+const LINK = 'https://quvl.io/signup';
+
 
 class Mailer {
   constructor(ses) {
     this.ses = ses;
   }
 
-  sendInvite(to, inviter) {
+  sendInvite(to, inviter, name) {
     // TODO: Replace with verified production email address.
     const options = {
       to,
       from: 'garykertis@gmail.com',
       title: 'Invitation To Quvl',
       // TODO: Replace with proper formatted HTML doc & link.
-      message: `<p>You have been invited by ${inviter} to join a writing group on ` +
-      `<a href="${LINK}">QUVL.</a></p>`
+      message: templates.newGroup(to, LINK, inviter, name)
     };
     return this.send(options);
   }
