@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Glyphicon, Button, Nav, NavItem, Grid, Row, Col } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { push } from 'react-router-redux';
-import { checkLogin } from '../actions/login';
+import { checkLogin, doLogin } from '../actions/login';
 import connect from '../util/connect';
 import './Splash.styl';
 
@@ -10,6 +10,7 @@ class Splash extends Component {
 
   static propTypes = {
     checkLogin: PropTypes.func,
+    doLogin: PropTypes.func,
     user: PropTypes.object,
     push: PropTypes.func,
     seeking: PropTypes.string
@@ -17,12 +18,20 @@ class Splash extends Component {
 
   static actionsToProps = {
     checkLogin,
+    doLogin,
     push
   };
 
   static stateToProps = state => ({
     user: state.login
   });
+
+  demoLogin = () => {
+    this.props.doLogin('demouser@demo.com', 'gary')
+      .then(() => {
+        this.props.push('/dashboard');
+      });
+  }
 
   constructor(props) {
     super(props);
@@ -64,10 +73,10 @@ class Splash extends Component {
               <Col sm={6} className="book" />
             </Row>
             <Row className="qv-second">
-              <p><h3>Quvl saves every comment in a single document, so reviewing feedback is simple.
+              <div className="h3"><p>Quvl saves every comment in a single document, so reviewing feedback is simple.
             Hide comments from other members, and be sure you&#39;re getting unbiased
-            responses to your work.</h3>
-              </p>
+            responses to your work.</p></div>
+              <p className="qv-tryit"><Button onClick={this.demoLogin}>View Demo Site</Button></p>
             </Row>
             <Row className="qv-second">
               <Col xs={12} className="screenshot" />
@@ -88,11 +97,16 @@ class Splash extends Component {
             </Row>
             <Row className="qv-last">
               <Col xs={12} className="vertical-align qv-splash-footer">
-                <p className="qv-tryit"><h4>What are you waiting for? <strong>Sign up for free! </strong><LinkContainer to="/signup"><Button>Let&#39;s go!</Button></LinkContainer></h4></p>
+                <div className="h4">
+                  <p className="qv-tryit">What are you waiting for? <strong>Sign up for free! </strong>
+                    <LinkContainer to="/signup">
+                      <Button>Let&#39;s go!</Button>
+                    </LinkContainer>
+                  </p></div>
               </Col>
             </Row>
             <Row className="qv-last copyright">
-              Copyright 2017 <a target="_blank" rel="noopener noreferrer" href="http://garykertis.com">Grannysoft, LLC</a>
+              Copyright 2017, <a target="_blank" rel="noopener noreferrer" href="https://github.com/grannysoft">Grannysoft, LLC</a>
             </Row>
           </Grid>
         </div>

@@ -3,7 +3,6 @@ import { push } from 'react-router-redux';
 import connect from './util/connect';
 import LoginForm from './components/LoginForm';
 import Header from './components/Header';
-import Footer from './components/Footer';
 import { checkLogin } from './actions/login';
 
 class Login extends Component {
@@ -39,7 +38,6 @@ class Login extends Component {
       <div className="shell">
         <Header user={this.props.user} />
         <LoginForm />
-        <Footer />
       </div>
     );
   }

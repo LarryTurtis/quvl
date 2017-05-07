@@ -46,7 +46,10 @@ class GroupList extends Component {
     if (demoMode) {
       callout = (<Alert bsStyle="warning">
         <h4>Demo Mode</h4>
-        <p>This feature is disabled in demo mode.</p>
+        <p>
+          In order to add / remove members and manage their permissions,
+          <Link to="/signup"> signup</Link> for your own account.
+        </p>
       </Alert>);
     }
 

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import moment from 'moment';
 import connect from '../util/connect';
+import './Day.styl';
 
 const Day = (props) => {
   let events;
@@ -21,7 +22,7 @@ const Day = (props) => {
   return (
     <div
       onClick={bound}
-      className={`${isGrey || !isAfter ? 'gray' : ''} ${isAfter ? 'after' : ''} ${isSelected ? 'selected' : ''} content`}
+      className={`${isGrey || !isAfter ? 'gray' : ''} ${isAfter ? 'after' : ''} ${isSelected ? 'selected' : ''} content day`}
     >
       {day.getDate()}
       {events}

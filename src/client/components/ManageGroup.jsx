@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Modal, Button, ButtonToolbar, Alert } from 'react-bootstrap';
+import { Modal, Button, ButtonToolbar } from 'react-bootstrap';
 
 import connect from '../util/connect';
 import './ManageGroup.styl';
@@ -9,12 +9,7 @@ class ManageGroup extends Component {
   static propTypes = {
     manager: PropTypes.object,
     callback: PropTypes.func,
-    login: PropTypes.object
   };
-
-  static stateToProps = state => ({
-    login: state.login
-  });
 
   constructor(props) {
     super(props);
@@ -85,16 +80,13 @@ class ManageGroup extends Component {
   }
 
   render() {
-
-    const demoMode = this.props.login && this.props.login.user && this.props.login.user.demoUser;
-
     const members = this.state.members && this.state.members.map(member => {
       const boundRemove = () => this.removeMember(member.user);
       const boundPromote = () => this.promote(member.user);
       const boundDemote = () => this.demote(member.user);
-      let promoteButton = <Button onClick={boundPromote} disabled={demoMode}>Make Admin</Button>;
+      let promoteButton = <Button onClick={boundPromote}>Make Admin</Button>;
       if (member.admin) {
-        promoteButton = <Button onClick={boundDemote} disabled={demoMode}>Remove Admin</Button>
+        promoteButton = <Button onClick={boundDemote}>Remove Admin</Button>
       }
       return (
         <li className="row qv-manage-member" key={member.user.userId}>
@@ -102,7 +94,7 @@ class ManageGroup extends Component {
           <div className="col-xs-4">{member.user.email}</div>
           <div className="col-xs-6">
             <ButtonToolbar>
-              <Button disabled={demoMode} onClick={boundRemove}>Remove</Button>
+              <Button onClick={boundRemove}>Remove</Button>
               {promoteButton}
             </ButtonToolbar>
           </div>
@@ -122,7 +114,7 @@ class ManageGroup extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.hideAddMemberForm}>Cancel</Button>
-          <Button type="submit" disabled={demoMode}>Save</Button>
+          <Button type="submit">Save</Button>
         </Modal.Footer>
       </form>
     </Modal>);
@@ -131,7 +123,7 @@ class ManageGroup extends Component {
       <div className="card form-inline qv-group">
         <div className="qv-group-header">
           {this.state.name}
-          <Button onClick={this.showAddMemberForm} disabled={demoMode}>Add Member</Button>
+          <Button onClick={this.showAddMemberForm}>Add Member</Button>
         </div>
         <ul>
           {members}

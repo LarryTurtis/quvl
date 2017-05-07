@@ -3,6 +3,7 @@ highlight = #5e98ba
 secondary = #ffab4a
 tertiary = #2acce5
 svgorange = #F8AF3E
+dark = #1C1B1A
 
 .qv-logo
   font-family: 'Fredoka One'
@@ -25,7 +26,7 @@ svgorange = #F8AF3E
   p
     max-width: 800px
     margin: auto
-  h3
+  .h3
     padding: 2em
 
 .qv-second
@@ -34,8 +35,8 @@ svgorange = #F8AF3E
   p
     max-width: 630px
     margin: auto
-  h3
-    padding: 2em
+  .h3
+    padding: 30px
     font-family: 'Roboto'
 
 .qv-jumbo
@@ -64,10 +65,14 @@ svgorange = #F8AF3E
 
 .qv-splash-footer
   height: 300px
+  text-align: center
+  .h4
+    margin: auto
 
 p.qv-tryit
   text-align: center
-  a
+  a, button
+    border-color: transparent
     background: svgorange
     color: white
     box-shadow: 1px 1px 3px #e1e1e1
@@ -76,6 +81,9 @@ p.qv-tryit
     font-family: Baloo
     font-size: 20px
     cursor: pointer
+  button
+    background: primary
+    box-shadow: 1px 1px 3px dark
 
 .screenshot
   background-image: url('../../../assets/screenshot.png')
@@ -84,6 +92,7 @@ p.qv-tryit
   background-repeat-x: no-repeat
   background-repeat-y: no-repeat
   height: 450px
+  margin-top: 50px
 
 .qv-content
   height: 500px

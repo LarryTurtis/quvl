@@ -197,8 +197,8 @@ class Dashboard extends Component {
           const submitted = <p>Submitted <span className="glyphicon glyphicon-star" /></p>;
           const notSubmitted = <p>Not Submitted <span className="glyphicon glyphicon-warning-sign" /></p>;
 
-          const submitButton = <Button bsSize="xsmall" bsStyle="primary" onClick={showSubmitForm}>Submit</Button>;
-          const withdrawButton = <Button bsSize="xsmall" bsStyle="warning" onClick={withdrawDoc}>Withdraw</Button>;
+          const submitButton = <Button className="pull-right" bsStyle="primary" onClick={showSubmitForm}>Submit My Document</Button>;
+          const withdrawButton = <Button className="pull-right" bsStyle="warning" onClick={withdrawDoc}>Withdraw My Submission</Button>;
 
           const linkToSubmission = <Link to={`/doc/${member.user.userId}/${member.doc}`}>Review Submission</Link>;
 

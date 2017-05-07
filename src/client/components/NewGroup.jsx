@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { push } from 'react-router-redux';
+import { Link } from 'react-router';
 import { Button, Alert } from 'react-bootstrap';
 import connect from '../util/connect';
 import { createGroup } from '../actions/group';
@@ -54,7 +55,10 @@ class NewGroup extends Component {
     if (demoMode) {
       callout = (<Alert bsStyle="warning">
         <h4>Demo Mode</h4>
-        <p>This feature is disabled in demo mode.</p>
+        <p>
+          This feature is disabled in demo mode.<br />
+          <Link to="/signup">Signup</Link> to create your own groups.
+        </p>
       </Alert>);
     }
 

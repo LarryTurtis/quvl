@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { replace } from 'react-router-redux';
 import connect from './util/connect';
 import Header from './components/Header';
-import Footer from './components/Footer';
 
 import './Main.styl';
 
@@ -53,7 +52,6 @@ class Shell extends Component {
           </div>
         </div>
       </div>
-      <Footer />
     </div>);
   }
 
