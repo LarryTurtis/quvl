@@ -39,7 +39,6 @@ class Shell extends Component {
 
   redirectIfNotAuthenticated(user) {
     if (!user) {
-      console.log('No user!')
       this.props.replace('/splash');
     }
   }

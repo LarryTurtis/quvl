@@ -15,6 +15,7 @@ import config from '../../webpack.config';
 import bootstrap from './bootstrap';
 import configureWatcher from './watcher';
 import configDB from './config/database';
+
 // configuration ===============================================================
 const connection = mongoose.connect(configDB.url); // connect to our database
 autoIncrement.initialize(connection);
@@ -22,6 +23,7 @@ autoIncrement.initialize(connection);
 const app = express();
 
 if (nconf.get('NODE_ENV') === 'development') {
+  console.log('hot')
   const compiler = webpack(config);
   app.use(webpackDevMiddleware(compiler, {
     noInfo: true,
@@ -51,14 +53,12 @@ app.use((req, res, next) => {
   }
 });
 
-app.use(express.static(config.output.publicPath));
+app.use('/dist', express.static(`${process.cwd()}/dist`));
 
-// required for passport
-app.use(session({ secret: 'm00k13bL@yLoc' })); // session secret
 const MongoStore = require('connect-mongo')(session);
 
 app.use(session({
-  secret: 'foo',
+  secret: 'm00k13bL@yLoc',
   store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 

@@ -10,8 +10,8 @@ const config = {
   devtool: 'eval',
   displayErrorDetails: true,
   entry: {
-    serverbid: [
-      'webpack-hot-middleware/client', // TODO: Remove this from prod bundle
+    quvl: [
+      'webpack-hot-middleware',
       resolve('src/client')
     ]
   },
@@ -42,7 +42,7 @@ const config = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('serverbid.css'),
+    new ExtractTextPlugin('quvl.css'),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoErrorsPlugin(),

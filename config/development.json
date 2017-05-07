@@ -1,7 +1,0 @@
-{
-  "AUTH0_CALLBACK_URL": "https://localhost:7000/login",
-  "AUTH0_CLIENT_ID": "g2uMgvwKRFUIXTPhIUsLEsc22FNMvBid",
-  "AUTH0_DOMAIN": "serverbid.auth0.com",
-  "AUTH0_SECRET": "dTBDhujyzLepjpW3fayCeBPKgZ-nsOG2YQc3k2Htpxk-uAdQhK45P3UKwwBD3Qey",
-  "DOMAIN": "localhost"
-}

@@ -32,9 +32,14 @@ module.exports = (app) => {
   app.post('/api/save', isLoggedIn, saveDoc);
 
   app.get('/api/docs/:userId', isLoggedIn, (req, res, next) => {
-    listDocs(req.user.userId)
-      .then(docs => res.json(docs))
-      .catch(next);
+    if (req.params.userId.toString() === req.user.userId.toString()) {
+      listDocs(req.user.userId)
+        .then(docs => res.json(docs))
+        .catch(next);
+    }
+    else {
+      res.status(401).send({ message: 'Unauthorized' });
+    }
   });
 
   app.get('/api/docs/:authorId/:docId', isLoggedIn, (req, res, next) => {
