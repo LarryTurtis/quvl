@@ -22,7 +22,7 @@ class Home extends Component {
     let home;
     if (!this.props.login && this.props.login.user) {
       home = <Dashboard />;
-    } 
+    }
     else {
       home = <Splash />;
     }

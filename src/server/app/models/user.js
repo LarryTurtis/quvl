@@ -11,6 +11,7 @@ const userSchema = mongoose.Schema({
   access_token: String,
   email: { type: String, unique: true },
   picture: String,
+  demoUser: Boolean,
   local: {
     email: String,
     password: String,

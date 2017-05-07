@@ -31,6 +31,7 @@ class Header extends Component {
   }
 
   render() {
+    let rightLinks;
     let leftLinks = (
       <Nav bsStyle="pills">
         <NavDropdown title="Documents" id="documents">
@@ -51,10 +52,19 @@ class Header extends Component {
       leftLinks = null;
     }
 
-    let rightLinks = (
-      <Nav bsStyle="pills" className="navbar-right">
-        <NavItem onClick={this.handleLogout}>Log out</NavItem>
-      </Nav>);
+    if (this.props.user) {
+      rightLinks = (
+        <Nav bsStyle="pills" className="navbar-right">
+          <NavItem onClick={this.handleLogout}>
+            Log out
+          </NavItem>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <img alt="" className="media-object" src={this.props.user.picture} />
+            </Navbar.Brand>
+          </Navbar.Header>
+        </Nav >);
+    }
 
     if (!this.props.user) {
       rightLinks = (

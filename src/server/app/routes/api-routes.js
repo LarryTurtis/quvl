@@ -55,6 +55,9 @@ module.exports = (app) => {
   });
 
   app.post('/api/groups', isLoggedIn, (req, res, next) => {
+    if (req.user.demoUser) {
+      return res.status(401).send({ message: 'Unauthorized' });
+    }
     const name = req.body.name;
     const _id = req.user._id;
     const emails = req.body.emails.split(',').map(email => email.trim());
@@ -76,6 +79,9 @@ module.exports = (app) => {
   });
 
   app.put('/api/groups/:groupId', isLoggedIn, (req, res, next) => {
+    if (req.user.demoUser) {
+      return res.status(401).send({ message: 'Unauthorized' });
+    }
     if (req.body.type === 'ADD') {
       addMember(req.params.groupId, req.body.member, req.user._id)
         .then(doc => res.json(doc))
@@ -139,8 +145,6 @@ module.exports = (app) => {
 
     }
   });
-
-
 };
 
 

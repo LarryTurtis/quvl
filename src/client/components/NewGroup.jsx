@@ -1,9 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { push } from 'react-router-redux';
-import { Button } from 'react-bootstrap';
+import { Button, Alert } from 'react-bootstrap';
 import connect from '../util/connect';
 import { createGroup } from '../actions/group';
-import Callout from './Callout';
 import './NewGroup.styl';
 
 class NewGroup extends Component {
@@ -11,7 +10,8 @@ class NewGroup extends Component {
   static propTypes = {
     createGroup: PropTypes.func,
     push: PropTypes.func,
-    group: PropTypes.object
+    group: PropTypes.object,
+    login: PropTypes.object
   };
 
   static actionsToProps = {
@@ -20,7 +20,8 @@ class NewGroup extends Component {
   };
 
   static stateToProps = state => ({
-    group: state.group
+    group: state.group,
+    login: state.login
   });
 
   constructor(props) {
@@ -47,18 +48,20 @@ class NewGroup extends Component {
 
   render() {
     const { group } = this.props;
+    const demoMode = this.props.login && this.props.login.user && this.props.login.user.demoUser;
     let callout;
+
+    if (demoMode) {
+      callout = (<Alert bsStyle="warning">
+        <h4>Demo Mode</h4>
+        <p>This feature is disabled in demo mode.</p>
+      </Alert>);
+    }
 
     if (group.isSending) {
       return <div className="sb-invite-form">Spinner</div>;
     }
 
-    if (this.state.callout) {
-      callout = (<Callout
-        type={this.state.callout.type}
-        message={this.state.callout.message}
-      />);
-    }
 
     return (
       <form className="qv-newgroup card" onSubmit={this.handleSubmit}>
@@ -90,7 +93,7 @@ class NewGroup extends Component {
               onChange={this.handleEmailChange}
             />
           </div>
-          <Button type="submit" bsStyle="primary">
+          <Button type="submit" bsStyle="primary" disabled={demoMode} >
             Save
           </Button>
         </div>

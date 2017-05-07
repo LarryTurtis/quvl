@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import { Alert } from 'react-bootstrap';
 import { Link } from 'react-router';
 import connect from '../util/connect';
 import { listGroups, updateMember } from '../actions/group';
@@ -39,6 +40,16 @@ class GroupList extends Component {
 
   render() {
     const groups = this.props.group;
+    const demoMode = this.props.login && this.props.login.user && this.props.login.user.demoUser;
+    let callout;
+
+    if (demoMode) {
+      callout = (<Alert bsStyle="warning">
+        <h4>Demo Mode</h4>
+        <p>This feature is disabled in demo mode.</p>
+      </Alert>);
+    }
+
     let memberGroups;
     let groupHeader = (
       <div>
@@ -65,6 +76,7 @@ class GroupList extends Component {
     return (
       <div className="row">
         <div className="col-xs-10">
+          {callout}
           <h4>{groupHeader}</h4>
           {memberGroups}
         </div>
