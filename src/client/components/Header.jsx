@@ -43,7 +43,7 @@ class Header extends Component {
           <LinkContainer to="/newgroup"><MenuItem>New Group</MenuItem></LinkContainer>
         </NavDropdown>
         <NavDropdown title="Workshops" id="workshops">
-          <LinkContainer to="/dashboard"><MenuItem>Upcoming</MenuItem></LinkContainer>
+          <LinkContainer to="/dashboard"><MenuItem>Dashboard</MenuItem></LinkContainer>
           <LinkContainer to="/workshops"><MenuItem>Calendar</MenuItem></LinkContainer>
         </NavDropdown>
       </Nav>);

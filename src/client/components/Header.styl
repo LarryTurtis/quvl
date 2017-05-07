@@ -8,7 +8,7 @@ secondary = #ffab4a
   .dropdown-menu
     background-color: highlight
     border: none
-    li:hover a
+    li:not(.active):hover a
       background-color: secondary!important
       color: white
   .open a
@@ -30,6 +30,12 @@ secondary = #ffab4a
 .navbar-default .navbar-nav>.active>a:visited
   background-color: primary!important
   text-decoration: underline
+
+.dropdown-menu
+  .active a
+    cursor: text!important
+    color: primary!important
+    font-style: italic
 
 .navbar-brand
   font-family: 'Fredoka One'!important
