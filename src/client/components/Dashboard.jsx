@@ -182,7 +182,7 @@ class Dashboard extends Component {
       </form>
     </Modal>);
 
-    if (this.state.transformedGroups) {
+    if (this.state.transformedGroups && this.state.transformedGroups.length) {
       groups = this.state.transformedGroups.map(workshop => {
         let buttons;
         const members = workshop.members.map(member => {
