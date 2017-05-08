@@ -106,7 +106,7 @@ class Splash extends Component {
               </Col>
             </Row>
             <Row className="qv-last copyright">
-              Copyright 2017, <a target="_blank" rel="noopener noreferrer" href="https://github.com/grannysoft">Grannysoft, LLC</a>
+              Copyright 2017
             </Row>
           </Grid>
         </div>
