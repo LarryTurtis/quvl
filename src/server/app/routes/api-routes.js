@@ -3,6 +3,8 @@ import {
   listDocs,
   getDocForCommenting,
   updateDoc,
+  deleteComment,
+  filterDeletedComments,
   createGroup,
   findGroups,
   addMember,
@@ -44,12 +46,18 @@ module.exports = (app) => {
 
   app.get('/api/docs/:authorId/:docId', isLoggedIn, (req, res, next) => {
     getDocForCommenting(req.user, req.params.authorId, req.params.docId)
-      .then(doc => res.json(doc))
+      .then(doc => res.json(filterDeletedComments(doc)))
       .catch(next);
   });
 
   app.post('/api/docs/:authorId/:docId', isLoggedIn, (req, res, next) => {
     updateDoc(req.params.authorId, req.params.docId, req.user, req.body.nodes, req.body.comment)
+      .then(doc => res.json(doc))
+      .catch(next);
+  });
+
+  app.delete('/api/docs/:authorId/:docId/:commentId', isLoggedIn, (req, res, next) => {
+    deleteComment(req.params.authorId, req.params.docId, req.params.commentId, req.user)
       .then(doc => res.json(doc))
       .catch(next);
   });

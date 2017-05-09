@@ -36,6 +36,17 @@ export const buildPost = (url, body) => {
   return request;
 };
 
+export const buildDelete = (url, body) => {
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/json');
+  const request = new Request(
+    url,
+    { method: 'DELETE', body, headers }
+  );
+  return request;
+};
+
+
 export const buildPut = (url, body) => {
   const headers = new Headers();
   headers.append('Content-Type', 'application/json');

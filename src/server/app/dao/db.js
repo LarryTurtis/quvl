@@ -183,6 +183,14 @@ export function getDocForCommenting(user, authorId, docId) {
     });
 }
 
+export function filterDeletedComments(doc) {
+  // filter out deleted comments
+  const objFound = doc.toObject();
+  const filteredComments = objFound.comments.filter(comment => !comment.deleted);
+  objFound.comments = filteredComments;
+  return objFound;
+}
+
 /**
  * This logic will set the proper index in the document (ie. the comments can be sorted by their appearance in the doc.)
  * We step through the document via regex and keep track of the comment ids in the order they first appear. 
@@ -217,10 +225,53 @@ function createNewRevision(requested, operations, commentId, commentAuthorId) {
   return { id, doc, operations };
 }
 
+export function deleteComment(authorId, docId, commentId, user) {
+  return new Promise((resolve, reject) =>
+    Doc.findOneAndUpdate(
+      {
+        docId,
+        comments: { $elemMatch: { commentId, author: user._id.toString() } }
+      },
+      { $set: { 'comments.$.deleted': true } },
+      {
+        new: true
+      },
+      (err, doc) => {
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve(doc);
+        }
+      }))
+    .then(doc => {
+      console.log(doc)
+      const revisionId = doc.revisions.length;
+      let workingDoc = doc.revisions[revisionId - 1].doc;
+      const regex = new RegExp(`quvl-tag data-id="${authorId}-${commentId}"`, 'g');
+      workingDoc = workingDoc.replace(regex, `novl-tag data-id="${authorId}-${commentId}"`);
+      const latestRevision = {
+        id: revisionId,
+        doc: workingDoc
+      };
+      doc.revisions.push(latestRevision);
+      return new Promise((resolve, reject) => {
+        doc.save((err, success) => {
+          if (err) {
+            reject(err);
+          }
+          else {
+            resolve(success);
+          }
+        });
+      });
+    });
+}
+
 export function updateDoc(authorId, docId, user, nodes, content) {
   return getDocForCommenting(user, authorId, docId)
     .then(doc => {
-      const commentId = doc.comments.length;
+      const commentId = doc.comments.length + 1;
       const commentAuthorId = user.userId;
       const newRevision = createNewRevision(doc, nodes, commentId, commentAuthorId);
 

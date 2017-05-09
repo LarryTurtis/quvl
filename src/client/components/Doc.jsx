@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Button } from 'react-bootstrap';
 import connect from '../util/connect';
 import { getDoc } from '../actions/doc';
-import { saveComment } from '../actions/comment';
+import { saveComment, deleteComment } from '../actions/comment';
 import Comments from './Comments';
 import AddComment from './AddComment';
 import Selector from '../util/selector';
@@ -26,13 +26,15 @@ class Doc extends Component {
   static propTypes = {
     getDoc: PropTypes.func,
     saveComment: PropTypes.func,
+    deleteComment: PropTypes.func,
     doc: PropTypes.object,
     params: PropTypes.object
   };
 
   static actionsToProps = {
     getDoc,
-    saveComment
+    saveComment,
+    deleteComment
   };
 
   static stateToProps = state => ({
@@ -94,6 +96,15 @@ class Doc extends Component {
     this.selector.on();
   }
 
+  handleDeletedComment = (commentId) => {
+    const docId = this.props.params.docId;
+    const authorId = this.props.params.authorId;
+    this.props.deleteComment(authorId, docId, commentId)
+      .then(() => {
+        this.loadDoc();
+      });
+  }
+
   handleClick = (e) => {
     if (this.state.commentsVisible) {
       clearHighlighted();
@@ -135,7 +146,7 @@ class Doc extends Component {
     let comments;
 
     if (doc && doc.comments && doc.comments.length) {
-      comments = <Comments>{doc && doc.comments}</Comments>;
+      comments = <Comments deleteCallback={this.handleDeletedComment}>{doc && doc.comments}</Comments>;
     }
 
     if (this.state.selectedText) {

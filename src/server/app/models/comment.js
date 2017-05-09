@@ -9,7 +9,8 @@ const commentSchema = mongoose.Schema({
   created_at: { type: Date, default: Date.now },
   author: { type: String, ref: User },
   docId: Number,
-  index: Number
+  index: Number,
+  deleted: { type: Boolean, default: false }
 });
 
 commentSchema.index({ index: 1 });
