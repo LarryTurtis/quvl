@@ -6,6 +6,7 @@ const highlightSelected = (arr) => {
   let qPos;
   let qTag;
   let commentPos;
+  console.log(arr)
   if (arr && arr.length) {
     arr.forEach(id => {
       if (id) {

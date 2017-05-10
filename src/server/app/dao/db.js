@@ -8,6 +8,7 @@ import Group from '../models/group';
 import setRanges from './setRanges';
 import wrapTags from './wrapTags';
 
+const REPLACEKEY = 'r3pl4c3'
 const ObjectId = mongoose.Schema.ObjectId;
 
 const findUser = (id) =>
@@ -220,7 +221,8 @@ function createNewRevision(requested, operations, commentId, commentAuthorId) {
   const id = latestRevisionId + 1;
 
   let doc = wrapTags(saved, operations);
-  doc = doc.replace(/data-id="\*/g, `data-id="${commentAuthorId}-${commentId}`);
+  const replaceRegex = new RegExp(REPLACEKEY, 'g');
+  doc = doc.replace(replaceRegex, `${commentAuthorId}-${commentId}`);
 
   return { id, doc, operations };
 }
@@ -248,8 +250,8 @@ export function deleteComment(authorId, docId, commentId, user) {
       console.log(doc)
       const revisionId = doc.revisions.length;
       let workingDoc = doc.revisions[revisionId - 1].doc;
-      const regex = new RegExp(`quvl-tag data-id="${authorId}-${commentId}"`, 'g');
-      workingDoc = workingDoc.replace(regex, `novl-tag data-id="${authorId}-${commentId}"`);
+      const regex = new RegExp(`${authorId}-${commentId}\\s*`, 'g');
+      workingDoc = workingDoc.replace(regex, '');
       const latestRevision = {
         id: revisionId,
         doc: workingDoc
@@ -279,10 +281,10 @@ export function updateDoc(authorId, docId, user, nodes, content) {
       doc.revisions.push(newRevision);
 
       const indexes = sortComments(newRevision.doc);
-      doc.comments.forEach(comment => {
-        comment.index = indexes[comment.commentId];
-      });
-      doc.comments.sort((a, b) => a.index - b.index);
+      // doc.comments.forEach(comment => {
+      //   comment.index = indexes[comment.commentId];
+      // });
+      // doc.comments.sort((a, b) => a.index - b.index);
 
       return new Promise((resolve, reject) => {
         doc.save((err, success) => {

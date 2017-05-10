@@ -113,7 +113,7 @@ class Doc extends Component {
       els.forEach(el => {
         const id = el.getAttribute('data-id');
         if (id) {
-          arr = [...arr, id.split(' ')];
+          arr = [...arr, ...id.split(' ')];
         }
       });
       highlightSelected(arr);

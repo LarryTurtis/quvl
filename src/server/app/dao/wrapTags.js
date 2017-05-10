@@ -1,6 +1,7 @@
 var parse5 = require('parse5');
 var parse5Utils = require('parse5-utils');
 var startNodes, endNodes;
+const REPLACEKEY = 'r3pl4c3'
 
 String.prototype.splice = function(start, newSubStr) {
   return this.slice(0, start) + newSubStr + this.slice(start);
@@ -17,7 +18,7 @@ var wrapBoth = (node, operation) => {
 
   if (node.nodeName === 'quvl-tag' && start === operation.start && end === operation.end) {
     const oldId = parse5Utils.getAttribute(node, 'data-id');
-    parse5Utils.setAttribute(node, 'data-id', `${oldId} *`);
+    parse5Utils.setAttribute(node, 'data-id', `${oldId} ${REPLACEKEY}`);
   }
   else {
     parse5Utils.removeAttribute(node, "data-range");
@@ -30,7 +31,7 @@ var wrapBoth = (node, operation) => {
     }
 
     //make the comment
-    var openTag = `<quvl-tag data-id='*' data-range="${operation.start}-${operation.end}">`;
+    var openTag = `<quvl-tag data-id='${REPLACEKEY}' data-range="${operation.start}-${operation.end}">`;
     var closeTag = "</quvl-tag>";
     text = text.splice(parsedEnd + 1, closeTag)
     text = text.splice(parsedStart, openTag);
@@ -61,7 +62,7 @@ var wrapStart = (node, operation) => {
   var text = node.childNodes[0].value;
   var parsedStart = operation.start - start;
 
-  var openTag = `<quvl-tag data-id='*' data-range="${operation.start}-${end}">`;
+  var openTag = `<quvl-tag data-id='${REPLACEKEY}' data-range="${operation.start}-${end}">`;
   var closeTag = "</quvl-tag>";
 
   text = text.splice(end + 1, closeTag)
@@ -94,7 +95,7 @@ var wrapEnd = (node, operation) => {
   text = text.splice(end, postTag);
   text = text.splice(parsedEnd + 1, preTag);
 
-  var openTag = `<quvl-tag data-id='*' data-range="${start}-${operation.end}">`;
+  var openTag = `<quvl-tag data-id='${REPLACEKEY}' data-range="${start}-${operation.end}">`;
   var closeTag = "</quvl-tag>";
 
   text = text.splice(parsedEnd + 1, closeTag)
