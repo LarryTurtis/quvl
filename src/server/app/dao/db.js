@@ -232,6 +232,7 @@ export function deleteComment(authorId, docId, commentId, user) {
     Doc.findOneAndUpdate(
       {
         docId,
+        authorId,
         comments: { $elemMatch: { commentId, author: user._id.toString() } }
       },
       { $set: { 'comments.$.deleted': true } },
@@ -247,11 +248,11 @@ export function deleteComment(authorId, docId, commentId, user) {
         }
       }))
     .then(doc => {
-      console.log(doc)
       const revisionId = doc.revisions.length;
       let workingDoc = doc.revisions[revisionId - 1].doc;
-      const regex = new RegExp(`${authorId}-${commentId}\\s*`, 'g');
+      const regex = new RegExp(`\\s*${user.userId}-${commentId}`, 'g');
       workingDoc = workingDoc.replace(regex, '');
+      console.log(workingDoc);
       const latestRevision = {
         id: revisionId,
         doc: workingDoc
