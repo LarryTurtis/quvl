@@ -252,7 +252,6 @@ export function deleteComment(authorId, docId, commentId, user) {
       let workingDoc = doc.revisions[revisionId - 1].doc;
       const regex = new RegExp(`\\s*${user.userId}-${commentId}`, 'g');
       workingDoc = workingDoc.replace(regex, '');
-      console.log(workingDoc);
       const latestRevision = {
         id: revisionId,
         doc: workingDoc
@@ -282,10 +281,10 @@ export function updateDoc(authorId, docId, user, nodes, content) {
       doc.revisions.push(newRevision);
 
       const indexes = sortComments(newRevision.doc);
-      // doc.comments.forEach(comment => {
-      //   comment.index = indexes[comment.commentId];
-      // });
-      // doc.comments.sort((a, b) => a.index - b.index);
+      doc.comments.forEach(comment => {
+        comment.index = indexes[comment.commentId];
+      });
+      doc.comments.sort((a, b) => a.index - b.index);
 
       return new Promise((resolve, reject) => {
         doc.save((err, success) => {
