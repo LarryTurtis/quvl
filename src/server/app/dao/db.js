@@ -233,7 +233,7 @@ export function deleteComment(authorId, docId, commentId, user) {
       {
         docId,
         authorId,
-        comments: { $elemMatch: { commentId, author: user._id.toString() } }
+        comments: { $elemMatch: { commentId, author: user._id } }
       },
       { $set: { 'comments.$.deleted': true } },
       {
@@ -248,24 +248,31 @@ export function deleteComment(authorId, docId, commentId, user) {
         }
       }))
     .then(doc => {
-      const revisionId = doc.revisions.length;
-      let workingDoc = doc.revisions[revisionId - 1].doc;
-      const regex = new RegExp(`\\s*${user.userId}-${commentId}`, 'g');
-      workingDoc = workingDoc.replace(regex, '');
-      const latestRevision = {
-        id: revisionId,
-        doc: workingDoc
-      };
-      doc.revisions.push(latestRevision);
+      if (doc) {
+        const revisionId = doc.revisions.length;
+        let workingDoc = doc.revisions[revisionId - 1].doc;
+        const regex = new RegExp(`\\s*${user.userId}-${commentId}`, 'g');
+        workingDoc = workingDoc.replace(regex, '');
+        const latestRevision = {
+          id: revisionId,
+          doc: workingDoc
+        };
+        doc.revisions.push(latestRevision);
+      }
       return new Promise((resolve, reject) => {
-        doc.save((err, success) => {
-          if (err) {
-            reject(err);
-          }
-          else {
-            resolve(success);
-          }
-        });
+        if (doc) {
+          doc.save((err, success) => {
+            if (err) {
+              reject(err);
+            }
+            else {
+              resolve(success);
+            }
+          });
+        }
+        else {
+          reject('Not Found');
+        }
       });
     });
 }
@@ -277,7 +284,7 @@ export function updateDoc(authorId, docId, user, nodes, content) {
       const commentAuthorId = user.userId;
       const newRevision = createNewRevision(doc, nodes, commentId, commentAuthorId);
 
-      doc.comments.push({ commentId, author: user._id.toString(), docId, content });
+      doc.comments.push({ commentId, author: user._id, docId, content });
       doc.revisions.push(newRevision);
 
       const indexes = sortComments(newRevision.doc);
