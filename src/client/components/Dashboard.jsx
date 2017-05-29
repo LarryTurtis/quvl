@@ -154,6 +154,7 @@ class Dashboard extends Component {
           <div className="form-group">
             <label htmlFor="comment">Member:</label>
             <select type="email" className="form-control" required placeholder="name@email.com" onChange={this.handleDocSelect}>
+              <option key="0" value="0">Select One</option>
               {options}
             </select>
           </div>
