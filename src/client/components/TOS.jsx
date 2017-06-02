@@ -11,7 +11,7 @@ function TOS() {
         <div>
           <h1>Quvl Terms of Service</h1>
           <h2>ACCEPTANCE OF TERMS</h2>
-          <p>IMPORTANT -- READ CAREFULLY: BY CREATING AN ACCOUNT OR BY UTILIZING THE Quvl SERVICE YOU AGREE TO BE BOUND BY THESE TERMS AND CONDITIONS.</p>
+          <p>IMPORTANT -- READ CAREFULLY: BY CREATING AN ACCOUNT OR BY UTILIZING THE QUVL SERVICE YOU AGREE TO BE BOUND BY THESE TERMS AND CONDITIONS.</p>
           <p>Welcome to the Quvl service, website or mobile application (collectively, the "Service").
       Your use of the Service is subject to these Terms of Service and <a href="https://quvl.com/privacy" title="Quvl Privacy Policy">Quvl’s Privacy Policy</a>
             (collectively, the “Terms of Service” or “Agreement”). These Terms of Service are a legal agreement between You and Grannysoft, LLC. (“Quvl”), a New York Corporation,
