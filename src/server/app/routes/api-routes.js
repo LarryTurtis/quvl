@@ -16,7 +16,8 @@ import {
   cancelWorkshop,
   removeMemberFromWorkshop,
   submitDocToWorkshop,
-  removeDocFromWorkshop
+  removeDocFromWorkshop,
+  saveBugReport
 } from '../dao/db';
 import ses from '../ses';
 import Mailer from '../Mailer';
@@ -32,6 +33,7 @@ const isLoggedIn = (req, res, next) => {
 
 module.exports = (app) => {
   app.post('/api/save', isLoggedIn, saveDoc);
+  app.post('/api/bugreport', isLoggedIn, saveBugReport);
 
   app.get('/api/docs/:userId', isLoggedIn, (req, res, next) => {
     if (req.params.userId.toString() === req.user.userId.toString()) {

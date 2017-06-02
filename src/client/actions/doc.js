@@ -34,6 +34,27 @@ export function createDoc(name, doc) {
   };
 }
 
+export function createBugReport(name, doc) {
+  return (dispatch) => {
+    const url = '/api/bugreport';
+    const body = JSON.stringify({ name, doc });
+    const inviteRequest = buildPost(url, body);
+
+    dispatch(createStart());
+    return fetch(inviteRequest, {
+      credentials: 'same-origin'
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw Error(response.statusText);
+      })
+      .then(json => dispatch(createComplete(json)))
+      .catch(error => dispatch(createFailure(error)));
+  };
+}
+
 export function listDocs() {
   return (dispatch, getState) => {
     const state = getState();

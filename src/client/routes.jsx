@@ -7,6 +7,7 @@ import Signup from './Signup';
 import DocList from './components/DocList';
 import Doc from './components/Doc';
 import NewDoc from './components/NewDoc';
+import ReportBug from './components/ReportBug';
 import NewGroup from './components/NewGroup';
 import GroupList from './components/GroupList';
 import Dashboard from './components/Dashboard';
@@ -27,6 +28,7 @@ const routes = [
     <Route path="/mydocs" component={DocList} />
     <Route path="/groups" component={GroupList} />
     <Route path="/newgroup" component={NewGroup} />
+    <Route path="/report" component={ReportBug} />
     <Route path="/workshops" component={WorkshopCalendar} />
     <Route path="/doc/:authorId/:docId" component={Doc} />
     <Route path="/dashboard" component={Dashboard} />

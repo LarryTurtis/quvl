@@ -138,6 +138,15 @@ export function saveDoc(req, res) {
     });
 }
 
+export function saveBugReport(req, res) {
+  User.findOne({ email: 'bugs@quvl.io' }, (err, user) => {
+    const name = req.body.name || `Untitled_${Date.now()}`;
+    const content = req.body.doc;
+    const shared = [];
+    return saveNewDoc(user, name, content, shared);
+  }).then(() => res.json({ message: 'ok' }));
+}
+
 function isMemberOfGroup(userId, groupId) {
   return new Promise(resolve => {
     Group.findOne({ groupId, 'members.user': userId }, (err, doc) => {

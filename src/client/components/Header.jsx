@@ -46,6 +46,7 @@ class Header extends Component {
           <LinkContainer to="/dashboard"><MenuItem>Dashboard</MenuItem></LinkContainer>
           <LinkContainer to="/workshops"><MenuItem>Calendar</MenuItem></LinkContainer>
         </NavDropdown>
+        <LinkContainer to="/report"><NavItem>Request Fix</NavItem></LinkContainer>
       </Nav>);
 
     if (!this.props.user) {
