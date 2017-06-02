@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { ButtonToolbar } from 'react-bootstrap';
+import { Link } from 'react-router';
 import { replace } from 'react-router-redux';
 import connect from '../util/connect';
 import Callout from '../components/Callout';
@@ -87,6 +88,9 @@ class SignupForm extends Component {
             <a href="/auth/facebook" className="btn btn-primary" data-dismiss="modal"><span className="fa fa-facebook" />Sign up with Facebook</a>
             <a href="/auth/google" className="btn btn-danger" data-dismiss="modal"><span className="fa fa-google-plus" />Sign up with Google</a>
           </ButtonToolbar>
+          <p>
+            By proceeding to create your account and using Quvl, you are agreeing to our <Link to="/tos">Terms of Service and Privacy Policy</Link>. If you do not agree, you cannot use Quvl.
+          </p>
         </div>
         <div className="col-sm-4" />
       </div>

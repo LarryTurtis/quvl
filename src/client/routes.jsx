@@ -8,6 +8,7 @@ import DocList from './components/DocList';
 import Doc from './components/Doc';
 import NewDoc from './components/NewDoc';
 import ReportBug from './components/ReportBug';
+import TOS from './components/TOS';
 import NewGroup from './components/NewGroup';
 import GroupList from './components/GroupList';
 import Dashboard from './components/Dashboard';
@@ -23,6 +24,7 @@ const routes = [
   <Route path="/login" component={() => (<Login seeking={seekingRoute} />)} />,
   <Route path="/signup" component={Signup} />,
   <Route path="/splash" component={Splash} />,
+  <Route path="/tos" component={TOS} />,
   <Route path="/" onEnter={findNext} component={Shell}>
     <Route path="/newdoc" component={NewDoc} />
     <Route path="/mydocs" component={DocList} />
