@@ -242,7 +242,7 @@ export function deleteComment(authorId, docId, commentId, user) {
       {
         docId,
         authorId,
-        comments: { $elemMatch: { commentId, author: user._id.toString() } }
+        comments: { $elemMatch: { commentId, author: user._id } }
       },
       { $set: { 'comments.$.deleted': true } },
       {
@@ -286,15 +286,14 @@ export function updateDoc(authorId, docId, user, nodes, content) {
       const commentAuthorId = user.userId;
       const newRevision = createNewRevision(doc, nodes, commentId, commentAuthorId);
 
-      doc.comments.push({ commentId, author: user._id.toString(), docId, content });
+      doc.comments.push({ commentId, author: user._id, docId, content });
       doc.revisions.push(newRevision);
 
-      //make this a separate operation.
-      // const indexes = sortComments(newRevision.doc);
-      // doc.comments.forEach(comment => {
-      //   comment.index = indexes[comment.commentId];
-      // });
-      // doc.comments.sort((a, b) => a.index - b.index);
+      const indexes = sortComments(newRevision.doc);
+      doc.comments.forEach(comment => {
+        comment.index = indexes[comment.commentId];
+      });
+      doc.comments.sort((a, b) => a.index - b.index);
 
       return new Promise((resolve, reject) => {
         doc.save((err, success) => {

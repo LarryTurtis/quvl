@@ -2,12 +2,13 @@
 // load the things we need
 import mongoose from 'mongoose';
 import User from './user';
+const ObjectId = mongoose.Schema.ObjectId;
 
 const commentSchema = mongoose.Schema({
   commentId: Number,
   content: String,
   created_at: { type: Date, default: Date.now },
-  author: { type: String, ref: User },
+  author: { type: ObjectId, ref: User },
   docId: Number,
   index: Number,
   deleted: { type: Boolean, default: false }
