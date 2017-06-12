@@ -28,7 +28,9 @@ class AddComment extends Component {
 
   showCommentForm = () => {
     this.props.addCallback();
-    this.setState({ visible: true });
+    this.setState({ visible: true }, () => {
+      this.nameInput.focus();
+    });
   }
 
   hideCommentForm = (e) => {
@@ -46,7 +48,7 @@ class AddComment extends Component {
         <Modal.Body>
           <div className="form-group">
             <label htmlFor="comment">Comment:</label>
-            <textarea id="commentBox" className="form-control" name="comment" required onChange={this.handleCommentChange} />
+            <textarea id="commentBox" ref={(input) => { this.nameInput = input; }} className="form-control" name="comment" required onChange={this.handleCommentChange} />
           </div>
         </Modal.Body>
         <Modal.Footer>
